@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/features/client/client_screen.dart';
 
 void main() {
@@ -13,14 +14,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(scaffoldBackgroundColor: AppColors.backgroudColor),
       supportedLocales: const [Locale('ar'), Locale('en')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: SafeArea(child: ClientScreen()),
+      home: Directionality(
+        textDirection: TextDirection.rtl,
+        child: SafeArea(child: ClientScreen()),
+      ),
     );
   }
 }

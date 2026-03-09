@@ -23,6 +23,7 @@ abstract class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w700,
     height: 1.5,
+    letterSpacing: 0,
   );
 
   static const TextStyle boldCaption = TextStyle(
@@ -95,6 +96,7 @@ abstract class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w500,
     height: 1.5,
+    letterSpacing: 0,
   );
 
   static const TextStyle mediumCaption = TextStyle(

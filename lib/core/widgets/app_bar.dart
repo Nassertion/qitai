@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qitai/core/constant/app_text_styles.dart';
+import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/constant/colors.dart';
 
 //real data
 AppBar appBar() {
   return AppBar(
-    backgroundColor: Color.fromRGBO(239, 240, 242, 1),
+    // backgroundColor: Color.fromRGBO(239, 240, 242, 1),
     titleSpacing: 12,
+    backgroundColor: AppColors.backgroudColor,
 
     title: SizedBox(
       height: 56,
@@ -23,13 +25,10 @@ AppBar appBar() {
       ),
     ),
     actions: [
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SvgPicture.asset(
-          "assets/icons/notification-bing.svg",
-          width: 24,
-          height: 24,
-        ),
+      SvgPicture.asset(
+        "assets/icons/notification-bing.svg",
+        width: 24,
+        height: 24,
       ),
     ],
   );
