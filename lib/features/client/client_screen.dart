@@ -12,13 +12,14 @@ class ClientScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: CustomeAppbar(),
       body: AppPagePadding(
         child: ListView(
+          padding: EdgeInsets.zero, // مهم
           children: [
-            Dpadding,
+            dPadding,
             search(),
-            Dpadding,
+            dPadding,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -31,6 +32,12 @@ class ClientScreen extends StatelessWidget {
                 // make it work
                 TextButton(
                   onPressed: () {},
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero, // هنا تشيل padding الافتراضي
+                    minimumSize: Size(0, 0), // optional لتقليل حجم الـ button
+                    tapTargetSize: MaterialTapTargetSize
+                        .shrinkWrap, // مهم لتصغير الـ hitbox
+                  ),
                   child: Text(
                     "عرض الكل",
                     style: AppTextStyles.regularOverline.copyWith(
@@ -40,7 +47,7 @@ class ClientScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Dpadding12,
+            dPadding,
             //count data
             // ListView.builder(itemBuilder: (context, index) {}),
           ],

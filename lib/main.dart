@@ -23,15 +23,15 @@ class MyApp extends StatelessWidget {
       ],
       home: Directionality(
         textDirection: TextDirection.rtl,
-        child: SafeArea(child: ClientScreen()),
+        child: ClientScreen(),
       ),
     );
   }
 }
 
-class Qitai extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    throw UnimplementedError();
-  }
-}
+// class Qitai extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     throw UnimplementedError();
+//   }
+// }
