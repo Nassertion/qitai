@@ -4,11 +4,12 @@ import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/widgets/Page_padding.dart';
-import 'package:qitai/core/widgets/app_bar.dart';
-import 'package:qitai/core/widgets/floating_nav_bar.dart';
-import 'package:qitai/features/client/presentation/widgets/card_product.dart';
-import 'package:qitai/features/client/presentation/widgets/header.dart';
-import 'package:qitai/features/client/presentation/widgets/search.dart';
+import 'package:qitai/core/widgets/app_bar_widget.dart';
+import 'package:qitai/core/widgets/floating_nav_bar_widget.dart';
+import 'package:qitai/features/client/presentation/widgets/add_car_widget.dart';
+import 'package:qitai/features/client/presentation/widgets/card_product_widget.dart';
+import 'package:qitai/features/client/presentation/widgets/section_header_widget.dart';
+import 'package:qitai/features/client/presentation/widgets/search_widget.dart';
 import 'package:qitai/features/client/presentation/widgets/slider_widget.dart';
 
 class ClientScreen extends StatelessWidget {
@@ -18,26 +19,31 @@ class ClientScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // bottomNavigationBar: CustomFloatingNavBar(),
-      appBar: CustomeAppbar(),
+      appBar: CustomAppbar(),
       body: AppPagePadding(
         child: Stack(
           children: [
             ListView(
               padding: EdgeInsets.zero,
               children: [
-                Padding8, search(),
+                Padding8, SearchWidget(),
                 dPadding,
-                sectionHeader("سياراتي"),
+                SectionHeader(title: "سياراتي", onTap: () => print("test")),
                 Padding12,
                 //temp
                 Row(
-                  children: [addCar("assets/icons/addCar.svg", "اضف سيارتك")],
+                  children: [
+                    AddCar(
+                      img: "assets/icons/addCar.svg",
+                      carName: "اضف سيارتك",
+                    ),
+                  ],
                 ),
                 dPadding,
                 //temp
                 ClientBannerSlider(),
                 SizedBox(height: 24),
-                sectionHeader("الفئات"),
+                SectionHeader(title: "الفئات", onTap: () => print("test")),
                 Padding12,
                 //temp
                 //خله يطلع من البادنق
@@ -66,7 +72,8 @@ class ClientScreen extends StatelessWidget {
                   ),
                 ),
                 dPadding,
-                sectionHeader("مناسب لسيارتي"),
+                // if no sign in
+                SectionHeader(title: "اقتراحات", onTap: () => print("test")),
                 Padding12,
                 GridView.builder(
                   itemCount: 8,
@@ -77,7 +84,7 @@ class ClientScreen extends StatelessWidget {
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                     // childAspectRatio: 1,
-                    mainAxisExtent: 237, // This sets the fixed height
+                    mainAxisExtent: 237,
                   ),
                   itemBuilder: (context, index) => ProductCard(),
                 ),
@@ -90,31 +97,6 @@ class ClientScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  //if no car -> default
-  //temp
-  Column addCar(String img, String carName) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 64,
-          width: 64,
-          child: CircleAvatar(
-            backgroundColor: AppColors.backgroudColor,
-            child: SvgPicture.asset(img),
-          ),
-        ),
-        Padding4,
-        Text(
-          carName,
-          style: AppTextStyles.mediumOverline.copyWith(
-            color: AppColors.primaryText,
-          ),
-        ),
-      ],
     );
   }
 }

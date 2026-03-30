@@ -9,8 +9,8 @@ import 'package:qitai/features/client/temp_model/temp_client_model.dart';
 //real data
 
 // AppBar appBar() {
-class CustomeAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomeAppbar({super.key});
+class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
+  const CustomAppbar({super.key});
 
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
