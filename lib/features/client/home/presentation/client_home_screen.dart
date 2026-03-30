@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
@@ -6,17 +7,20 @@ import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/widgets/Page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/floating_nav_bar_widget.dart';
-import 'package:qitai/features/client/presentation/widgets/add_car_widget.dart';
-import 'package:qitai/features/client/presentation/widgets/card_product_widget.dart';
-import 'package:qitai/features/client/presentation/widgets/section_header_widget.dart';
-import 'package:qitai/features/client/presentation/widgets/search_widget.dart';
-import 'package:qitai/features/client/presentation/widgets/slider_widget.dart';
+import 'package:qitai/features/client/categories/data/category_repository.dart';
+import 'package:qitai/features/client/categories/provider/category_provider.dart';
+import 'package:qitai/features/client/home/widgets/add_car_widget.dart';
+import 'package:qitai/features/client/home/widgets/card_product_widget.dart';
+import 'package:qitai/features/client/home/widgets/section_header_widget.dart';
+import 'package:qitai/features/client/home/widgets/search_widget.dart';
+import 'package:qitai/features/client/home/widgets/slider_widget.dart';
 
-class ClientScreen extends StatelessWidget {
+class ClientScreen extends ConsumerWidget {
   const ClientScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final categoriesAsync = ref.watch(categoriesProvider);
     return Scaffold(
       // bottomNavigationBar: CustomFloatingNavBar(),
       appBar: CustomAppbar(),
@@ -49,25 +53,41 @@ class ClientScreen extends StatelessWidget {
                 //خله يطلع من البادنق
                 SizedBox(
                   height: 95,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 8,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (context, index) => Column(
-                      children: [
-                        Image.asset(
-                          'assets/images/framl.png',
-                          width: 74,
-                          height: 56,
+                  child: categoriesAsync.when(
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (error, stack) => Center(
+                      child: Text(
+                        error.toString(),
+                        style: AppTextStyles.regularOverline.copyWith(
+                          color: Colors.red,
                         ),
-                        Padding8,
-                        Text(
-                          "الفرامل",
-                          style: AppTextStyles.mediumOverline.copyWith(
-                            color: AppColors.primaryText,
-                          ),
-                        ),
-                      ],
+                      ),
+                    ),
+                    data: (categories) => ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: categories.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        final category = categories[index];
+
+                        return Column(
+                          children: [
+                            Image.asset(
+                              getCategoryIcon(category.name),
+                              width: 74,
+                              height: 56,
+                            ),
+                            Padding8,
+                            Text(
+                              category.name,
+                              style: AppTextStyles.mediumOverline.copyWith(
+                                color: AppColors.primaryText,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ),

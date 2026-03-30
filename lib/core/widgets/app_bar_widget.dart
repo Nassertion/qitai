@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/features/client/temp_model/temp_client_model.dart';
 
 // ClientInfo clientInfo = ClientInfo(city: "الرياض", distrect: "العزيزية");
 // bool hasAddress = clientInfo.city.isNotEmpty && clientInfo.distrect.isNotEmpty;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ClientBannerSlider extends StatefulWidget {
@@ -12,9 +13,9 @@ class _ClientBannerSliderState extends State<ClientBannerSlider> {
   final PageController _controller = PageController();
 
   final List<String> banners = [
-    'assets/images/Ad1.png',
-    'assets/images/Ad1.png',
-    'assets/images/Ad1.png',
+    'assets/icons/Ad1.svg',
+    'assets/icons/Ad1.svg',
+    'assets/icons/Ad1.svg',
   ];
 
   @override
@@ -37,7 +38,7 @@ class _ClientBannerSliderState extends State<ClientBannerSlider> {
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     banners[index],
                     fit: BoxFit.cover,
                     width: double.infinity,
