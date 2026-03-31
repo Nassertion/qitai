@@ -35,7 +35,7 @@ class _ClientBannerSliderState extends State<ClientBannerSlider> {
             itemCount: banners.length,
             itemBuilder: (context, index) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: SvgPicture.asset(
@@ -48,6 +48,7 @@ class _ClientBannerSliderState extends State<ClientBannerSlider> {
             },
           ),
         ),
+
         const SizedBox(height: 8),
         SmoothPageIndicator(
           controller: _controller,

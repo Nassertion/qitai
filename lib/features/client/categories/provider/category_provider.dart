@@ -9,6 +9,7 @@ final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
 });
 
 final categoriesProvider = FutureProvider<List<CategoryModel>>((ref) async {
+  await Future.delayed(Duration(seconds: 5));
   final repo = ref.read(categoryRepositoryProvider);
   return repo.fetchCategories();
 });

@@ -4,6 +4,7 @@ import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 
 // make it work
+//animation and
 class SearchWidget extends StatelessWidget {
   const SearchWidget({super.key});
 
@@ -12,6 +13,8 @@ class SearchWidget extends StatelessWidget {
     return SizedBox(
       height: 44,
       child: TextFormField(
+        onTap: () => print("Later"),
+
         textAlignVertical: TextAlignVertical.center,
         style: TextStyle(color: Colors.black87),
         decoration: InputDecoration(
