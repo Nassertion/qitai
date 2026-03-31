@@ -8,8 +8,8 @@ import 'package:qitai/core/constant/colors.dart';
 //real data
 
 // AppBar appBar() {
-class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppbar({super.key});
+class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
+  const HomeAppBarWidget({super.key});
 
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 

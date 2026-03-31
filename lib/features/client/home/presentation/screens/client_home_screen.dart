@@ -6,16 +6,16 @@ import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/widgets/Page_padding.dart';
-import 'package:qitai/core/widgets/app_bar_widget.dart';
+import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
 import 'package:qitai/core/widgets/floating_nav_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
-import 'package:qitai/features/client/categories/data/category_repository.dart';
-import 'package:qitai/features/client/categories/provider/category_provider.dart';
-import 'package:qitai/features/client/home/widgets/add_car_widget.dart';
-import 'package:qitai/features/client/home/widgets/card_product_widget.dart';
-import 'package:qitai/features/client/home/widgets/section_header_widget.dart';
-import 'package:qitai/features/client/home/widgets/search_widget.dart';
-import 'package:qitai/features/client/home/widgets/slider_widget.dart';
+import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
+import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
+import 'package:qitai/features/client/home/presentation/widgets/add_car_widget.dart';
+import 'package:qitai/features/client/home/presentation/widgets/card_product_widget.dart';
+import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
+import 'package:qitai/features/client/home/presentation/widgets/search_widget.dart';
+import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
 
 class ClientScreen extends ConsumerWidget {
   const ClientScreen({super.key});
@@ -25,7 +25,7 @@ class ClientScreen extends ConsumerWidget {
     final categoriesAsync = ref.watch(categoriesProvider);
     return Scaffold(
       // bottomNavigationBar: CustomFloatingNavBar(),
-      appBar: CustomAppbar(),
+      appBar: HomeAppBarWidget(),
       body: Stack(
         children: [
           ListView(

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/dio_provider.dart';
-import 'package:qitai/features/client/categories/data/category_repository.dart';
-import 'package:qitai/features/client/categories/model/cateogry_model.dart';
+import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
+import 'package:qitai/features/client/categories/data/model/cateogry_model.dart';
 
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
   final dio = ref.read(dioProvider);

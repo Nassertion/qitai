@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/features/client/home/presentation/client_home_screen.dart';
+import 'package:qitai/features/client/home/presentation/screens/client_home_screen.dart';
+import 'package:qitai/features/client/orders/presentation/screens/orders_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       ],
       home: Directionality(
         textDirection: TextDirection.rtl,
-        child: ClientScreen(),
+        child: MyWidget(),
       ),
     );
   }
