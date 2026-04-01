@@ -3,12 +3,19 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/widgets/button_widget.dart';
 
 class EmptyDataWidget extends StatelessWidget {
-   EmptyDataWidget({super.key , required this.img , required this.text});
-String img;
-String text;
-//ontab
+  EmptyDataWidget({
+    super.key,
+    required this.img,
+    required this.text,
+    required this.buttonText,
+  });
+  String img;
+  String text;
+  String buttonText;
+  //ontab
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -18,29 +25,12 @@ String text;
         //in case no orders
         children: [
           //"assets/icons/box.svg"
-          SvgPicture.asset(img),
+          SizedBox(height: 100, width: 130, child: SvgPicture.asset(img)),
           dPadding,
           //"لاتوجد لديك طلبات حالية!"
           Text(text, style: AppTextStyles.boldSubtitle),
           SizedBox(height: 48),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Container(
-              width: double.infinity,
-              height: 54,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.primaryButton,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                "اضافة طلب",
-                style: AppTextStyles.boldBody.copyWith(
-                  color: AppColors.whiteText,
-                ),
-              ),
-            ),
-          ),
+          ButtonWidget(text: buttonText),
         ],
       ),
     );

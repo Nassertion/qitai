@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/widgets/Page_padding.dart';
 import 'package:qitai/core/widgets/floating_nav_bar_widget.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 
@@ -48,24 +49,22 @@ class OrdersScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: Stack(
+        body: TabBarView(
           children: [
-            TabBarView(
-              children: [
-                EmptyDataWidget(
-                  img: "assets/icons/box.svg",
-                  text: "لاتوجد لديك طلبات حالية!",
-                ),
-                EmptyDataWidget(
-                  img: "assets/icons/record.svg",
-                  text: "السجل فارغ حاليا قم بانشاء طلب",
-                ),
-              ],
+            AppPagePadding(
+              child: EmptyDataWidget(
+                img: "assets/icons/box.svg",
+                text: "لاتوجد لديك طلبات حالية!",
+                buttonText: "اضافة طلب",
+              ),
             ),
-            // Align(
-            //   alignment: Alignment.bottomCenter,
-            //   child: CustomFloatingNavBar(),
-            // ),
+            AppPagePadding(
+              child: EmptyDataWidget(
+                img: "assets/icons/record.svg",
+                text: "السجل فارغ حاليا قم بانشاء طلب",
+                buttonText: "اضافة طلب",
+              ),
+            ),
           ],
         ),
       ),

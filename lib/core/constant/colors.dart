@@ -15,4 +15,5 @@ abstract class AppColors {
   static Color warningText = Color(0xFFF4B400);
   static Color primaryButton = Color(0xFF114B7E);
   static Color disabledButton = Color(0xFF91989F);
+  static Color border = Color(0xffE7E9EA);
 }

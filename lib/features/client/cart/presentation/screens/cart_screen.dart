@@ -26,6 +26,7 @@ class CartScreen extends StatelessWidget {
       body: EmptyDataWidget(
         img: 'assets/icons/cart.svg',
         text: 'لاتوجد منتجات في السلة!',
+        buttonText: "اضافة للسلة",
       ),
     );
   }

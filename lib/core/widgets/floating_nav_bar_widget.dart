@@ -39,7 +39,7 @@ class _CustomFloatingNavBarState extends State<CustomFloatingNavBar> {
         decoration: BoxDecoration(
           color: AppColors.backgroudColor,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: const Color(0xffE7E9EA)),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
