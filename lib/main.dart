@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       ],
       home: Directionality(
         textDirection: TextDirection.rtl,
-        child: NotificationScreen(),
+        child: ClientHomeScreen(),
       ),
     );
   }

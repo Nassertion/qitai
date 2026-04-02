@@ -14,42 +14,44 @@ class ProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              Container(
-                height: 163,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.image,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Image.asset(
-                  'assets/images/test.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
-
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 3,
-                  ),
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
+                  height: 163,
+                  width: double.infinity,
                   decoration: BoxDecoration(
-                    color: AppColors.actionText,
-                    borderRadius: BorderRadius.circular(24),
+                    color: AppColors.image,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    "أصلي",
-                    style: AppTextStyles.semiBoldOverline.copyWith(
-                      color: AppColors.whiteText,
+                  child: Image.asset(
+                    'assets/images/test.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.actionText,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Text(
+                      "أصلي",
+                      style: AppTextStyles.semiBoldOverline.copyWith(
+                        color: AppColors.whiteText,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           Padding8,
@@ -57,6 +59,13 @@ class ProductCard extends StatelessWidget {
             "اسطب خلفي كامري 2026",
             style: AppTextStyles.semiBoldOverline.copyWith(
               color: AppColors.primaryText,
+            ),
+          ),
+          Padding4,
+          Text(
+            "رقم القطعة: 254-550",
+            style: AppTextStyles.regularOverline.copyWith(
+              color: AppColors.secondaryText,
             ),
           ),
 

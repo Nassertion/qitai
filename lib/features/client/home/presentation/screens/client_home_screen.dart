@@ -17,8 +17,8 @@ import 'package:qitai/features/client/home/presentation/widgets/section_header_w
 import 'package:qitai/features/client/home/presentation/widgets/search_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
 
-class ClientScreen extends ConsumerWidget {
-  const ClientScreen({super.key});
+class ClientHomeScreen extends ConsumerWidget {
+  const ClientHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,7 +59,6 @@ class ClientScreen extends ConsumerWidget {
               ),
               Padding12,
               //temp
-              //خله يطلع من البادنق
               SizedBox(
                 height: 95,
                 child: categoriesAsync.when(
