@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/features/client/cart/presentation/screens/cart_screen.dart';
 import 'package:qitai/features/client/home/presentation/screens/client_home_screen.dart';
+import 'package:qitai/features/client/notification/presentation/screens/notification_screen.dart';
 import 'package:qitai/features/client/orders/presentation/screens/orders_screen.dart';
 import 'package:qitai/features/client/profile/presentation/screens/profile_screen.dart';
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       ],
       home: Directionality(
         textDirection: TextDirection.rtl,
-        child: ProfileScreen(),
+        child: NotificationScreen(),
       ),
     );
   }
