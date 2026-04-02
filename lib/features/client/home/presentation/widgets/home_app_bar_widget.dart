@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/core/constant/colors.dart';
+import 'package:qitai/features/client/notification/presentation/screens/notification_screen.dart';
 
 // ClientInfo clientInfo = ClientInfo(city: "الرياض", distrect: "العزيزية");
 // bool hasAddress = clientInfo.city.isNotEmpty && clientInfo.distrect.isNotEmpty;
@@ -47,10 +49,13 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               height: 40,
               child: Stack(
                 children: [
-                  SvgPicture.asset(
-                    "assets/icons/notification-bing.svg",
-                    width: 24,
-                    height: 24,
+                  InkWell(
+                    onTap: () => context.push("/notifications"),
+                    child: SvgPicture.asset(
+                      "assets/icons/notification-bing.svg",
+                      width: 24,
+                      height: 24,
+                    ),
                   ),
 
                   // Container(
