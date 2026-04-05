@@ -17,19 +17,37 @@ class CategoryRepository {
   }
 }
 
+// temp only
 String getCategoryIcon(String name) {
   switch (name) {
     case "الفرامل":
       return "assets/images/breaks.png";
     case "المحرك":
       return "assets/images/engine.png";
-    // case "الكهرباء":
-    //   return "assets/icons/electric.svg";
-    // case "الزيوت والسوائل":
-    //   return "assets/icons/oil.svg";
-    // case "التعليق":
-    //   return "assets/icons/suspension.svg";
+    case "الكهرباء":
+      return "assets/images/boaji.png";
+    case "الزيوت والسوائل":
+      return "assets/images/oils.png";
+    case "التعليق":
+      return "assets/images/t3le8.png";
     default:
       return "assets/images/default.png";
+  }
+}
+
+String test(String name) {
+  switch (name) {
+    case "الفرامل":
+      return "assets/icons/test2.svg";
+    // case "المحرك":
+    //   return "assets/images/engine.png";
+    // case "الكهرباء":
+    //   return "assets/images/boaji.png";
+    // case "الزيوت والسوائل":
+    //   return "assets/images/oils.png";
+    // case "التعليق":
+    //   return "assets/images/t3le8.png";
+    default:
+      return "assets/icons/def.svg";
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
@@ -53,7 +54,10 @@ class ClientHomeScreen extends ConsumerWidget {
           ClientBannerSlider(),
           SizedBox(height: 24),
           AppPagePadding(
-            child: SectionHeader(title: "الفئات", onTap: () => ()),
+            child: SectionHeader(
+              title: "الفئات",
+              onTap: () => (context.push("/categories")),
+            ),
           ),
           Padding12,
           //temp
@@ -76,7 +80,7 @@ class ClientHomeScreen extends ConsumerWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final category = categories[index];
-      
+
                   return Column(
                     children: [
                       Image.asset(
@@ -102,10 +106,7 @@ class ClientHomeScreen extends ConsumerWidget {
           AppPagePadding(
             child: Column(
               children: [
-                SectionHeader(
-                  title: "اقتراحات",
-                  onTap: () => print("test"),
-                ),
+                SectionHeader(title: "اقتراحات", onTap: () => print("test")),
                 Padding12,
                 GridView.builder(
                   itemCount: 8,
