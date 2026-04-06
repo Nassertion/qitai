@@ -14,7 +14,10 @@ class CateogryCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final imagePath = getCategoryIcon(category.name);
 
-    return Container(
+    return
+    //  InkWell(onTap: () => context.push("/categories/"),
+    //   child:
+    Container(
       decoration: BoxDecoration(
         color: AppColors.backgroudColor,
         borderRadius: BorderRadius.circular(12),
@@ -50,5 +53,6 @@ class CateogryCardWidget extends StatelessWidget {
         ],
       ),
     );
+    // );
   }
 }
