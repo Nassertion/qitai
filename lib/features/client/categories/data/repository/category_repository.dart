@@ -35,19 +35,36 @@ String getCategoryIcon(String name) {
   }
 }
 
-String test(String name) {
+String getIcon(String name) {
   switch (name) {
     case "الفرامل":
-      return "assets/icons/test2.svg";
-    // case "المحرك":
-    //   return "assets/images/engine.png";
-    // case "الكهرباء":
-    //   return "assets/images/boaji.png";
-    // case "الزيوت والسوائل":
-    //   return "assets/images/oils.png";
-    // case "التعليق":
-    //   return "assets/images/t3le8.png";
+      return "assets/images/cate/breaks.png";
+    case "المحرك":
+      return "assets/images/cate/test30.png";
+    case "الكهرباء":
+      return "assets/images/cate/boaji.png";
+    case "الزيوت والسوائل":
+      return "assets/images/cate/oils.png";
+    case "التعليق":
+      return "assets/images/cate/t3le8.png";
     default:
-      return "assets/icons/def.svg";
+      return "assets/images/cate/default.png";
   }
 }
+
+// String test(String name) {
+//   switch (name) {
+//     case "الفرامل":
+//       return "assets/icons/test40.svg";
+//     case "المحرك":
+//       return "assets/images/test30.";
+//     // case "الكهرباء":
+//     //   return "assets/images/boaji.png";
+//     // case "الزيوت والسوائل":
+//     //   return "assets/images/oils.png";
+//     // case "التعليق":
+//     //   return "assets/images/t3le8.png";
+//     default:
+//       return "assets/icons/def.svg";
+//   }
+// }

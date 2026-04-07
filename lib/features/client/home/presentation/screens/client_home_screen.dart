@@ -35,7 +35,10 @@ class ClientHomeScreen extends ConsumerWidget {
               children: [
                 Padding8, SearchWidget(),
                 dPadding,
-                SectionHeader(title: "سياراتي", onTap: () => print("test")),
+                SectionHeader(
+                  title: "سياراتي",
+                  onTap: () => context.push("/test"),
+                ),
                 Padding12,
                 //temp
                 Row(

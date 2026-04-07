@@ -70,6 +70,7 @@ flutter:
     - assets/
     - assets/fonts/
     - assets/images/
+    - assets/images/cate/
     - assets/icons/
     - assets/icons/profile_icons/
     - assets/icons/bottom_nav_bar_icons/

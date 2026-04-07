@@ -12,7 +12,7 @@ class CateogryCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imagePath = getCategoryIcon(category.name);
+    final imagePath = getIcon(category.name);
 
     return
     //  InkWell(onTap: () => context.push("/categories/"),
@@ -26,23 +26,17 @@ class CateogryCardWidget extends StatelessWidget {
       child: Stack(
         children: [
           Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: SvgPicture.asset(
-                imagePath,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(
-                    Icons.image_not_supported_outlined,
-                    size: 40,
-                  );
-                },
-              ),
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(Icons.image_not_supported_outlined, size: 40);
+              },
             ),
           ),
           Positioned(
             right: 8,
-            bottom: 8,
+            bottom: 5,
             child: Text(
               category.name,
               style: AppTextStyles.semiBoldCaption.copyWith(
