@@ -116,7 +116,7 @@ class _FilterDemoPageState extends State<FilterDemoPage> {
     return GestureDetector(
       onTap: showBrandBottomSheet,
       child: Container(
-        width: 75,
+        // width: 75,
         height: 35,
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -156,11 +156,12 @@ class _FilterDemoPageState extends State<FilterDemoPage> {
             dPadding,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: 13,
               children: [
-                test("البراند"),
-                test("الموديل"),
-                test("السنة"),
-                test("القسم"),
+                Expanded(child: test("البراند")),
+                Expanded(child: test("الموديل")),
+                Expanded(child: test("السنة")),
+                Expanded(child: test("القسم")),
               ],
             ),
           ],
