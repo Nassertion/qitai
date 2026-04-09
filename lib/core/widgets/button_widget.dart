@@ -3,9 +3,9 @@ import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 
 class ButtonWidget extends StatelessWidget {
-  ButtonWidget({super.key, required this.text , this.height});
-  String text;
-  double? height;
+  const ButtonWidget({super.key, required this.text , this.height});
+  final String text;
+  final double? height;
   @override
   Widget build(BuildContext context) {
     return Container(

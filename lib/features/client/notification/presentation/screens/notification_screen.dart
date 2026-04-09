@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qitai/core/constant/spaces.dart';
-import 'package:qitai/core/widgets/Page_padding.dart';
+import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/features/client/notification/presentation/widgets/notification_card_widget.dart';
 
@@ -10,9 +10,9 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomeAppbar(title: "الاشعارات"),
+      appBar: CustomAppbar(title: "الاشعارات"),
       body: AppPagePadding(
-        child: Column(
+        child: ListView(
           children: [
             Padding12,
             NotificationCardWidget(

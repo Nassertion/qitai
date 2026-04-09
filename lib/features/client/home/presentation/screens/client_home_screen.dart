@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/core/constant/spaces.dart';
-import 'package:qitai/core/widgets/Page_padding.dart';
+import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
-import 'package:qitai/core/widgets/floating_nav_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
@@ -25,7 +22,7 @@ class ClientHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final categoriesAsync = ref.watch(categoriesProvider);
     return Scaffold(
-      // bottomNavigationBar: CustomFloatingNavBar(),
+      // bottomNavigationBar: BottomFloatingNavBar(),
       appBar: HomeAppBarWidget(),
       body: ListView(
         padding: EdgeInsets.zero,
@@ -67,7 +64,7 @@ class ClientHomeScreen extends ConsumerWidget {
           SizedBox(
             height: 95,
             child: categoriesAsync.when(
-              loading: () => CustomeLoading(),
+              loading: () => CustomLoading(),
               error: (error, stack) => Center(
                 child: Text(
                   error.toString(),

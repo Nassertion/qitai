@@ -14,9 +14,9 @@ class CategoriesScreen extends ConsumerWidget {
     final categoriesAsync = ref.watch(categoriesProvider);
 
     return Scaffold(
-      appBar: CustomeAppbar(title: "الفئات"),
+      appBar: CustomAppbar(title: "الفئات"),
       body: categoriesAsync.when(
-        loading: () => const CustomeLoading(),
+        loading: () => const CustomLoading(),
         error: (error, stack) => Center(
           child: Text(
             error.toString(),
@@ -40,7 +40,7 @@ class CategoriesScreen extends ConsumerWidget {
               ),
               itemBuilder: (context, index) {
                 final category = categories[index];
-                return CateogryCardWidget(category: category);
+                return CategoryCardWidget(category: category);
               },
             ),
           );

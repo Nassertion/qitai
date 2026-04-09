@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/constant/text_styles.dart';
-import 'package:qitai/core/widgets/Page_padding.dart';
-import 'package:qitai/core/widgets/floating_nav_bar_widget.dart';
+import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 
 class OrdersScreen extends StatelessWidget {
@@ -22,7 +19,7 @@ class OrdersScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.backgroudColor,
+          backgroundColor: AppColors.backgroundColor,
           bottom: TabBar(
             indicator: UnderlineTabIndicator(
               borderSide: BorderSide(width: 1.5, color: AppColors.actionText),

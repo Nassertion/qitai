@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/features/client/categories/data/model/cateogry_model.dart';
 import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
 
-class CateogryCardWidget extends StatelessWidget {
-  const CateogryCardWidget({super.key, required this.category});
+class CategoryCardWidget extends StatelessWidget {
+  const CategoryCardWidget({super.key, required this.category});
 
   final CategoryModel category;
 
@@ -19,7 +18,7 @@ class CateogryCardWidget extends StatelessWidget {
     //   child:
     Container(
       decoration: BoxDecoration(
-        color: AppColors.backgroudColor,
+        color: AppColors.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),

@@ -12,6 +12,6 @@
 //   Widget build(BuildContext context , WidgetRef ref) {
 //         final categoriesAsync = ref.watch(categoriesProvider);
 
-//     return Scaffold(appBar: CustomeAppbar(title: category.name),);
+//     return Scaffold(appBar: CustomAppbar(title: category.name),);
 //   }
 // }

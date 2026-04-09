@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/widgets/Page_padding.dart';
+import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 
@@ -11,7 +11,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomeAppbar(
+      appBar: CustomAppbar(
         title: "سلتي",
         action: IconButton(
           padding: EdgeInsets.only(left: 4),

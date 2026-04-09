@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 
 class NotificationCardWidget extends StatelessWidget {

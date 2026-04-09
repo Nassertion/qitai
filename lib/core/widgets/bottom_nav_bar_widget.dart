@@ -3,27 +3,27 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 
-final List<String> inactive = [
+const List<String> inactiveIcons = [
   "assets/icons/bottom_nav_bar_icons/inactive/home.svg",
   "assets/icons/bottom_nav_bar_icons/inactive/box.svg",
   "assets/icons/bottom_nav_bar_icons/inactive/shopping-cart.svg",
   "assets/icons/bottom_nav_bar_icons/inactive/profile.svg",
 ];
 
-final List<String> active = [
+const List<String> activeIcons = [
   "assets/icons/bottom_nav_bar_icons/active/home.svg",
   "assets/icons/bottom_nav_bar_icons/active/box.svg",
   "assets/icons/bottom_nav_bar_icons/active/shopping-cart.svg",
   "assets/icons/bottom_nav_bar_icons/active/profile.svg",
 ];
 
-final List<String> title = ["الرئيسية", "طلباتي", "سلتي", "حسابي"];
+const List<String> navTitle = ["الرئيسية", "طلباتي", "سلتي", "حسابي"];
 
-class CustomFloatingNavBar extends StatelessWidget {
+class BottomFloatingNavBar extends StatelessWidget {
   final int selected;
   final ValueChanged<int> onTap;
 
-  const CustomFloatingNavBar({
+  const BottomFloatingNavBar({
     super.key,
     required this.selected,
     required this.onTap,
@@ -39,7 +39,7 @@ class CustomFloatingNavBar extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 10),
           height: 59,
           decoration: BoxDecoration(
-            color: AppColors.backgroudColor,
+            color: AppColors.backgroundColor,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: AppColors.border),
             boxShadow: [
@@ -53,31 +53,28 @@ class CustomFloatingNavBar extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(title.length, (index) {
+            children: List.generate(navTitle.length, (index) {
               final bool isSelected = selected == index;
 
-              return GestureDetector(
+              return InkWell(
                 onTap: () => onTap(index),
-                child: Material(
-                  color: Colors.transparent,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        isSelected ? active[index] : inactive[index],
-                      ),
-                      Text(
-                        title[index],
-                        style: isSelected
-                            ? AppTextStyles.boldOverline.copyWith(
-                                color: AppColors.primaryButton,
-                              )
-                            : AppTextStyles.regularOverline.copyWith(
-                                color: const Color(0xff949CA6),
-                              ),
-                      ),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      isSelected ? activeIcons[index] : inactiveIcons[index],
+                    ),
+                    Text(
+                      navTitle[index],
+                      style: isSelected
+                          ? AppTextStyles.boldOverline.copyWith(
+                              color: AppColors.primaryButton,
+                            )
+                          : AppTextStyles.regularOverline.copyWith(
+                              color: const Color(0xff949CA6),
+                            ),
+                    ),
+                  ],
                 ),
               );
             }),

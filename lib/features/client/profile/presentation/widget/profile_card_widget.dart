@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 
 class ProfileCard extends StatelessWidget {
   ProfileCard({super.key, required this.icon, required this.title});
-  String icon;
-  String title;
+  final String icon;
+  final String title;
   //notificaon car and place
   @override
   Widget build(BuildContext context) {

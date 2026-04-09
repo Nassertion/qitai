@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qitai/core/widgets/floating_nav_bar_widget.dart';
+import 'package:qitai/core/widgets/bottom_nav_bar_widget.dart';
 
 class MainShellScreen extends StatelessWidget {
   final Widget child;
@@ -37,16 +37,13 @@ class MainShellScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final int currentIndex = _getCurrentIndex(context);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        extendBody: true, 
+    return Scaffold(
+      extendBody: true,
 
-        body: child,
-        bottomNavigationBar: CustomFloatingNavBar(
-          selected: currentIndex,
-          onTap: (index) => _onItemTapped(context, index),
-        ),
+      body: child,
+      bottomNavigationBar: BottomFloatingNavBar(
+        selected: currentIndex,
+        onTap: (index) => _onItemTapped(context, index),
       ),
     );
   }

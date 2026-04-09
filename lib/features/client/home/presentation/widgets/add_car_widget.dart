@@ -19,7 +19,7 @@ class AddCar extends StatelessWidget {
           height: 64,
           width: 64,
           child: CircleAvatar(
-            backgroundColor: AppColors.backgroudColor,
+            backgroundColor: AppColors.backgroundColor,
             child: SvgPicture.asset(img),
           ),
         ),

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 
 class EmptyDataWidget extends StatelessWidget {
-  EmptyDataWidget({
+  const EmptyDataWidget({
     super.key,
     required this.img,
     required this.text,
     required this.buttonText,
   });
-  String img;
-  String text;
-  String buttonText;
+  final String img;
+  final String text;
+  final String buttonText;
   //ontab
   @override
   Widget build(BuildContext context) {

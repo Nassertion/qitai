@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/constant/text_styles.dart';
-import 'package:qitai/core/widgets/Page_padding.dart';
+import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 
 class FilterDemoPage extends StatefulWidget {
@@ -77,8 +77,8 @@ class _FilterDemoPageState extends State<FilterDemoPage> {
                   separatorBuilder: (_, __) =>
                       Divider(height: 1, color: Color(0xffB5BBC2)),
                   itemBuilder: (context, index) {
-                    final item = brands[index];
-                    final isSelected = item == selectedBrand;
+                    // final item = brands[index];
+                    // final isSelected = item == selectedBrand;
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -149,7 +149,7 @@ class _FilterDemoPageState extends State<FilterDemoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomeAppbar(title: "test"),
+      appBar: CustomAppbar(title: "test"),
       body: AppPagePadding(
         child: ListView(
           children: [

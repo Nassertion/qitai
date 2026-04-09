@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/features/client/notification/presentation/screens/notification_screen.dart';
 
 // ClientInfo clientInfo = ClientInfo(city: "الرياض", distrect: "العزيزية");
 // bool hasAddress = clientInfo.city.isNotEmpty && clientInfo.distrect.isNotEmpty;
@@ -18,7 +17,7 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.backgroudColor,
+      backgroundColor: AppColors.backgroundColor,
       titleSpacing: 0,
       elevation: 0,
 
