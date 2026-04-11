@@ -36,7 +36,7 @@ class CarModel {
   factory CarModel.fromJson(Map<String, dynamic> json) {
     return CarModel(
       id: json['id'],
-      carBrandId: json['CarBrand_id'],
+      carBrandId: json['brand_id'],
       name: json['name'],
     );
   }
@@ -44,7 +44,7 @@ class CarModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'CarBrand_id': carBrandId,
+      'brand_id': carBrandId,
       'name': name,
     };
   }
@@ -53,19 +53,19 @@ class CarModel {
 class CarYear {
   final int id;
   final int modelId;
-  final String name;
+  final int year;
 
   CarYear({
     required this.id,
     required this.modelId,
-    required this.name,
+    required this.year,
   });
 
   factory CarYear.fromJson(Map<String, dynamic> json) {
     return CarYear(
       id: json['id'],
       modelId: json['model_id'],
-      name: json['name'],
+      year: json['year'],
     );
   }
 
@@ -73,7 +73,7 @@ class CarYear {
     return {
       'id': id,
       'model_id': modelId,
-      'name': name,
+      'year': year,
     };
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qitai/features/client/classification/data/model/classification_model.dart';
 import 'package:qitai/features/client/classification/data/repository/classification_repository.dart';
-
 class ClassificationProvider extends ChangeNotifier {
   final ClassificationRepository repo;
 
@@ -15,16 +14,18 @@ class ClassificationProvider extends ChangeNotifier {
   CarModel? selectedModel;
   CarYear? selectedCarYear;
 
-  bool isLoading = false;
+  bool isBrandsLoading = false;
+  bool isModelsLoading = false;
+  bool isYearsLoading = false;
 
   Future<void> loadCarBrands() async {
-    isLoading = true;
+    isBrandsLoading = true;
     notifyListeners();
 
     try {
       carBrands = await repo.fetchCarBrands();
     } finally {
-      isLoading = false;
+      isBrandsLoading = false;
       notifyListeners();
     }
   }
@@ -35,22 +36,30 @@ class ClassificationProvider extends ChangeNotifier {
     selectedCarYear = null;
     models = [];
     carYears = [];
-
+    isModelsLoading = true;
     notifyListeners();
 
-    models = await repo.fetchCarModels(carBrand.id);
-    notifyListeners();
+    try {
+      models = await repo.fetchCarModels(carBrand.id);
+    } finally {
+      isModelsLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> selectModel(CarModel model) async {
     selectedModel = model;
     selectedCarYear = null;
     carYears = [];
-
+    isYearsLoading = true;
     notifyListeners();
 
-    carYears = await repo.fetchCarYears(model.id);
-    notifyListeners();
+    try {
+      carYears = await repo.fetchCarYears(model.id);
+    } finally {
+      isYearsLoading = false;
+      notifyListeners();
+    }
   }
 
   void selectCarYear(CarYear carYear) {

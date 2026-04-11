@@ -31,12 +31,12 @@ class _FilterDemoPageState extends State<FilterDemoPage> {
     'افالون',
   ];
   final List<String> year = ['2002', '2001', '2000'];
-  final List<String> cate = ['كهرباء', 'ماء', 'فلاتر', 'مكينه', 'بواجي'];
+  // final List<String> cate = ['كهرباء', 'ماء', 'فلاتر', 'مكينه', 'بواجي'];
 
   String? selectedBrand;
   String? selectedModel;
   String? selectedYear;
-  String? selectedCate;
+  // String? selectedCate;
 
   Future<void> showBrandBottomSheet() async {
     final result = await showModalBottomSheet<String>(
@@ -74,25 +74,32 @@ class _FilterDemoPageState extends State<FilterDemoPage> {
                 child: ListView.separated(
                   shrinkWrap: true,
                   itemCount: brands.length,
-                  separatorBuilder: (_, __) =>
-                      Divider(height: 1, color: Color(0xffB5BBC2)),
+                  separatorBuilder: (_, __) => SizedBox(height: 16),
                   itemBuilder: (context, index) {
                     // final item = brands[index];
                     // final isSelected = item == selectedBrand;
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Row(
+                    return InkWell(
+                      child: Column(
                         children: [
-                          SvgPicture.asset("assets/icons/Logo.svg.svg"),
-                          SizedBox(width: 12),
-                          Text(
-                            "نيسان",
-                            style: AppTextStyles.mediumCaption.copyWith(
-                              color: AppColors.primaryText,
-                            ),
+                          Row(
+                            children: [
+                              SvgPicture.asset(
+                                "assets/icons/Logo.svg.svg",
+                                height: 20,
+                                width: 24,
+                              ),
+                              SizedBox(width: 12),
+                              Text(
+                                "نيسان",
+                                style: AppTextStyles.mediumCaption.copyWith(
+                                  color: AppColors.primaryText,
+                                ),
+                              ),
+                            ],
                           ),
                           dPadding,
+                          Divider(color: AppColors.border),
                         ],
                       ),
                     );
@@ -134,10 +141,10 @@ class _FilterDemoPageState extends State<FilterDemoPage> {
                   color: AppColors.secondaryText,
                 ),
               ),
-              Icon(
-                Icons.keyboard_arrow_down_rounded,
-                color: AppColors.primaryText,
-                size: 20,
+              SvgPicture.asset(
+                "assets/icons/arrow-down.svg",
+                height: 16,
+                width: 16,
               ),
             ],
           ),
@@ -156,12 +163,12 @@ class _FilterDemoPageState extends State<FilterDemoPage> {
             dPadding,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              spacing: 13,
+              spacing: 16,
               children: [
                 Expanded(child: test("البراند")),
                 Expanded(child: test("الموديل")),
                 Expanded(child: test("السنة")),
-                Expanded(child: test("القسم")),
+                // Expanded(child: test("القسم")),
               ],
             ),
           ],
