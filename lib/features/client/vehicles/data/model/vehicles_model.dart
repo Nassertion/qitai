@@ -24,19 +24,19 @@ class CarBrand {
 
 class CarModel {
   final int id;
-  final int carBrandId;
+  final int brandId;
   final String name;
 
   CarModel({
     required this.id,
-    required this.carBrandId,
+    required this.brandId,
     required this.name,
   });
 
   factory CarModel.fromJson(Map<String, dynamic> json) {
     return CarModel(
       id: json['id'],
-      carBrandId: json['brand_id'],
+      brandId: json['brand_id'],
       name: json['name'],
     );
   }
@@ -44,7 +44,7 @@ class CarModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'brand_id': carBrandId,
+      'brand_id': brandId,
       'name': name,
     };
   }

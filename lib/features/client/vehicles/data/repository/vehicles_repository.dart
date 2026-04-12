@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:qitai/core/helper/handle_helper_dio.dart';
-import 'package:qitai/features/client/classification/data/model/classification_model.dart';
+import 'package:qitai/features/client/vehicles/data/model/vehicles_model.dart';
 
 class ClassificationRepository {
   final Dio dio;
@@ -9,7 +9,7 @@ class ClassificationRepository {
 
   Future<List<CarBrand>> fetchCarBrands() async {
     return handleDioRequest(() async {
-      final response = await dio.get("/vehicles/CarBrands");
+      final response = await dio.get("/vehicles/brands");
       final List data = response.data;
 
       return data
@@ -18,11 +18,11 @@ class ClassificationRepository {
     });
   }
 
-  Future<List<CarModel>> fetchCarModels(int carBrandId) async {
+  Future<List<CarModel>> fetchCarModels(int brandId) async {
     return handleDioRequest(() async {
       final response = await dio.get(
         "/vehicles/models",
-        queryParameters: {"CarBrand_id": carBrandId},
+        queryParameters: {"brand_id": brandId},
       );
 
       final List data = response.data;
@@ -36,7 +36,7 @@ class ClassificationRepository {
   Future<List<CarYear>> fetchCarYears(int modelId) async {
     return handleDioRequest(() async {
       final response = await dio.get(
-        "/vehicles/CarYears",
+        "/vehicles/years",
         queryParameters: {"model_id": modelId},
       );
 

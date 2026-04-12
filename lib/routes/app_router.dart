@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/widgets/main_shell_widget.dart';
 import 'package:qitai/features/client/cart/presentation/screens/cart_screen.dart';
 import 'package:qitai/features/client/categories/presentation/screens/categories_screen.dart';
-import 'package:qitai/features/client/classification/presentation/widget/classification_widget.dart';
+import 'package:qitai/features/client/classification/presentation/screens/classification_screen.dart';
 import 'package:qitai/features/client/home/presentation/screens/client_home_screen.dart';
 import 'package:qitai/features/client/orders/presentation/screens/orders_screen.dart';
 import 'package:qitai/features/client/profile/presentation/screens/profile_screen.dart';
@@ -46,7 +46,7 @@ final GoRouter appRouter = GoRouter(
       path: '/categories',
       builder: (context, state) => const CategoriesScreen(),
     ),
-    GoRoute(path: '/test', builder: (context, state) => const FilterDemoPage()),
+    GoRoute(path: '/test', builder: (context, state) => const ClassificationScreen()),
     //  GoRoute(
     //     path: '/categories/:name',
     //     builder: (context, state) {
