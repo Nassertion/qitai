@@ -34,7 +34,7 @@ class ClientHomeScreen extends ConsumerWidget {
                 dPadding,
                 SectionHeader(
                   title: "سياراتي",
-                  onTap: () => context.push("/test"),
+                  onTap: () => context.push("/search"),
                 ),
                 Padding12,
                 //temp
