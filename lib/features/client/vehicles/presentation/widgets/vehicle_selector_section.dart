@@ -26,33 +26,47 @@ class VehicleSelectorSection extends ConsumerWidget {
       );
     }
 
-    void onModelTap() {
-      if (state.selectedCarBrand == null) return;
+void onModelTap() {
+  final state = ref.read(classificationProvider);
+  final notifier = ref.read(classificationProvider.notifier);
 
-      VehicleFilterBottomSheet.show<CarModel>(
-        context: context,
-        items: state.models,
-        title: 'اختر الموديل',
-        getLabel: (item) => item.name,
-        onSelected: (value) async {
-          await notifier.selectModel(value);
-        },
-      );
-    }
+  if (state.selectedCarBrand == null) return;
+  if (state.isModelsLoading) return;
 
-    void onYearTap() {
-      if (state.selectedModel == null) return;
+  VehicleFilterBottomSheet.show<CarModel>(
+    context: context,
+    items: state.models,
+    title: 'اختر الموديل',
+    getLabel: (item) => item.name,
+    onRetry: () async {
+      await notifier.selectBrand(state.selectedCarBrand!);
+    },
+    onSelected: (value) async {
+      await notifier.selectModel(value);
+    },
+  );
+}
 
-      VehicleFilterBottomSheet.show<CarYear>(
-        context: context,
-        items: state.carYears,
-        title: 'اختر السنة',
-        getLabel: (item) => item.year.toString(),
-        onSelected: (value) {
-          notifier.selectCarYear(value);
-        },
-      );
-    }
+void onYearTap() {
+  final state = ref.read(classificationProvider);
+  final notifier = ref.read(classificationProvider.notifier);
+
+  if (state.selectedModel == null) return;
+  if (state.isYearsLoading) return;
+
+  VehicleFilterBottomSheet.show<CarYear>(
+    context: context,
+    items: state.carYears,
+    title: 'اختر السنة',
+    getLabel: (item) => item.year.toString(),
+    onRetry: () async {
+      await notifier.selectModel(state.selectedModel!);
+    },
+    onSelected: (value) {
+      notifier.selectCarYear(value);
+    },
+  );
+}
 
     return Column(
       children: [

@@ -11,8 +11,9 @@ class VehicleFilterBottomSheet {
     required String title,
     required String Function(T item) getLabel,
     required ValueChanged<T> onSelected,
+    VoidCallback? onRetry,
   }) async {
-    final result = await showModalBottomSheet<T>(
+    await showModalBottomSheet<T>(
       context: context,
       backgroundColor: AppColors.inputFieldAndCards,
       shape: const RoundedRectangleBorder(
@@ -42,59 +43,78 @@ class VehicleFilterBottomSheet {
                 ),
               ),
               dPadding,
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-
-                    return InkWell(
-                      onTap: () {
-                        Navigator.pop(context, item);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Transform.translate(
-                                  offset: Offset(0, 1),
-                                  child: SvgPicture.asset(
-                                    "assets/icons/Logo.svg.svg",
-                                    height: 20,
-                                    width: 24,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  getLabel(item),
-                                  style: AppTextStyles.mediumCaption.copyWith(
-                                    color: AppColors.primaryText,
-                                    height: 1,
-                                  ),
-                                ),
-                              ],
+              Expanded(
+                child: items.isEmpty
+                    ? Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                            onRetry?.call();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
                             ),
-                            dPadding,
-                            Divider(color: AppColors.border, height: 1),
-                          ],
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryButton,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'إعادة المحاولة',
+                              style: AppTextStyles.mediumCaption.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context, item);
+                                onSelected(item);
+                              },
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/icons/Logo.svg.svg",
+                                        height: 20,
+                                        width: 24,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        getLabel(item),
+                                        style: AppTextStyles.mediumCaption
+                                            .copyWith(
+                                              color: AppColors.primaryText,
+                                              height: 1,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  dPadding,
+                                  Divider(color: AppColors.border, height: 1),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
         );
       },
     );
-
-    if (result != null) {
-      onSelected(result);
-    }
   }
 }
