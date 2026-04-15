@@ -4,7 +4,14 @@ import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 
 class SearchWidget extends StatefulWidget {
-  const SearchWidget({super.key});
+  const SearchWidget({
+    super.key,
+    this.readOnly = false,
+    this.onTap,
+  });
+
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   @override
   State<SearchWidget> createState() => _SearchWidgetState();
@@ -38,30 +45,26 @@ class _SearchWidgetState extends State<SearchWidget> {
           textSelectionTheme: const TextSelectionThemeData(
             cursorColor: AppColors.actionText,
             selectionHandleColor: AppColors.actionText,
-            selectionColor: const Color(0x1F2196F3),
+            selectionColor: Color(0x1F2196F3),
           ),
         ),
         child: TextFormField(
           controller: _controller,
+          readOnly: widget.readOnly,
           cursorWidth: 1.5,
-          onTap: () => print("Later"),
+          onTap: widget.onTap,
           textAlignVertical: TextAlignVertical.center,
-
           style: AppTextStyles.mediumCaption.copyWith(
             color: AppColors.primaryText,
           ),
-
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.inputFieldAndCards,
-
             hintText: "ابحث برقم الشاصي أو القطعة ورقمها",
             hintStyle: AppTextStyles.regularOverline.copyWith(
               color: AppColors.secondaryText,
             ),
-
             contentPadding: const EdgeInsets.symmetric(vertical: 0),
-
             prefixIcon: Padding(
               padding: const EdgeInsets.all(10),
               child: SvgPicture.asset(
@@ -75,9 +78,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               minWidth: 40,
               minHeight: 40,
             ),
-
-            // يظهر فقط إذا فيه نص
-            suffixIcon: hasText
+            suffixIcon: !widget.readOnly && hasText
                 ? IconButton(
                     onPressed: () {
                       _controller.clear();
@@ -90,12 +91,10 @@ class _SearchWidgetState extends State<SearchWidget> {
                     ),
                   )
                 : null,
-
             suffixIconConstraints: const BoxConstraints(
               minWidth: 40,
               minHeight: 40,
             ),
-
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(

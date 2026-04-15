@@ -42,7 +42,6 @@ class VehicleFilterBottomSheet {
                   ),
                 ),
               ),
-              dPadding,
               Expanded(
                 child: items.isEmpty
                     ? Center(
@@ -75,37 +74,36 @@ class VehicleFilterBottomSheet {
                         itemBuilder: (context, index) {
                           final item = items[index];
 
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pop(context, item);
-                                onSelected(item);
-                              },
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "assets/icons/Logo.svg.svg",
-                                        height: 20,
-                                        width: 24,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        getLabel(item),
-                                        style: AppTextStyles.mediumCaption
-                                            .copyWith(
-                                              color: AppColors.primaryText,
-                                              height: 1,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                  dPadding,
-                                  Divider(color: AppColors.border, height: 1),
-                                ],
-                              ),
+                          return InkWell(
+                            onTap: () {
+                              Navigator.pop(context, item);
+                              onSelected(item);
+                            },
+                            child: Column(
+                              children: [
+                                dPadding,
+
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/icons/Logo.svg.svg",
+                                      height: 20,
+                                      width: 24,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      getLabel(item),
+                                      style: AppTextStyles.mediumCaption
+                                          .copyWith(
+                                            color: AppColors.primaryText,
+                                            height: 1,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                dPadding,
+                                Divider(color: AppColors.border, height: 1),
+                              ],
                             ),
                           );
                         },
