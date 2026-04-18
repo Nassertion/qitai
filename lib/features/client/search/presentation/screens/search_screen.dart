@@ -8,6 +8,7 @@ import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_provider.dart';
+import 'package:qitai/features/client/search/presentation/widgets/search_card_product_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_suggestion_widget.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -53,39 +54,67 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               onChanged: (value) {
                 ref.read(searchProvider.notifier).onQueryChanged(value);
               },
+              onFieldSubmitted: (value) {
+                ref.read(searchProvider.notifier).submitSearch(value);
+              },
               onClear: () {
                 _controller.clear();
                 ref.read(searchProvider.notifier).clearSearch();
               },
+              onSearchTap: () {
+                ref
+                    .read(searchProvider.notifier)
+                    .submitSearch(_controller.text);
+              },
             ),
             const SizedBox(height: 16),
 
-            if (state.isLoading) const Center(child: CustomLoading()),
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  if (state.isProductsLoading) {
+                    return const Center(child: CustomLoading());
+                  }
+                  if (state.isSuggestionsLoading) {
+                    return const Center(child: CustomLoading());
+                  }
 
-            if (!state.isLoading &&
-                state.query.trim().isNotEmpty &&
-                state.suggestions.isNotEmpty)
-              Expanded(
-                child: SingleChildScrollView(
-                  child: SuggestionWidget(
-                    suggestions: state.suggestions,
-                    onTapSuggestion: (item) {
-                      _controller.text = item.name;
-                      ref
-                          .read(searchProvider.notifier)
-                          .onQueryChanged(item.name);
-                    },
-                  ),
-                ),
+                  if (state.products.isNotEmpty) {
+                    return ListView.separated(
+                      itemCount: state.products.length,
+                      separatorBuilder: (_, __) => Padding8,
+                      itemBuilder: (context, index) {
+                        final item = state.products[index];
+                        return SearchCardProductWidget(product: item);
+                      },
+                    );
+                  }
+
+                  if (state.hasSearched && state.products.isEmpty) {
+                    return const EmptyDataWidget(
+                      text: "لاتوجد نتائج في البحث!",
+                      img: "assets/icons/Object.svg",
+                    );
+                  }
+
+                  if (state.suggestions.isNotEmpty) {
+                    return SingleChildScrollView(
+                      child: SuggestionWidget(
+                        suggestions: state.suggestions,
+                        onTapSuggestion: (item) {
+                          _controller.text = item.name;
+                          ref
+                              .read(searchProvider.notifier)
+                              .submitSearch(item.name);
+                        },
+                      ),
+                    );
+                  }
+
+                  return const SizedBox.shrink();
+                },
               ),
-
-            // if (!state.isLoading &&
-            //     state.query.trim().isNotEmpty &&
-            //     state.suggestions.isEmpty)
-            //   const EmptyDataWidget(
-            //     text: "لاتوجد نتائج في البحث!",
-            //     img: "assets/icons/Object.svg",
-            //   ),
+            ),
           ],
         ),
       ),

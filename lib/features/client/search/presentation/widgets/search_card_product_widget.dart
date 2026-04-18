@@ -3,15 +3,32 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/features/client/search/data/model/search_product_model.dart';
 
 class SearchCardProductWidget extends StatelessWidget {
-  const SearchCardProductWidget({super.key});
+  const SearchCardProductWidget({
+    super.key,
+    required this.product,
+  });
+
+  final SearchProductModel product;
+
+  String get qualityLabel {
+    switch (product.quality.toLowerCase()) {
+      case 'oem':
+        return 'أصلي';
+      case 'aftermarket':
+        return 'تجاري';
+      default:
+        return product.quality;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.inputFieldAndCards,
         borderRadius: BorderRadius.circular(12),
@@ -39,7 +56,7 @@ class SearchCardProductWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Text(
-                    "أصلي",
+                    qualityLabel,
                     style: AppTextStyles.semiBoldOverline.copyWith(
                       color: AppColors.whiteText,
                     ),
@@ -48,20 +65,20 @@ class SearchCardProductWidget extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "فحمات فرامل أمامية - كامري 2026",
+                  product.name,
                   style: AppTextStyles.semiBoldCaption.copyWith(
                     color: AppColors.primaryText,
                   ),
                 ),
                 Padding4,
                 Text(
-                  "رقم القطعة: 04465-06150",
+                  "رقم القطعة: ${product.partNumber}",
                   style: AppTextStyles.mediumOverline.copyWith(
                     color: AppColors.secondaryText,
                   ),
@@ -73,16 +90,15 @@ class SearchCardProductWidget extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "300",
+                          product.price,
                           style: AppTextStyles.semiBoldBody.copyWith(
                             color: AppColors.primaryText,
                           ),
                         ),
-                        SizedBox(width: 2),
+                        const SizedBox(width: 2),
                         SvgPicture.asset("assets/icons/SR.svg"),
                       ],
                     ),
-
                     Container(
                       width: 32,
                       height: 32,

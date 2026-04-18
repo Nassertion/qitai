@@ -6,11 +6,13 @@ import 'package:qitai/core/constant/text_styles.dart';
 class SearchWidget extends StatelessWidget {
   const SearchWidget({
     super.key,
-     this.controller,
+    this.controller,
     this.readOnly = false,
     this.onTap,
     this.onChanged,
     this.onClear,
+    this.onFieldSubmitted,
+    this.onSearchTap,
   });
 
   final TextEditingController? controller;
@@ -18,10 +20,12 @@ class SearchWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onClear;
+  final ValueChanged<String>? onFieldSubmitted;
+  final VoidCallback? onSearchTap;
 
   @override
   Widget build(BuildContext context) {
-final bool hasText = controller?.text.trim().isNotEmpty ?? false;
+    final bool hasText = controller?.text.trim().isNotEmpty ?? false;
     return SizedBox(
       height: 44,
       child: Theme(
@@ -38,6 +42,8 @@ final bool hasText = controller?.text.trim().isNotEmpty ?? false;
           cursorWidth: 1.5,
           onTap: onTap,
           onChanged: onChanged,
+          onFieldSubmitted: onFieldSubmitted,
+          textInputAction: TextInputAction.search,
           textAlignVertical: TextAlignVertical.center,
           style: AppTextStyles.mediumCaption.copyWith(
             color: AppColors.primaryText,
@@ -50,13 +56,19 @@ final bool hasText = controller?.text.trim().isNotEmpty ?? false;
               color: AppColors.secondaryText,
             ),
             contentPadding: const EdgeInsets.symmetric(vertical: 0),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.all(10),
-              child: SvgPicture.asset(
-                "assets/icons/search-normal.svg",
-                width: 20,
-                height: 20,
-                fit: BoxFit.contain,
+            prefixIcon: InkWell(
+              onTap: onSearchTap,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: SvgPicture.asset(
+                  "assets/icons/search-normal.svg",
+                  width: 20,
+                  height: 20,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
             prefixIconConstraints: const BoxConstraints(

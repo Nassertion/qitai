@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qitai/features/client/search/data/model/search_suggestion_model.dart';
 import 'package:qitai/features/client/search/data/repository/search_repository.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_provider.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
@@ -23,7 +22,8 @@ void onQueryChanged(String value) {
 
   state = state.copyWith(
     query: value,
-    clearSelectedSuggestion: true,
+    products: [],
+    hasSearched: false,
     clearErrorMessage: true,
   );
 
@@ -32,7 +32,10 @@ void onQueryChanged(String value) {
   if (query.isEmpty) {
     state = state.copyWith(
       suggestions: [],
-      isLoading: false,
+      products: [],
+      hasSearched: false,
+      isSuggestionsLoading: false,
+      isProductsLoading: false,
     );
     return;
   }
@@ -44,7 +47,7 @@ void onQueryChanged(String value) {
 
   Future<void> loadSuggestions(String query) async {
     state = state.copyWith(
-      isLoading: true,
+      isSuggestionsLoading: true,
       clearErrorMessage: true,
     );
 
@@ -55,32 +58,60 @@ void onQueryChanged(String value) {
 
       state = state.copyWith(
         suggestions: suggestions,
-        isLoading: false,
+        isSuggestionsLoading: false,
       );
     } catch (e) {
       state = state.copyWith(
-        isLoading: false,
+        isSuggestionsLoading: false,
         errorMessage: e.toString(),
       );
     }
   }
-  void selectSuggestion(SearchSuggestionModel item) {
-  state = state.copyWith(
-    query: item.name,
-    selectedSuggestion: item,
-    suggestions: [],
-    isLoading: false,
-    clearErrorMessage: true,
-  );
-}
+
+  Future<void> submitSearch([String? customQuery]) async {
+    final rawValue = customQuery ?? state.query;
+    final value = rawValue.trim();
+
+    _debounce?.cancel();
+
+    if (value.isEmpty) return;
+
+    state = state.copyWith(
+      query: value,
+      suggestions: [],
+      products: [],
+      hasSearched: true,
+      isProductsLoading: true,
+      clearErrorMessage: true,
+    );
+
+    try {
+      final isVin = _isVin(value);
+
+      final products = await repo.searchProducts(
+        query: isVin ? null : value,
+        vin: isVin ? value : null,
+      );
+
+      state = state.copyWith(
+        products: products,
+        isProductsLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isProductsLoading: false,
+        errorMessage: e.toString(),
+      );
+    }
+  }
 
   void clearSearch() {
     _debounce?.cancel();
-    state = state.copyWith(
-      query: '',
-      suggestions: [],
-      isLoading: false,
-      clearErrorMessage: true,
-    );
+    state = const SearchState();
+  }
+
+  bool _isVin(String value) {
+    final vinRegex = RegExp(r'^[A-HJ-NPR-Z0-9]{17}$', caseSensitive: false);
+    return vinRegex.hasMatch(value);
   }
 }
