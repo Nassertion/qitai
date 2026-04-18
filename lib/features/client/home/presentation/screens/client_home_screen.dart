@@ -12,7 +12,7 @@ import 'package:qitai/features/client/categories/presentation/provider/category_
 import 'package:qitai/features/client/home/presentation/widgets/add_car_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/card_product_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
-import 'package:qitai/features/client/home/presentation/widgets/search_widget.dart';
+import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
 
 class ClientHomeScreen extends ConsumerWidget {

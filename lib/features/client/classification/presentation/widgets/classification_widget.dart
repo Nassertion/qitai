@@ -22,7 +22,7 @@ class _ClassificationWidgetState extends ConsumerState<ClassificationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(classificationProvider);
+    // final state = ref.watch(classificationProvider);
 
     // appBar: CustomAppbar(title: "التصنيف"),
     return ListView(

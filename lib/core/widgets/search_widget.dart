@@ -3,41 +3,25 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 
-class SearchWidget extends StatefulWidget {
+class SearchWidget extends StatelessWidget {
   const SearchWidget({
     super.key,
+     this.controller,
     this.readOnly = false,
     this.onTap,
+    this.onChanged,
+    this.onClear,
   });
 
+  final TextEditingController? controller;
   final bool readOnly;
   final VoidCallback? onTap;
-
-  @override
-  State<SearchWidget> createState() => _SearchWidgetState();
-}
-
-class _SearchWidgetState extends State<SearchWidget> {
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onClear;
 
   @override
   Widget build(BuildContext context) {
-    final bool hasText = _controller.text.trim().isNotEmpty;
-
+final bool hasText = controller?.text.trim().isNotEmpty ?? false;
     return SizedBox(
       height: 44,
       child: Theme(
@@ -49,10 +33,11 @@ class _SearchWidgetState extends State<SearchWidget> {
           ),
         ),
         child: TextFormField(
-          controller: _controller,
-          readOnly: widget.readOnly,
+          controller: controller,
+          readOnly: readOnly,
           cursorWidth: 1.5,
-          onTap: widget.onTap,
+          onTap: onTap,
+          onChanged: onChanged,
           textAlignVertical: TextAlignVertical.center,
           style: AppTextStyles.mediumCaption.copyWith(
             color: AppColors.primaryText,
@@ -78,11 +63,9 @@ class _SearchWidgetState extends State<SearchWidget> {
               minWidth: 40,
               minHeight: 40,
             ),
-            suffixIcon: !widget.readOnly && hasText
+            suffixIcon: !readOnly && hasText
                 ? IconButton(
-                    onPressed: () {
-                      _controller.clear();
-                    },
+                    onPressed: onClear,
                     icon: SvgPicture.asset(
                       "assets/icons/close-circle-search.svg",
                       width: 20,
