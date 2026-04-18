@@ -24,7 +24,6 @@ class _ClassificationWidgetState extends ConsumerState<ClassificationWidget> {
   Widget build(BuildContext context) {
     // final state = ref.watch(classificationProvider);
 
-    // appBar: CustomAppbar(title: "التصنيف"),
     return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

@@ -1,3 +1,5 @@
+import 'package:qitai/features/client/categories/data/model/cateogry_model.dart' ;
+
 class SearchProductModel {
   final int id;
   final int categoryId;
@@ -10,8 +12,7 @@ class SearchProductModel {
   final int stock;
   final int isActive;
   final String description;
-  final ProductCategoryModel? category;
-
+final CategoryModel? category;
   const SearchProductModel({
     required this.id,
     required this.categoryId,
@@ -41,25 +42,8 @@ class SearchProductModel {
       isActive: json['is_active'] as int? ?? 0,
       description: json['description'] as String? ?? '',
       category: json['category'] != null
-          ? ProductCategoryModel.fromJson(json['category'] as Map<String, dynamic>)
+          ? CategoryModel.fromJson(json['category'] as Map<String, dynamic>)
           : null,
-    );
-  }
-}
-
-class ProductCategoryModel {
-  final int id;
-  final String name;
-
-  const ProductCategoryModel({
-    required this.id,
-    required this.name,
-  });
-
-  factory ProductCategoryModel.fromJson(Map<String, dynamic> json) {
-    return ProductCategoryModel(
-      id: json['id'] as int,
-      name: json['name'] as String? ?? '',
     );
   }
 }

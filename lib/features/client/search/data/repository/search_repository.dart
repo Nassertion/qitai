@@ -29,24 +29,30 @@ class SearchRepository {
     });
   }
 
-  Future<List<SearchProductModel>> searchProducts({
-    String? query,
-    String? vin,
-  }) async {
-    return handleDioRequest(() async {
-      final response = await dio.get(
-        "/products/search",
-        queryParameters: {
-          if (query != null && query.isNotEmpty) "q": query,
-          if (vin != null && vin.isNotEmpty) "vin": vin,
-        },
-      );
+Future<List<SearchProductModel>> searchProducts({
+  String? query,
+  String? vin,
+  int? brandId,
+  int? modelId,
+  int? year,
+}) async {
+  return handleDioRequest(() async {
+    final response = await dio.get(
+      "/products/search",
+      queryParameters: {
+        if (query != null && query.isNotEmpty) "q": query,
+        if (vin != null && vin.isNotEmpty) "vin": vin,
+        if (brandId != null) "brand_id": brandId,
+        if (modelId != null) "model_id": modelId,
+        if (year != null) "year": year,
+      },
+    );
 
-      final List data = response.data['data'] as List;
+    final List data = response.data['data'] as List;
 
-      return data
-          .map((item) => SearchProductModel.fromJson(item as Map<String, dynamic>))
-          .toList();
-    });
-  }
+    return data
+        .map((item) => SearchProductModel.fromJson(item as Map<String, dynamic>))
+        .toList();
+  });
+}
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/features/client/search/data/repository/search_repository.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_provider.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicles.provider.dart';
 
 class SearchNotifier extends Notifier<SearchState> {
   late final SearchRepository repo;
@@ -68,42 +69,54 @@ void onQueryChanged(String value) {
     }
   }
 
-  Future<void> submitSearch([String? customQuery]) async {
-    final rawValue = customQuery ?? state.query;
-    final value = rawValue.trim();
+Future<void> submitSearch([String? customQuery]) async {
+  final rawValue = customQuery ?? state.query;
+  final value = rawValue.trim();
 
-    _debounce?.cancel();
+  final classificationState = ref.read(classificationProvider);
 
-    if (value.isEmpty) return;
+  final brandId = classificationState.selectedCarBrand?.id;
+  final modelId = classificationState.selectedModel?.id;
+  final year = classificationState.selectedCarYear?.year;
 
-    state = state.copyWith(
-      query: value,
-      suggestions: [],
-      products: [],
-      hasSearched: true,
-      isProductsLoading: true,
-      clearErrorMessage: true,
+  _debounce?.cancel();
+
+  final hasText = value.isNotEmpty;
+  final hasVehicleFilter = brandId != null || modelId != null || year != null;
+
+  if (!hasText && !hasVehicleFilter) return;
+
+  state = state.copyWith(
+    query: value,
+    suggestions: [],
+    products: [],
+    hasSearched: true,
+    isProductsLoading: true,
+    clearErrorMessage: true,
+  );
+
+  try {
+    final isVin = hasText && _isVin(value);
+
+    final products = await repo.searchProducts(
+      query: hasText && !isVin ? value : null,
+      vin: hasText && isVin ? value : null,
+      brandId: brandId,
+      modelId: modelId,
+      year: year,
     );
 
-    try {
-      final isVin = _isVin(value);
-
-      final products = await repo.searchProducts(
-        query: isVin ? null : value,
-        vin: isVin ? value : null,
-      );
-
-      state = state.copyWith(
-        products: products,
-        isProductsLoading: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isProductsLoading: false,
-        errorMessage: e.toString(),
-      );
-    }
+    state = state.copyWith(
+      products: products,
+      isProductsLoading: false,
+    );
+  } catch (e) {
+    state = state.copyWith(
+      isProductsLoading: false,
+      errorMessage: e.toString(),
+    );
   }
+}
 
   void clearSearch() {
     _debounce?.cancel();

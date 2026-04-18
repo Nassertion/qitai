@@ -56,11 +56,9 @@ class SearchWidget extends StatelessWidget {
               color: AppColors.secondaryText,
             ),
             contentPadding: const EdgeInsets.symmetric(vertical: 0),
-            prefixIcon: InkWell(
+            prefixIcon: GestureDetector(
               onTap: onSearchTap,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
+
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
