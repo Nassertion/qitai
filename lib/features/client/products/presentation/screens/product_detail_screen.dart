@@ -29,10 +29,11 @@ class ProductDetailScreen extends StatelessWidget {
           dPadding,
           SimilarProductsWidget(),
           Padding12,
-          AddToCartSection(),
-          Padding8,
+          // AddToCartSection(),
+          // Padding8,
         ],
       ),
+      bottomNavigationBar: const SafeArea(child: AddToCartSection()),
     );
   }
 }

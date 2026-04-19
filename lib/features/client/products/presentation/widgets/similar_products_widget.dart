@@ -10,28 +10,32 @@ class SimilarProductsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [          AppPagePadding(
-            child: Text(
-              "منتجات مشابهة",
-              textAlign: TextAlign.start,
-              style: AppTextStyles.boldBody.copyWith(
-                color: AppColors.primaryText,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppPagePadding(
+          child: Text(
+            "منتجات مشابهة",
+            style: AppTextStyles.boldBody.copyWith(
+              color: AppColors.primaryText,
             ),
           ),
-          Padding12,
-          SizedBox(
-            height: 260,
-            child: ListView.separated(
-              shrinkWrap: true,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              scrollDirection: Axis.horizontal,
-              separatorBuilder: (_, __) => const SizedBox(width: 16),
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return SizedBox(width: 160, child: ProductCard());
-              },
-            ),
-          ),],);
+        ),
+        Padding12,
+        SizedBox(
+          height: 260,
+          child: ListView.separated(
+            shrinkWrap: true,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (_, __) => const SizedBox(width: 16),
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return SizedBox(width: 160, child: ProductCard());
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
