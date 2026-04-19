@@ -5,11 +5,11 @@ import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/routes/app_router.dart';
 
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: Qitai()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Qitai extends StatelessWidget {
+  const Qitai({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
-import 'package:qitai/features/client/classification/presentation/widgets/classification_widget.dart';
+import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_provider.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_card_product_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_suggestion_widget.dart';

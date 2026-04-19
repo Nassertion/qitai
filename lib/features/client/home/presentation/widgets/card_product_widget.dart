@@ -14,44 +14,42 @@ class ProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Container(
-                  height: 163,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.image,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Image.asset(
-                    'assets/images/test.png',
-                    fit: BoxFit.contain,
-                  ),
+          Stack(
+            children: [
+              Container(
+                height: 163,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.image,
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: Image.asset(
+                  'assets/images/test.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
 
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.actionText,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Text(
-                      "أصلي",
-                      style: AppTextStyles.semiBoldOverline.copyWith(
-                        color: AppColors.whiteText,
-                      ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.actionText,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Text(
+                    "أصلي",
+                    style: AppTextStyles.semiBoldOverline.copyWith(
+                      color: AppColors.whiteText,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
 
           Padding8,

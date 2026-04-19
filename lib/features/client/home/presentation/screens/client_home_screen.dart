@@ -38,7 +38,7 @@ class ClientHomeScreen extends ConsumerWidget {
                 dPadding,
                 SectionHeader(
                   title: "سياراتي",
-                  // onTap: () => context.push("/search"),
+                  onTap: () => context.push("/test"),
                 ),
                 Padding12,
                 //temp
@@ -121,7 +121,7 @@ class ClientHomeScreen extends ConsumerWidget {
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                     // childAspectRatio: 1,
-                    mainAxisExtent: 237,
+                    mainAxisExtent: 260,
                   ),
                   itemBuilder: (context, index) => ProductCard(),
                 ),
