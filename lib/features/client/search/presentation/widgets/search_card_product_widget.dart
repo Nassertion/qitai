@@ -9,8 +9,9 @@ class SearchCardProductWidget extends StatelessWidget {
   const SearchCardProductWidget({
     super.key,
     required this.product,
+    required this.onTap,
   });
-
+  final VoidCallback? onTap;
   final SearchProductModel product;
 
   String get qualityLabel {
@@ -26,98 +27,101 @@ class SearchCardProductWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.inputFieldAndCards,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        children: [
-          Stack(
-            children: [
-              Image.asset(
-                "assets/images/search/test2.png",
-                width: 95,
-                height: 95,
-              ),
-              Positioned(
-                top: 4,
-                right: 4,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.actionText,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Text(
-                    qualityLabel,
-                    style: AppTextStyles.semiBoldOverline.copyWith(
-                      color: AppColors.whiteText,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.inputFieldAndCards,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          children: [
+            Stack(
               children: [
-                Text(
-                  product.name,
-                  style: AppTextStyles.semiBoldCaption.copyWith(
-                    color: AppColors.primaryText,
-                  ),
+                Image.asset(
+                  "assets/images/search/test2.png",
+                  width: 95,
+                  height: 95,
                 ),
-                Padding4,
-                Text(
-                  "رقم القطعة: ${product.partNumber}",
-                  style: AppTextStyles.mediumOverline.copyWith(
-                    color: AppColors.secondaryText,
-                  ),
-                ),
-                dPadding,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          product.price,
-                          style: AppTextStyles.semiBoldBody.copyWith(
-                            color: AppColors.primaryText,
-                          ),
-                        ),
-                        const SizedBox(width: 2),
-                        SvgPicture.asset("assets/icons/SR.svg"),
-                      ],
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
                     ),
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryButton,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 20,
+                    decoration: BoxDecoration(
+                      color: AppColors.actionText,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Text(
+                      qualityLabel,
+                      style: AppTextStyles.semiBoldOverline.copyWith(
+                        color: AppColors.whiteText,
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    style: AppTextStyles.semiBoldCaption.copyWith(
+                      color: AppColors.primaryText,
+                    ),
+                  ),
+                  Padding4,
+                  Text(
+                    "رقم القطعة: ${product.partNumber}",
+                    style: AppTextStyles.mediumOverline.copyWith(
+                      color: AppColors.secondaryText,
+                    ),
+                  ),
+                  dPadding,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            product.price,
+                            style: AppTextStyles.semiBoldBody.copyWith(
+                              color: AppColors.primaryText,
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          SvgPicture.asset("assets/icons/SR.svg"),
+                        ],
+                      ),
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryButton,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

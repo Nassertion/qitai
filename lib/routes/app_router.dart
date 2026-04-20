@@ -47,9 +47,15 @@ final GoRouter appRouter = GoRouter(
       path: '/categories',
       builder: (context, state) => const CategoriesScreen(),
     ),
-    GoRoute(path: '/test', builder: (context, state) => const ProductDetailScreen()),
     GoRoute(path: '/search', builder: (context, state) => const SearchScreen()),
-    //  GoRoute(
+    GoRoute(
+      path: '/product/:id',
+      builder: (context, state) {
+        final productId = state.pathParameters['id']!;
+
+        return ProductDetailScreen(id: int.parse(productId));
+      },
+    ), //  GoRoute(
     //     path: '/categories/:name',
     //     builder: (context, state) {
     //       final category = state.pathParameters['name'] ?? '';

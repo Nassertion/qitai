@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
@@ -85,7 +86,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       separatorBuilder: (_, __) => Padding8,
                       itemBuilder: (context, index) {
                         final item = state.products[index];
-                        return SearchCardProductWidget(product: item);
+                        return SearchCardProductWidget(product: item , onTap: () {
+                          context.push("/product/${item.id}");
+                        },);
                       },
                     );
                   }

@@ -4,9 +4,21 @@ import 'package:qitai/core/constant/colors.dart';
 import 'package:qitai/core/constant/spaces.dart';
 import 'package:qitai/core/constant/text_styles.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
+import 'package:qitai/features/client/products/data/model/product_detail_model.dart';
 
 class ProductInfoWidget extends StatelessWidget {
-  const ProductInfoWidget({super.key});
+  const ProductInfoWidget({super.key, required this.product});
+  final ProductDetailModel product;
+  String get qualityLabel {
+    switch (product.quality.toLowerCase()) {
+      case 'oem':
+        return 'أصلي';
+      case 'aftermarket':
+        return 'تجاري';
+      default:
+        return product.quality;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,19 +27,21 @@ class ProductInfoWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "بواجي - كامري 2026",
-            style: AppTextStyles.boldBody.copyWith(color: AppColors.primaryText),
+            product.name,
+            style: AppTextStyles.boldBody.copyWith(
+              color: AppColors.primaryText,
+            ),
           ),
           Padding4,
           Text(
-            "رقم القطعة: 254-550",
+            product.partNumber,
             style: AppTextStyles.mediumOverline.copyWith(
               color: AppColors.secondaryText,
             ),
           ),
           Padding12,
           Text(
-            "بواجي ليزر من شركة NGK",
+            product.description,
             style: AppTextStyles.regularCaption.copyWith(
               color: AppColors.primaryText,
             ),
@@ -36,7 +50,7 @@ class ProductInfoWidget extends StatelessWidget {
           Row(
             children: [
               Text(
-                "250",
+                product.price.toString(),
                 style: AppTextStyles.semiBoldBody.copyWith(
                   color: AppColors.primaryText,
                 ),
@@ -56,7 +70,7 @@ class ProductInfoWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                "أصلي",
+                qualityLabel,
                 style: AppTextStyles.semiBoldOverline.copyWith(
                   color: AppColors.primaryText,
                 ),
@@ -73,10 +87,12 @@ class ProductInfoWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                "هذا المنتج متوافق مع الموديلات من 2024-2026",
+                product.compatibilities.map((e) => e.label).join(" - "),
+
                 style: AppTextStyles.semiBoldOverline.copyWith(
                   color: AppColors.primaryText,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
