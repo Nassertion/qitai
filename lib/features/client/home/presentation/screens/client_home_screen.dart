@@ -30,17 +30,17 @@ class ClientHomeScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                Padding8,
+                h8,
                 SearchWidget(
                   readOnly: true,
                   onTap: () => context.push("/search"),
                 ),
-                dPadding,
+                h16,
                 SectionHeader(
                   title: "سياراتي",
                   onTap: () => context.push("/test"),
                 ),
-                Padding12,
+                h12,
                 Row(
                   children: [
                     AddCar(
@@ -49,14 +49,14 @@ class ClientHomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                dPadding,
+                h16,
                 ClientBannerSlider(),
                 const SizedBox(height: 24),
                 SectionHeader(
                   title: "الفئات",
                   onTap: () => context.push("/categories"),
                 ),
-                Padding12,
+                h12,
               ],
             ),
           ),
@@ -78,7 +78,7 @@ class ClientHomeScreen extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  separatorBuilder: (_, __) => w12,
                   itemBuilder: (context, index) {
                     final category = categories[index];
 
@@ -89,7 +89,7 @@ class ClientHomeScreen extends ConsumerWidget {
                           width: 74,
                           height: 56,
                         ),
-                        Padding8,
+                        h8,
                         Text(
                           category.name,
                           style: AppTextStyles.mediumOverline.copyWith(
@@ -107,9 +107,9 @@ class ClientHomeScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                dPadding,
+                h16,
                 SectionHeader(title: "اقتراحات", onTap: () => print("test")),
-                Padding12,
+                h12,
               ],
             ),
           ),

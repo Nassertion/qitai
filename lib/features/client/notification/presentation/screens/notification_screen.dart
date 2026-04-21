@@ -14,7 +14,7 @@ class NotificationScreen extends StatelessWidget {
       body: AppPagePadding(
         child: ListView(
           children: [
-            Padding12,
+            h12,
             NotificationCardWidget(
               time: "الآن",
               title: "يتوفر تحديث جديد للتطبيق",
@@ -24,7 +24,7 @@ class NotificationScreen extends StatelessWidget {
               isNow: true,
             ),
 
-            dPadding,
+            h16,
             NotificationCardWidget(
               time: "الآن",
               title: "تم توصيل طلبك بنجاح",
@@ -34,7 +34,7 @@ class NotificationScreen extends StatelessWidget {
               isNow: true,
             ),
 
-            dPadding,
+            h16,
             NotificationCardWidget(
               time: "قبل ساعة",
               title: "يتوفر تحديث جديد للتطبيق",

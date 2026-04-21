@@ -32,7 +32,7 @@ class VehicleFilterBottomSheet {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              dPadding,
+              h16,
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
@@ -81,7 +81,7 @@ class VehicleFilterBottomSheet {
                             },
                             child: Column(
                               children: [
-                                dPadding,
+                                h16,
 
                                 Row(
                                   children: [
@@ -90,7 +90,7 @@ class VehicleFilterBottomSheet {
                                       height: 20,
                                       width: 24,
                                     ),
-                                    const SizedBox(width: 12),
+                              w12,
                                     Text(
                                       getLabel(item),
                                       style: AppTextStyles.mediumCaption
@@ -101,7 +101,7 @@ class VehicleFilterBottomSheet {
                                     ),
                                   ],
                                 ),
-                                dPadding,
+                                h16,
                                 Divider(color: AppColors.border, height: 1),
                               ],
                             ),

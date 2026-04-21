@@ -28,7 +28,7 @@ class CustomLoading extends StatelessWidget {
 //       child: ListView.separated(
 //         scrollDirection: Axis.horizontal,
 //         itemCount: 4,
-//         separatorBuilder: (_, __) => const SizedBox(width: 12),
+//         separatorBuilder: (_, __) => w12,
 //         itemBuilder: (context, index) {
 //           return Column(
 //             children: [

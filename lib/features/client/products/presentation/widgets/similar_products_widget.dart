@@ -21,14 +21,14 @@ class SimilarProductsWidget extends StatelessWidget {
             ),
           ),
         ),
-        Padding12,
+        h12,
         SizedBox(
           height: 260,
           child: ListView.separated(
             shrinkWrap: true,
             padding: EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
-            separatorBuilder: (_, __) => const SizedBox(width: 16),
+            separatorBuilder: (_, __) => w16,
             itemCount: 10,
             itemBuilder: (context, index) {
               return SizedBox(width: 160, child: ProductCard());

@@ -31,11 +31,11 @@ class ProductDetailScreen extends ConsumerWidget {
         data: (data) => ListView(
           children: [
             ProductViewWidget(),
-            dPadding,
+            h16,
             ProductInfoWidget(product: data),
-            dPadding,
+            h16,
             SimilarProductsWidget(),
-            Padding12,
+            h12,
           ],
         ),
       ),

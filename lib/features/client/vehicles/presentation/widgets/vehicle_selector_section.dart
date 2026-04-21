@@ -26,51 +26,51 @@ class VehicleSelectorSection extends ConsumerWidget {
       );
     }
 
-void onModelTap() {
-  final state = ref.read(classificationProvider);
-  final notifier = ref.read(classificationProvider.notifier);
+    void onModelTap() {
+      final state = ref.read(classificationProvider);
+      final notifier = ref.read(classificationProvider.notifier);
 
-  if (state.selectedCarBrand == null) return;
-  if (state.isModelsLoading) return;
+      if (state.selectedCarBrand == null) return;
+      if (state.isModelsLoading) return;
 
-  VehicleFilterBottomSheet.show<CarModel>(
-    context: context,
-    items: state.models,
-    title: 'اختر الموديل',
-    getLabel: (item) => item.name,
-    onRetry: () async {
-      await notifier.selectBrand(state.selectedCarBrand!);
-    },
-    onSelected: (value) async {
-      await notifier.selectModel(value);
-    },
-  );
-}
+      VehicleFilterBottomSheet.show<CarModel>(
+        context: context,
+        items: state.models,
+        title: 'اختر الموديل',
+        getLabel: (item) => item.name,
+        onRetry: () async {
+          await notifier.selectBrand(state.selectedCarBrand!);
+        },
+        onSelected: (value) async {
+          await notifier.selectModel(value);
+        },
+      );
+    }
 
-void onYearTap() {
-  final state = ref.read(classificationProvider);
-  final notifier = ref.read(classificationProvider.notifier);
+    void onYearTap() {
+      final state = ref.read(classificationProvider);
+      final notifier = ref.read(classificationProvider.notifier);
 
-  if (state.selectedModel == null) return;
-  if (state.isYearsLoading) return;
+      if (state.selectedModel == null) return;
+      if (state.isYearsLoading) return;
 
-  VehicleFilterBottomSheet.show<CarYear>(
-    context: context,
-    items: state.carYears,
-    title: 'اختر السنة',
-    getLabel: (item) => item.year.toString(),
-    onRetry: () async {
-      await notifier.selectModel(state.selectedModel!);
-    },
-    onSelected: (value) {
-      notifier.selectCarYear(value);
-    },
-  );
-}
+      VehicleFilterBottomSheet.show<CarYear>(
+        context: context,
+        items: state.carYears,
+        title: 'اختر السنة',
+        getLabel: (item) => item.year.toString(),
+        onRetry: () async {
+          await notifier.selectModel(state.selectedModel!);
+        },
+        onSelected: (value) {
+          notifier.selectCarYear(value);
+        },
+      );
+    }
 
     return Column(
       children: [
-        dPadding,
+        h16,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: 16,
@@ -79,10 +79,7 @@ void onYearTap() {
             Expanded(
               child: Column(
                 children: [
-                  VehicleFilterField(
-                    title: "البراند",
-                    onTap: onBrandTap,
-                  ),
+                  VehicleFilterField(title: "البراند", onTap: onBrandTap),
                   if (state.selectedCarBrand != null) ...[
                     const SizedBox(height: 8),
                     VehicleFilterField(
@@ -97,10 +94,7 @@ void onYearTap() {
             Expanded(
               child: Column(
                 children: [
-                  VehicleFilterField(
-                    title: "الموديل",
-                    onTap: onModelTap,
-                  ),
+                  VehicleFilterField(title: "الموديل", onTap: onModelTap),
                   if (state.selectedModel != null) ...[
                     const SizedBox(height: 8),
                     VehicleFilterField(
@@ -115,10 +109,7 @@ void onYearTap() {
             Expanded(
               child: Column(
                 children: [
-                  VehicleFilterField(
-                    title: "السنة",
-                    onTap: onYearTap,
-                  ),
+                  VehicleFilterField(title: "السنة", onTap: onYearTap),
                   if (state.selectedCarYear != null) ...[
                     const SizedBox(height: 8),
                     VehicleFilterField(

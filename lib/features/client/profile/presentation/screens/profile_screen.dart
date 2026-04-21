@@ -18,14 +18,14 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding8,
+            h8,
             Text(
               "قم بتسجيل الدخول\nاو انشاء حساب جديد",
               style: AppTextStyles.semiBoldCaption.copyWith(
                 color: AppColors.primaryText,
               ),
             ),
-            dPadding,
+            h16,
             ButtonWidget(text: "تسجيل الدخول", height: 45.0),
             SizedBox(height: 24),
             Container(

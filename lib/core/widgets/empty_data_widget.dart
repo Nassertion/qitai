@@ -9,11 +9,11 @@ class EmptyDataWidget extends StatelessWidget {
     super.key,
     required this.img,
     required this.text,
-     this.buttonText,
+    this.buttonText,
   });
   final String img;
   final String text;
-  final String ?buttonText;
+  final String? buttonText;
   //ontab
   @override
   Widget build(BuildContext context) {
@@ -25,12 +25,12 @@ class EmptyDataWidget extends StatelessWidget {
         children: [
           //"assets/icons/box.svg"
           SizedBox(height: 100, width: 130, child: SvgPicture.asset(img)),
-          dPadding,
-          //"لاتوجد لديك طلبات حالية!"
+          h16,
           Text(text, style: AppTextStyles.boldSubtitle),
-          if(buttonText != null)...[ 
-          SizedBox(height: 48),
-          ButtonWidget(text: buttonText!),]
+          if (buttonText != null) ...[
+            SizedBox(height: 48),
+            ButtonWidget(text: buttonText!),
+          ],
         ],
       ),
     );

@@ -37,7 +37,7 @@ class AddToCartSection extends StatelessWidget {
                       color: AppColors.secondaryText,
                     ),
                   ),
-                  Padding4,
+                  h4,
                   Text(
                     "1",
                     style: AppTextStyles.mediumOverline.copyWith(
@@ -47,7 +47,7 @@ class AddToCartSection extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 12),
+            w12,
             Expanded(child: ButtonWidget(text: "أضف للسلة")),
           ],
         ),

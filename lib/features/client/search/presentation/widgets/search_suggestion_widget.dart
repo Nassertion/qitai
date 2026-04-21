@@ -28,16 +28,16 @@ class SuggestionWidget extends StatelessWidget {
           onTap: () => onTapSuggestion?.call(item),
           child: Column(
             children: [
-              dPadding,
+              h16,
               Row(
                 children: [
-                  dPadding,
+                  h16,
                   Image.asset(
                     "assets/images/search/test.png",
                     height: 44,
                     width: 44,
                   ),
-                  const SizedBox(width: 12),
+                  w12,
                   Text(
                     item.name,
                     style: AppTextStyles.mediumOverline.copyWith(
@@ -47,7 +47,7 @@ class SuggestionWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              dPadding,
+              h16,
               Divider(color: AppColors.border, height: 1),
             ],
           ),
@@ -56,4 +56,3 @@ class SuggestionWidget extends StatelessWidget {
     );
   }
 }
-

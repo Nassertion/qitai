@@ -39,7 +39,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(searchProvider);
 
-    return Scaffold(  
+    return Scaffold(
       appBar: CustomAppbar(
         title: "البحث",
         action: Container(
@@ -50,7 +50,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       body: AppPagePadding(
         child: Column(
           children: [
-            Padding12,
+            h12,
             SearchWidget(
               controller: _controller,
               onChanged: (value) {
@@ -82,15 +82,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                   if (state.products.isNotEmpty) {
                     return ListView.separated(
-                        padding: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.only(top: 8),
 
                       itemCount: state.products.length,
-                      separatorBuilder: (_, __) => Padding8,
+                      separatorBuilder: (_, __) => h8,
                       itemBuilder: (context, index) {
                         final item = state.products[index];
-                        return SearchCardProductWidget(product: item , onTap: () {
-                          context.push("/product/${item.id}");
-                        },);
+                        return SearchCardProductWidget(
+                          product: item,
+                          onTap: () {
+                            context.push("/product/${item.id}");
+                          },
+                        );
                       },
                     );
                   }

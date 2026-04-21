@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constants/colors.dart';
+import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 
 class NotificationCardWidget extends StatelessWidget {
@@ -38,7 +39,7 @@ class NotificationCardWidget extends StatelessWidget {
                   // icon
                   SvgPicture.asset(img, height: 40, width: 40),
 
-                  const SizedBox(width: 12),
+                  w12,
 
                   Expanded(
                     child: Column(
@@ -70,7 +71,7 @@ class NotificationCardWidget extends StatelessWidget {
                         color: AppColors.secondaryText,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    w8,
                     if (isNow)
                       Container(
                         width: 8,

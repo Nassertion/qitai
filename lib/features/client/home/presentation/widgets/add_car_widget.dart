@@ -25,7 +25,7 @@ class AddCar extends StatelessWidget {
               child: SvgPicture.asset(img),
             ),
           ),
-          Padding4,
+          h4,
           Text(
             carName,
             style: AppTextStyles.mediumOverline.copyWith(

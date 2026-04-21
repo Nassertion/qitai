@@ -32,21 +32,21 @@ class ProductInfoWidget extends StatelessWidget {
               color: AppColors.primaryText,
             ),
           ),
-          Padding4,
+          h4,
           Text(
             product.partNumber,
             style: AppTextStyles.mediumOverline.copyWith(
               color: AppColors.secondaryText,
             ),
           ),
-          Padding12,
+          h12,
           Text(
             product.description,
             style: AppTextStyles.regularCaption.copyWith(
               color: AppColors.primaryText,
             ),
           ),
-          Padding12,
+          h12,
           Row(
             children: [
               Text(
@@ -55,12 +55,12 @@ class ProductInfoWidget extends StatelessWidget {
                   color: AppColors.primaryText,
                 ),
               ),
-              SizedBox(width: 2),
+              w2,
               SvgPicture.asset("assets/icons/SR.svg"),
             ],
           ),
           Divider(color: AppColors.border),
-          Padding8,
+          h8,
           Row(
             children: [
               Text(
@@ -77,7 +77,7 @@ class ProductInfoWidget extends StatelessWidget {
               ),
             ],
           ),
-          Padding4,
+          h4,
           Row(
             children: [
               Text(
@@ -96,7 +96,7 @@ class ProductInfoWidget extends StatelessWidget {
               ),
             ],
           ),
-          Padding8,
+          h8,
           Divider(color: AppColors.border),
         ],
       ),

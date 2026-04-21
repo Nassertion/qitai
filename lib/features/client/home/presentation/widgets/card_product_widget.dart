@@ -52,14 +52,14 @@ class ProductCard extends StatelessWidget {
             ],
           ),
 
-          Padding8,
+          h8,
           Text(
             "اسطب خلفي كامري 2026",
             style: AppTextStyles.semiBoldOverline.copyWith(
               color: AppColors.primaryText,
             ),
           ),
-          Padding4,
+          h4,
           Text(
             "رقم القطعة: 254-550",
             style: AppTextStyles.regularOverline.copyWith(
@@ -67,7 +67,7 @@ class ProductCard extends StatelessWidget {
             ),
           ),
 
-          Padding8,
+          h8,
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,7 +80,7 @@ class ProductCard extends StatelessWidget {
                       color: AppColors.primaryText,
                     ),
                   ),
-                  SizedBox(width: 2),
+                  w2,
                   SvgPicture.asset("assets/icons/SR.svg"),
                 ],
               ),

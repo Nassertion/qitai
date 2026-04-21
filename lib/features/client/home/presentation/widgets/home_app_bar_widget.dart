@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/constants/colors.dart';
 
@@ -33,7 +34,7 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               height: 24,
             ),
           ),
-          const SizedBox(width: 4),
+          w4,
           Expanded(
             child: Text(
               "عنواني",

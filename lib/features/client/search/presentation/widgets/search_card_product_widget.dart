@@ -68,7 +68,7 @@ class SearchCardProductWidget extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(width: 12),
+            w12,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,14 +79,14 @@ class SearchCardProductWidget extends StatelessWidget {
                       color: AppColors.primaryText,
                     ),
                   ),
-                  Padding4,
+                  h4,
                   Text(
                     "رقم القطعة: ${product.partNumber}",
                     style: AppTextStyles.mediumOverline.copyWith(
                       color: AppColors.secondaryText,
                     ),
                   ),
-                  dPadding,
+                  h16,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -98,7 +98,7 @@ class SearchCardProductWidget extends StatelessWidget {
                               color: AppColors.primaryText,
                             ),
                           ),
-                          const SizedBox(width: 2),
+                         w2,
                           SvgPicture.asset("assets/icons/SR.svg"),
                         ],
                       ),
