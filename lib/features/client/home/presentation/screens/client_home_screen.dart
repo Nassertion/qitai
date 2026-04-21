@@ -21,13 +21,13 @@ class ClientHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoriesAsync = ref.watch(categoriesProvider);
+
     return Scaffold(
       // bottomNavigationBar: BottomFloatingNavBar(),
       appBar: HomeAppBarWidget(),
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          AppPagePadding(
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
             child: Column(
               children: [
                 Padding8,
@@ -41,7 +41,6 @@ class ClientHomeScreen extends ConsumerWidget {
                   onTap: () => context.push("/test"),
                 ),
                 Padding12,
-                //temp
                 Row(
                   children: [
                     AddCar(
@@ -51,81 +50,83 @@ class ClientHomeScreen extends ConsumerWidget {
                   ],
                 ),
                 dPadding,
+                ClientBannerSlider(),
+                const SizedBox(height: 24),
+                SectionHeader(
+                  title: "الفئات",
+                  onTap: () => context.push("/categories"),
+                ),
+                Padding12,
               ],
             ),
           ),
-          //temp
-          ClientBannerSlider(),
-          SizedBox(height: 24),
-          AppPagePadding(
-            child: SectionHeader(
-              title: "الفئات",
-              onTap: () => (context.push("/categories")),
-            ),
-          ),
-          Padding12,
-          //temp
-          SizedBox(
-            height: 95,
-            child: categoriesAsync.when(
-              loading: () => CustomLoading(),
-              error: (error, stack) => Center(
-                child: Text(
-                  error.toString(),
-                  style: AppTextStyles.regularOverline.copyWith(
-                    color: Colors.red,
+
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 95,
+              child: categoriesAsync.when(
+                loading: () => CustomLoading(),
+                error: (error, stack) => Center(
+                  child: Text(
+                    error.toString(),
+                    style: AppTextStyles.regularOverline.copyWith(
+                      color: Colors.red,
+                    ),
                   ),
                 ),
-              ),
-              data: (categories) => ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  final category = categories[index];
+                data: (categories) => ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
 
-                  return Column(
-                    children: [
-                      Image.asset(
-                        getCategoryIcon(category.name),
-                        width: 74,
-                        height: 56,
-                      ),
-                      Padding8,
-                      Text(
-                        category.name,
-                        style: AppTextStyles.mediumOverline.copyWith(
-                          color: AppColors.primaryText,
+                    return Column(
+                      children: [
+                        Image.asset(
+                          getCategoryIcon(category.name),
+                          width: 74,
+                          height: 56,
                         ),
-                      ),
-                    ],
-                  );
-                },
+                        Padding8,
+                        Text(
+                          category.name,
+                          style: AppTextStyles.mediumOverline.copyWith(
+                            color: AppColors.primaryText,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),
-          dPadding,
-          // if no sign in
-          AppPagePadding(
+
+          SliverToBoxAdapter(
             child: Column(
               children: [
+                dPadding,
                 SectionHeader(title: "اقتراحات", onTap: () => print("test")),
                 Padding12,
-                GridView.builder(
-                  itemCount: 8,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    // childAspectRatio: 1,
-                    mainAxisExtent: 260,
-                  ),
-                  itemBuilder: (context, index) => ProductCard(),
-                ),
               ],
+            ),
+          ),
+
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
+            sliver: SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => ProductCard(),
+                childCount: 8,
+              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                mainAxisExtent: 260,
+              ),
             ),
           ),
         ],
