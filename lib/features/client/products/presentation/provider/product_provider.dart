@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qitai/core/dio_provider.dart';
+import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/products/data/model/product_detail_model.dart';
 import 'package:qitai/features/client/products/data/repository/product_repostiory.dart';
 

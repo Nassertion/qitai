@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qitai/core/constant/spaces.dart';
+import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/features/client/notification/presentation/widgets/notification_card_widget.dart';

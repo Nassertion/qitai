@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/constants/colors.dart';
+import 'package:qitai/core/constants/text_styles.dart';
 
 class NotificationCardWidget extends StatelessWidget {
   final String time; //temp future datatime

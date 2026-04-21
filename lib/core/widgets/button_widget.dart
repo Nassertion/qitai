@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/constants/colors.dart';
+import 'package:qitai/core/constants/text_styles.dart';
 
 class ButtonWidget extends StatelessWidget {
   const ButtonWidget({super.key, required this.text, this.height, this.width});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qitai/core/constant/spaces.dart';
-import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/constants/spaces.dart';
+import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 
 class EmptyDataWidget extends StatelessWidget {

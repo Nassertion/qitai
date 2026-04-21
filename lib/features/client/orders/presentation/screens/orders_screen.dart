@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/constants/colors.dart';
+import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 

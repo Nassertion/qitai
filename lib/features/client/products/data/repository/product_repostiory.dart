@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:qitai/core/helper/handle_helper_dio.dart';
+import 'package:qitai/core/network/handle_helper_dio.dart';
 import 'package:qitai/features/client/products/data/model/product_detail_model.dart';
 
 class ProductRepostiory {

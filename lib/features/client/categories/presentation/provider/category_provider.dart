@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qitai/core/dio_provider.dart';
+import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
 import 'package:qitai/features/client/categories/data/model/cateogry_model.dart';
 

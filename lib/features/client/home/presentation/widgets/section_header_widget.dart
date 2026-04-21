@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/constants/colors.dart';
+import 'package:qitai/core/constants/text_styles.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;
@@ -30,15 +30,19 @@ class SectionHeader extends StatelessWidget {
           if (showAction)
             TextButton(
               onPressed: onTap,
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                alignment: Alignment.centerLeft,
-              ),
+              style:
+                  TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 6,
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    alignment: Alignment.centerLeft,
+                  ).copyWith(
+                    overlayColor: WidgetStatePropertyAll(Colors.transparent),
+                    splashFactory: NoSplash.splashFactory,
+                  ),
               child: Text(
                 "عرض الكل",
                 style: AppTextStyles.regularOverline.copyWith(

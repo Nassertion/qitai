@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:qitai/core/helper/handle_helper_dio.dart';
+import 'package:qitai/core/network/handle_helper_dio.dart';
 import 'package:qitai/features/client/search/data/model/search_product_model.dart';
 import 'package:qitai/features/client/search/data/model/search_suggestion_model.dart';
 

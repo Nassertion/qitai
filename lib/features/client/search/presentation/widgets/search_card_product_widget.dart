@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/constant/spaces.dart';
-import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/constants/colors.dart';
+import 'package:qitai/core/constants/spaces.dart';
+import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/features/client/search/data/model/search_product_model.dart';
 
 class SearchCardProductWidget extends StatelessWidget {

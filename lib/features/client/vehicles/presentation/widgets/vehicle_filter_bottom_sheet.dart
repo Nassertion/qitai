@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qitai/core/constant/colors.dart';
-import 'package:qitai/core/constant/spaces.dart';
-import 'package:qitai/core/constant/text_styles.dart';
+import 'package:qitai/core/constants/colors.dart';
+import 'package:qitai/core/constants/spaces.dart';
+import 'package:qitai/core/constants/text_styles.dart';
 
 class VehicleFilterBottomSheet {
   static Future<void> show<T>({

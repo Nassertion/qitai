@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:qitai/core/constant/colors.dart';
+import 'package:qitai/core/constants/colors.dart';
 
 class CustomLoading extends StatelessWidget {
   const CustomLoading({super.key});
