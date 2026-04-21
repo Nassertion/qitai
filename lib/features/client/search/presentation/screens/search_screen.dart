@@ -39,7 +39,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(searchProvider);
 
-    return Scaffold(
+    return Scaffold(  
       appBar: CustomAppbar(
         title: "البحث",
         action: Container(
@@ -82,6 +82,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                   if (state.products.isNotEmpty) {
                     return ListView.separated(
+                        padding: const EdgeInsets.only(top: 8),
+
                       itemCount: state.products.length,
                       separatorBuilder: (_, __) => Padding8,
                       itemBuilder: (context, index) {

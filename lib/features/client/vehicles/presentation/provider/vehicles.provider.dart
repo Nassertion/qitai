@@ -4,12 +4,14 @@ import 'package:qitai/features/client/vehicles/data/repository/vehicles_reposito
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 
-final classificationRepositoryProvider = Provider<ClassificationRepository>((ref) {
+final classificationRepositoryProvider = Provider<ClassificationRepository>((
+  ref,
+) {
   final dio = ref.read(dioProvider);
   return ClassificationRepository(dio);
 });
 
 final classificationProvider =
-    NotifierProvider<ClassificationNotifier, ClassificationState>(
-  ClassificationNotifier.new,
-);
+    NotifierProvider.autoDispose<ClassificationNotifier, ClassificationState>(
+      ClassificationNotifier.new,
+    );

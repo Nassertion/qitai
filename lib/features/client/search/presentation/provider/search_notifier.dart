@@ -4,6 +4,7 @@ import 'package:qitai/features/client/search/data/repository/search_repository.d
 import 'package:qitai/features/client/search/presentation/provider/search_provider.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles.provider.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 
 class SearchNotifier extends Notifier<SearchState> {
   late final SearchRepository repo;
@@ -12,39 +13,63 @@ class SearchNotifier extends Notifier<SearchState> {
   @override
   SearchState build() {
     repo = ref.read(searchRepositoryProvider);
+
     ref.onDispose(() {
       _debounce?.cancel();
     });
+
+    ref.listen<ClassificationState>(classificationProvider, (previous, next) {
+      final prevBrandId = previous?.selectedCarBrand?.id;
+      final nextBrandId = next.selectedCarBrand?.id;
+
+      final prevModelId = previous?.selectedModel?.id;
+      final nextModelId = next.selectedModel?.id;
+
+      final prevYear = previous?.selectedCarYear?.year;
+      final nextYear = next.selectedCarYear?.year;
+
+      final filtersChanged =
+          prevBrandId != nextBrandId ||
+          prevModelId != nextModelId ||
+          prevYear != nextYear;
+
+      if (!filtersChanged) return;
+
+      if (!state.hasSearched) return;
+
+      submitSearch();
+    });
+
     return const SearchState();
   }
 
-void onQueryChanged(String value) {
-  final query = value.trim();
+  void onQueryChanged(String value) {
+    final query = value.trim();
 
-  state = state.copyWith(
-    query: value,
-    products: [],
-    hasSearched: false,
-    clearErrorMessage: true,
-  );
-
-  _debounce?.cancel();
-
-  if (query.isEmpty) {
     state = state.copyWith(
-      suggestions: [],
+      query: value,
       products: [],
       hasSearched: false,
-      isSuggestionsLoading: false,
-      isProductsLoading: false,
+      clearErrorMessage: true,
     );
-    return;
-  }
 
-  _debounce = Timer(const Duration(milliseconds: 300), () {
-    loadSuggestions(query);
-  });
-}
+    _debounce?.cancel();
+
+    if (query.isEmpty) {
+      state = state.copyWith(
+        suggestions: [],
+        products: [],
+        hasSearched: false,
+        isSuggestionsLoading: false,
+        isProductsLoading: false,
+      );
+      return;
+    }
+
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      loadSuggestions(query);
+    });
+  }
 
   Future<void> loadSuggestions(String query) async {
     state = state.copyWith(
@@ -69,54 +94,54 @@ void onQueryChanged(String value) {
     }
   }
 
-Future<void> submitSearch([String? customQuery]) async {
-  final rawValue = customQuery ?? state.query;
-  final value = rawValue.trim();
+  Future<void> submitSearch([String? customQuery]) async {
+    final rawValue = customQuery ?? state.query;
+    final value = rawValue.trim();
 
-  final classificationState = ref.read(classificationProvider);
+    final classificationState = ref.read(classificationProvider);
 
-  final brandId = classificationState.selectedCarBrand?.id;
-  final modelId = classificationState.selectedModel?.id;
-  final year = classificationState.selectedCarYear?.year;
+    final brandId = classificationState.selectedCarBrand?.id;
+    final modelId = classificationState.selectedModel?.id;
+    final year = classificationState.selectedCarYear?.year;
 
-  _debounce?.cancel();
+    _debounce?.cancel();
 
-  final hasText = value.isNotEmpty;
-  final hasVehicleFilter = brandId != null || modelId != null || year != null;
+    final hasText = value.isNotEmpty;
+    final hasVehicleFilter = brandId != null || modelId != null || year != null;
 
-  if (!hasText && !hasVehicleFilter) return;
-
-  state = state.copyWith(
-    query: value,
-    suggestions: [],
-    products: [],
-    hasSearched: true,
-    isProductsLoading: true,
-    clearErrorMessage: true,
-  );
-
-  try {
-    final isVin = hasText && _isVin(value);
-
-    final products = await repo.searchProducts(
-      query: hasText && !isVin ? value : null,
-      vin: hasText && isVin ? value : null,
-      brandId: brandId,
-      modelId: modelId,
-      year: year,
-    );
+    if (!hasText && !hasVehicleFilter) return;
 
     state = state.copyWith(
-      products: products,
-      isProductsLoading: false,
+      query: value,
+      suggestions: [],
+      products: [],
+      hasSearched: true,
+      isProductsLoading: true,
+      clearErrorMessage: true,
     );
-  } catch (e) {
-    state = state.copyWith(
-      isProductsLoading: false,
-      errorMessage: e.toString(),
-    );
+
+    try {
+      final isVin = hasText && _isVin(value);
+
+      final products = await repo.searchProducts(
+        query: hasText && !isVin ? value : null,
+        vin: hasText && isVin ? value : null,
+        brandId: brandId,
+        modelId: modelId,
+        year: year,
+      );
+
+      state = state.copyWith(
+        products: products,
+        isProductsLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isProductsLoading: false,
+        errorMessage: e.toString(),
+      );
+    }
   }
-}
 
   void clearSearch() {
     _debounce?.cancel();

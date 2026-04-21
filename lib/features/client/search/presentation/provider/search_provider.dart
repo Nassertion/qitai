@@ -9,6 +9,6 @@ final searchRepositoryProvider = Provider<SearchRepository>((ref) {
   return SearchRepository(dio);
 });
 
-final searchProvider = NotifierProvider<SearchNotifier, SearchState>(
+final searchProvider = NotifierProvider.autoDispose<SearchNotifier, SearchState>(
   SearchNotifier.new,
 );
