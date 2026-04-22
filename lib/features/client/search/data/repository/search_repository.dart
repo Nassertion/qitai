@@ -28,13 +28,13 @@ class SearchRepository {
           .toList();
     });
   }
-
 Future<List<SearchProductModel>> searchProducts({
   String? query,
   String? vin,
   int? brandId,
   int? modelId,
   int? year,
+  int? categoryId,
 }) async {
   return handleDioRequest(() async {
     final response = await dio.get(
@@ -45,6 +45,7 @@ Future<List<SearchProductModel>> searchProducts({
         if (brandId != null) "brand_id": brandId,
         if (modelId != null) "model_id": modelId,
         if (year != null) "year": year,
+        if (categoryId != null) "category_id": categoryId,
       },
     );
 
@@ -54,5 +55,4 @@ Future<List<SearchProductModel>> searchProducts({
         .map((item) => SearchProductModel.fromJson(item as Map<String, dynamic>))
         .toList();
   });
-}
-}
+}}

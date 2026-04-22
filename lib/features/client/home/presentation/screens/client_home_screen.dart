@@ -31,9 +31,11 @@ class ClientHomeScreen extends ConsumerWidget {
             child: Column(
               children: [
                 h8,
-                SearchWidget(
-                  readOnly: true,
-                  onTap: () => context.push("/search"),
+                AppPagePadding(
+                  child: SearchWidget(
+                    readOnly: true,
+                    onTap: () => context.push("/search"),
+                  ),
                 ),
                 h16,
                 SectionHeader(

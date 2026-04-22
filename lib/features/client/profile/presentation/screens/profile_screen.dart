@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
@@ -37,15 +38,19 @@ class ProfileScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    ProfileCard(
-                      icon: 'assets/icons/profile_icons/car.svg',
-                      title: 'سياراتي',
+                    InkWell(onTap:() =>  context.push("/profile/car"),
+                      child: ProfileCard(
+                        icon: 'assets/icons/profile_icons/car.svg',
+                        title: 'سياراتي',
+                      ),
                     ),
                     Divider(color: AppColors.border),
 
-                    ProfileCard(
-                      icon: 'assets/icons/profile_icons/location.svg',
-                      title: 'عناويني',
+                    InkWell(onTap: () => context.push("/profile/adress"),
+                      child: ProfileCard(
+                        icon: 'assets/icons/profile_icons/location.svg',
+                        title: 'عناويني',
+                      ),
                     ),
                     Divider(color: AppColors.border),
 

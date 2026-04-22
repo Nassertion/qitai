@@ -3,9 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/widgets/main_shell_widget.dart';
 import 'package:qitai/features/client/cart/presentation/screens/cart_screen.dart';
 import 'package:qitai/features/client/categories/presentation/screens/categories_screen.dart';
+import 'package:qitai/features/client/categories/presentation/screens/category_search_screen.dart';
 import 'package:qitai/features/client/home/presentation/screens/client_home_screen.dart';
 import 'package:qitai/features/client/orders/presentation/screens/orders_screen.dart';
 import 'package:qitai/features/client/products/presentation/screens/product_detail_screen.dart';
+import 'package:qitai/features/client/profile/presentation/screens/client_adresses_screen.dart';
+import 'package:qitai/features/client/profile/presentation/screens/client_cars_screen.dart';
 import 'package:qitai/features/client/profile/presentation/screens/profile_screen.dart';
 import 'package:qitai/features/client/notification/presentation/screens/notification_screen.dart';
 import 'package:qitai/features/client/search/presentation/screens/search_screen.dart';
@@ -38,7 +41,14 @@ final GoRouter appRouter = GoRouter(
         ),
       ],
     ),
-
+        GoRoute(
+          path: '/profile/adress',
+          builder: (context, state) => const ClientAdressesScreen(),
+        ),
+                GoRoute(
+          path: '/profile/car',
+          builder: (context, state) => const ClientCarsScreen(),
+        ),
     GoRoute(
       path: '/notifications',
       builder: (context, state) => const NotificationScreen(),
@@ -55,12 +65,14 @@ final GoRouter appRouter = GoRouter(
 
         return ProductDetailScreen(id: int.parse(productId));
       },
-    ), //  GoRoute(
-    //     path: '/categories/:name',
-    //     builder: (context, state) {
-    //       final category = state.pathParameters['name'] ?? '';
-    //       return CategoryScreen(category: category);
-    //     },
-    //   ),
+    ),
+      GoRoute(
+        path: '/categories/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          final name = state.extra as String;
+          return CategorySearchScreen( id : int.parse(id) , name: name,);
+        },
+      ),
   ],
 );

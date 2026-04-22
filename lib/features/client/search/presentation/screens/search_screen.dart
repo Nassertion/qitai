@@ -99,9 +99,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   }
 
                   if (state.hasSearched && state.products.isEmpty) {
-                    return const EmptyDataWidget(
-                      text: "لاتوجد نتائج في البحث!",
-                      img: "assets/icons/Object.svg",
+                    return Padding(
+                      padding: EdgeInsetsGeometry.only(bottom: 200),
+                      child: const EmptyDataWidget(
+                        text: "لاتوجد نتائج في البحث!",
+                        img: "assets/icons/Object.svg",
+                      ),
                     );
                   }
 

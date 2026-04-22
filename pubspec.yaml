@@ -73,6 +73,7 @@ flutter:
     - assets/images/cate/
     - assets/images/search/
     - assets/icons/
+    - assets/icons/profile/
     - assets/icons/profile_icons/
     - assets/icons/bottom_nav_bar_icons/
     - assets/icons/bottom_nav_bar_icons/inactive/

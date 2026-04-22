@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/features/client/categories/data/model/cateogry_model.dart';
@@ -14,8 +15,8 @@ class CategoryCardWidget extends StatelessWidget {
     final imagePath = getIcon(category.name);
 
     return
-    //  InkWell(onTap: () => context.push("/categories/"),
-    //   child:
+     InkWell(onTap: () => context.push("/categories/${category.id}",extra: category.name),
+      child:
     Container(
       decoration: BoxDecoration(
         color: AppColors.backgroundColor,
@@ -45,7 +46,7 @@ class CategoryCardWidget extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
-    // );
   }
 }
