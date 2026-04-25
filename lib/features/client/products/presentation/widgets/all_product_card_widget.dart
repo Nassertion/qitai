@@ -6,21 +6,18 @@ import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/helpers/quality_helper.dart';
 import 'package:qitai/features/client/search/data/model/search_product_model.dart';
 
-class CategoryProductCardWidget extends StatelessWidget {
-  const CategoryProductCardWidget({
-    super.key,
-    required this.product,
-    this.onTap,
-  });
+class AllProductCardWidget extends StatelessWidget {
+  const AllProductCardWidget({super.key, required this.product, this.onTap});
 
   final SearchProductModel product;
   final VoidCallback? onTap;
 
-
+ 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
         child: Column(
@@ -36,12 +33,10 @@ class CategoryProductCardWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Image.asset(
-                    'assets/images/rfrf.png',
-                    // 'assets/images/battery.png',
+                    'assets/images/battery.png',
                     fit: BoxFit.contain,
                   ),
                 ),
-
                 Positioned(
                   top: 8,
                   right: 8,
@@ -50,7 +45,6 @@ class CategoryProductCardWidget extends StatelessWidget {
                       horizontal: 10,
                       vertical: 3,
                     ),
-
                     decoration: BoxDecoration(
                       color: isAftermarket(product)
                           ? AppColors.inputFieldAndCards
@@ -58,7 +52,7 @@ class CategoryProductCardWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Text(
-                      qualityLabel(product ),
+                      qualityLabel(product),
                       style: AppTextStyles.semiBoldOverline.copyWith(
                         color: isAftermarket(product)
                             ? AppColors.primaryText
@@ -69,9 +63,7 @@ class CategoryProductCardWidget extends StatelessWidget {
                 ),
               ],
             ),
-
             h8,
-
             Text(
               product.name,
               maxLines: 1,
@@ -80,9 +72,7 @@ class CategoryProductCardWidget extends StatelessWidget {
                 color: AppColors.primaryText,
               ),
             ),
-
             h4,
-
             Text(
               "رقم القطعة: ${product.partNumber}",
               maxLines: 1,
@@ -91,9 +81,7 @@ class CategoryProductCardWidget extends StatelessWidget {
                 color: AppColors.secondaryText,
               ),
             ),
-
             h8,
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -109,7 +97,6 @@ class CategoryProductCardWidget extends StatelessWidget {
                     SvgPicture.asset("assets/icons/SR.svg"),
                   ],
                 ),
-
                 Container(
                   width: 32,
                   height: 32,

@@ -111,4 +111,16 @@ class ClassificationNotifier extends Notifier<ClassificationState> {
       clearSelectedCarYear: true,
     );
   }
+  void clearAll() {
+  state = state.copyWith(
+    clearSelectedCarBrand: true,
+    clearSelectedModel: true,
+    clearSelectedCarYear: true,
+    models: [],
+    carYears: [],
+    isModelsLoading: false,
+    isYearsLoading: false,
+    clearErrorMessage: true,
+  );
+}
 }

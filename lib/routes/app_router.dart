@@ -6,6 +6,7 @@ import 'package:qitai/features/client/categories/presentation/screens/categories
 import 'package:qitai/features/client/categories/presentation/screens/category_search_screen.dart';
 import 'package:qitai/features/client/home/presentation/screens/client_home_screen.dart';
 import 'package:qitai/features/client/orders/presentation/screens/orders_screen.dart';
+import 'package:qitai/features/client/products/presentation/screens/all_product_screen.dart';
 import 'package:qitai/features/client/products/presentation/screens/product_detail_screen.dart';
 import 'package:qitai/features/client/profile/presentation/screens/client_adresses_screen.dart';
 import 'package:qitai/features/client/profile/presentation/screens/client_cars_screen.dart';
@@ -58,6 +59,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const CategoriesScreen(),
     ),
     GoRoute(path: '/search', builder: (context, state) => const SearchScreen()),
+    GoRoute(path: '/products', builder: (context, state) => const AllProductsScreen()),
     GoRoute(
       path: '/product/:id',
       builder: (context, state) {

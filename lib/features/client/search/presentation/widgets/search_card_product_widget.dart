@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
+import 'package:qitai/core/helpers/quality_helper.dart';
 import 'package:qitai/features/client/search/data/model/search_product_model.dart';
 
 class SearchCardProductWidget extends StatelessWidget {
@@ -14,21 +15,7 @@ class SearchCardProductWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final SearchProductModel product;
 
-  String get qualityLabel {
-    switch (product.quality.toLowerCase()) {
-      case 'oem':
-        return 'أصلي';
-      case 'aftermarket':
-        return 'تجاري';
-      default:
-        return product.quality;
-    }
-  }
-
-  bool get isAftermarket {
-    return product.quality.toLowerCase() == 'aftermarket';
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -59,15 +46,15 @@ class SearchCardProductWidget extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: isAftermarket
+                      color: isAftermarket(product)
                           ? AppColors.inputFieldAndCards
                           : AppColors.actionText,
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Text(
-                      qualityLabel,
+                      qualityLabel(product),
                       style: AppTextStyles.semiBoldOverline.copyWith(
-                        color: isAftermarket
+                        color: isAftermarket(product)
                             ? AppColors.primaryText
                             : AppColors.whiteText,
                       ),

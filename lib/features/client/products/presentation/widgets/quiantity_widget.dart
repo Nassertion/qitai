@@ -7,10 +7,7 @@ import 'package:qitai/core/constants/text_styles.dart';
 class QuiantityWidget extends StatefulWidget {
   final int initialQuantity;
 
-  const QuiantityWidget({
-    super.key,
-    required this.initialQuantity,
-  });
+  const QuiantityWidget({super.key, required this.initialQuantity});
 
   @override
   State<QuiantityWidget> createState() => _QuiantityWidgetState();
@@ -52,69 +49,80 @@ class _QuiantityWidgetState extends State<QuiantityWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 270,
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: AppColors.inputFieldAndCards,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: AppColors.actionText,
+          selectionHandleColor: AppColors.actionText,
+          selectionColor: Color(0x1F2196F3),
+        ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-              decoration: BoxDecoration(
-                color: AppColors.inputFieldAndCards,
-                border: Border.all(color: AppColors.border),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    "الكمية",
-                    style: AppTextStyles.semiBoldOverline.copyWith(
-                      color: AppColors.secondaryText,
+      child: Container(
+        width: 270,
+        padding: const EdgeInsets.only(top: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: AppColors.inputFieldAndCards,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.inputFieldAndCards,
+                  border: Border.all(color: AppColors.border),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      "الكمية",
+                      style: AppTextStyles.semiBoldOverline.copyWith(
+                        color: AppColors.secondaryText,
+                      ),
                     ),
-                  ),
-                  h4,
-                  TextField(
-                    controller: _controller,
-                    autofocus: true,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.done,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.boldBody.copyWith(
-                      color: AppColors.primaryText,
+                    h4,
+                    TextField(
+                      controller: _controller,
+                      autofocus: true,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.boldBody.copyWith(
+                        color: AppColors.primaryText,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4),
+                      ],
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isCollapsed: true,
+                      ),
+                      onSubmitted: (_) => _saveQuantity(),
                     ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(4),
-                    ],
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      isCollapsed: true,
-                    ),
-                    onSubmitted: (_) => _saveQuantity(),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Divider(color: AppColors.border, height: 1),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: _cancel,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+            const SizedBox(height: 16),
+            Divider(color: AppColors.border, height: 1, thickness: 1),
+            SizedBox(
+              height: 48,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: _cancel,
+                      child: Center(
                         child: Text(
                           "تراجع",
                           style: AppTextStyles.regularBody.copyWith(
@@ -124,18 +132,11 @@ class _QuiantityWidgetState extends State<QuiantityWidget> {
                       ),
                     ),
                   ),
-                ),
-                VerticalDivider(
-                  color: AppColors.border,
-                  width: 1,
-                  thickness: 1,
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: _saveQuantity,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                  Container(width: 1, color: AppColors.border),
+                  Expanded(
+                    child: InkWell(
+                      onTap: _saveQuantity,
+                      child: Center(
                         child: Text(
                           "التالي",
                           style: AppTextStyles.boldBody.copyWith(
@@ -145,11 +146,11 @@ class _QuiantityWidgetState extends State<QuiantityWidget> {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

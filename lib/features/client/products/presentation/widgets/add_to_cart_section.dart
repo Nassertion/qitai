@@ -16,7 +16,21 @@ class AddToCartSection extends StatefulWidget {
 class _AddToCartSectionState extends State<AddToCartSection> {
   int quantity = 1;
 
-  Future<void> _openQuantityDialog() async {
+  void increaseQuantity() {
+    setState(() {
+      quantity++;
+    });
+  }
+
+  void decreaseQuantity() {
+    if (quantity <= 1) return;
+
+    setState(() {
+      quantity--;
+    });
+  }
+
+  Future<void> openQuantityDialog() async {
     final result = await showDialog<int>(
       context: context,
       barrierDismissible: false,
@@ -47,36 +61,58 @@ class _AddToCartSectionState extends State<AddToCartSection> {
       child: AppPagePadding(
         child: Row(
           children: [
-            GestureDetector(
-              onTap: _openQuantityDialog,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.border),
-                  color: AppColors.inputFieldAndCards,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "الكمية",
-                      style: AppTextStyles.semiBoldOverline.copyWith(
-                        color: AppColors.secondaryText,
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.border),
+                color: AppColors.inputFieldAndCards,
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: decreaseQuantity,
+                    child: const SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: Center(
+                        child: Icon(Icons.remove, size: 18),
                       ),
                     ),
-                    h4,
-                    Text(
-                      quantity.toString(),
-                      style: AppTextStyles.mediumOverline.copyWith(
-                        color: AppColors.primaryText,
+                  ),
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: openQuantityDialog,
+                    child: SizedBox(
+                      width: 36,
+                      height: 32,
+                      child: Center(
+                        child: Text(
+                          quantity.toString(),
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.mediumOverline.copyWith(
+                            color: AppColors.primaryText,
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: increaseQuantity,
+                    child: const SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: Center(
+                        child: Icon(Icons.add, size: 18),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             w12,

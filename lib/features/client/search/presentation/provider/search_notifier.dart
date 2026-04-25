@@ -96,7 +96,7 @@ class SearchNotifier extends Notifier<SearchState> {
   int? categoryId,
 }) async {
     final rawValue = customQuery ?? state.query;
-    final value = rawValue.trim();
+    final value = rawValue.trim().toUpperCase();
 
     final classificationState = ref.read(classificationProvider);
 
@@ -150,8 +150,8 @@ if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
     state = const SearchState();
   }
 
-  bool _isVin(String value) {
-    final vinRegex = RegExp(r'^[A-HJ-NPR-Z0-9]{17}$', caseSensitive: false);
-    return vinRegex.hasMatch(value);
-  }
+bool _isVin(String value) {
+  final vinRegex = RegExp(r'^[A-Z0-9]{17}$', caseSensitive: false);
+  return vinRegex.hasMatch(value);
+}
 }

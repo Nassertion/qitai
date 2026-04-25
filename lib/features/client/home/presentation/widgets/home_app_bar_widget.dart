@@ -26,12 +26,15 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.transparent,
       title: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: SvgPicture.asset(
-              "assets/icons/location-add.svg",
-              width: 24,
-              height: 24,
+          InkWell(
+            onTap: () => context.push("/profile/adress"),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: SvgPicture.asset(
+                "assets/icons/location-add.svg",
+                width: 24,
+                height: 24,
+              ),
             ),
           ),
           w4,

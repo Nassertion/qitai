@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/spaces.dart';
+import 'package:qitai/core/helpers/clear_filter.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
@@ -29,8 +30,17 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
     super.initState();
 
     Future.microtask(() {
+      clearClassificationFilters(ref);
+
       ref.read(searchProvider.notifier).submitSearch(categoryId: widget.id);
     });
+  }
+
+  @override
+  void dispose() {
+    clearClassificationFilters(ref);
+
+    super.dispose();
   }
 
   @override
