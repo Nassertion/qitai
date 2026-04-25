@@ -27,6 +27,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void initState() {
     super.initState();
     _controller = TextEditingController();
+      Future.microtask(() {
+    ref.read(searchProvider.notifier).clearSearch();
+  });
+
   }
 
   @override
@@ -34,6 +38,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _controller.dispose();
     super.dispose();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +62,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ref.read(searchProvider.notifier).onQueryChanged(value);
               },
               onFieldSubmitted: (value) {
-                ref.read(searchProvider.notifier).submitSearch(value);
+                ref.read(searchProvider.notifier).submitSearch(customQuery:  value);
               },
               onClear: () {
                 _controller.clear();
@@ -66,7 +71,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               onSearchTap: () {
                 ref
                     .read(searchProvider.notifier)
-                    .submitSearch(_controller.text);
+                    .submitSearch(customQuery:  _controller.text);
               },
             ),
             const ClassificationWidget(),
@@ -100,7 +105,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                   if (state.hasSearched && state.products.isEmpty) {
                     return Padding(
-                      padding: EdgeInsetsGeometry.only(bottom: 200),
+                      padding: EdgeInsetsGeometry.only(bottom: 100),
                       child: const EmptyDataWidget(
                         text: "لاتوجد نتائج في البحث!",
                         img: "assets/icons/Object.svg",
@@ -116,7 +121,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           _controller.text = item.name;
                           ref
                               .read(searchProvider.notifier)
-                              .submitSearch(item.name);
+                              .submitSearch(customQuery:  item.name);
                         },
                       ),
                     );

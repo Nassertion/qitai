@@ -9,6 +9,7 @@ class SearchState {
   final bool isProductsLoading;
   final bool hasSearched;
   final String? errorMessage;
+final int? categoryId;
 
   const SearchState({
     this.query = '',
@@ -18,6 +19,7 @@ class SearchState {
     this.isProductsLoading = false,
     this.hasSearched = false,
     this.errorMessage,
+    this.categoryId
   });
 
   SearchState copyWith({
@@ -29,6 +31,8 @@ class SearchState {
     bool? hasSearched,
     String? errorMessage,
     bool clearErrorMessage = false,
+      int? categoryId,
+
   }) {
     return SearchState(
       query: query ?? this.query,
@@ -39,6 +43,8 @@ class SearchState {
       hasSearched: hasSearched ?? this.hasSearched,
       errorMessage:
           clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+              categoryId: categoryId ?? this.categoryId,
+
     );
   }
 }

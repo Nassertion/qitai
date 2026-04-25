@@ -72,10 +72,7 @@ class SearchNotifier extends Notifier<SearchState> {
   }
 
   Future<void> loadSuggestions(String query) async {
-    state = state.copyWith(
-      isSuggestionsLoading: true,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(isSuggestionsLoading: true, clearErrorMessage: true);
 
     try {
       final suggestions = await repo.fetchSuggestions(query: query);
@@ -94,7 +91,10 @@ class SearchNotifier extends Notifier<SearchState> {
     }
   }
 
-  Future<void> submitSearch([String? customQuery]) async {
+  Future<void> submitSearch({
+  String? customQuery,
+  int? categoryId,
+}) async {
     final rawValue = customQuery ?? state.query;
     final value = rawValue.trim();
 
@@ -103,13 +103,16 @@ class SearchNotifier extends Notifier<SearchState> {
     final brandId = classificationState.selectedCarBrand?.id;
     final modelId = classificationState.selectedModel?.id;
     final year = classificationState.selectedCarYear?.year;
+    final finalCategoryId = categoryId ?? state.categoryId;
 
     _debounce?.cancel();
 
     final hasText = value.isNotEmpty;
     final hasVehicleFilter = brandId != null || modelId != null || year != null;
 
-    if (!hasText && !hasVehicleFilter) return;
+   final hasCategoryFilter = finalCategoryId != null;
+
+if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
 
     state = state.copyWith(
       query: value,
@@ -118,6 +121,7 @@ class SearchNotifier extends Notifier<SearchState> {
       hasSearched: true,
       isProductsLoading: true,
       clearErrorMessage: true,
+      categoryId: finalCategoryId,
     );
 
     try {
@@ -129,12 +133,10 @@ class SearchNotifier extends Notifier<SearchState> {
         brandId: brandId,
         modelId: modelId,
         year: year,
+        categoryId: finalCategoryId,
       );
 
-      state = state.copyWith(
-        products: products,
-        isProductsLoading: false,
-      );
+      state = state.copyWith(products: products, isProductsLoading: false);
     } catch (e) {
       state = state.copyWith(
         isProductsLoading: false,

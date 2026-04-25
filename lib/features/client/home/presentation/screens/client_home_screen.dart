@@ -40,7 +40,7 @@ class ClientHomeScreen extends ConsumerWidget {
                 h16,
                 SectionHeader(
                   title: "سياراتي",
-                  onTap: () => context.push("/test"),
+                  // onTap: () => context.push("/test"),
                 ),
                 h12,
                 Row(
@@ -84,21 +84,27 @@ class ClientHomeScreen extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final category = categories[index];
 
-                    return Column(
-                      children: [
-                        Image.asset(
-                          getCategoryIcon(category.name),
-                          width: 74,
-                          height: 56,
-                        ),
-                        h8,
-                        Text(
-                          category.name,
-                          style: AppTextStyles.mediumOverline.copyWith(
-                            color: AppColors.primaryText,
+                    return InkWell(
+                      onTap: () => context.push(
+                        "/categories/${category.id}",
+                        extra: category.name,
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            getCategoryIcon(category.name),
+                            width: 74,
+                            height: 56,
                           ),
-                        ),
-                      ],
+                          h8,
+                          Text(
+                            category.name,
+                            style: AppTextStyles.mediumOverline.copyWith(
+                              color: AppColors.primaryText,
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),

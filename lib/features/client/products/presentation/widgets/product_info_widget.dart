@@ -19,6 +19,8 @@ class ProductInfoWidget extends StatelessWidget {
         return product.quality;
     }
   }
+  
+  
 
   @override
   Widget build(BuildContext context) {

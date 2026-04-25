@@ -25,6 +25,10 @@ class SearchCardProductWidget extends StatelessWidget {
     }
   }
 
+  bool get isAftermarket {
+    return product.quality.toLowerCase() == 'aftermarket';
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -55,13 +59,17 @@ class SearchCardProductWidget extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.actionText,
+                      color: isAftermarket
+                          ? AppColors.inputFieldAndCards
+                          : AppColors.actionText,
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Text(
                       qualityLabel,
                       style: AppTextStyles.semiBoldOverline.copyWith(
-                        color: AppColors.whiteText,
+                        color: isAftermarket
+                            ? AppColors.primaryText
+                            : AppColors.whiteText,
                       ),
                     ),
                   ),
@@ -98,7 +106,7 @@ class SearchCardProductWidget extends StatelessWidget {
                               color: AppColors.primaryText,
                             ),
                           ),
-                         w2,
+                          w2,
                           SvgPicture.asset("assets/icons/SR.svg"),
                         ],
                       ),
