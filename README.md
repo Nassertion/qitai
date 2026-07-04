@@ -20,7 +20,6 @@ To ensure the codebase remains scalable and easy to test as the app grows, the p
 - **Framework:** Flutter & Dart
 - **State Management:** Riverpod (Notifier, FutureProvider, StateProvider)
 - **Networking:** Dio (with interceptors for advanced logging and token management)
-- **Local Storage:** Hive / Secure Storage (for caching and user session handling)
 - **Design System:** Figma to responsive, pixel-perfect Flutter widgets
 
 ---
