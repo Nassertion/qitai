@@ -39,3 +39,7 @@ As the project progresses, the following production-grade integrations are being
 - Responsive and modern UI based on strict Figma guidelines.
 - Clean API data modeling and robust error-handling mechanisms.
 - Scalable state management architecture set up for all future modules.
+
+
+![App Screenshot](screenshots/Home.jpeg)
+![App Screenshot](screenshots/Search.jpeg)
