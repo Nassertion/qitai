@@ -27,7 +27,6 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
       ref.read(allProductsProvider.notifier).loadProducts();
     });
@@ -106,7 +105,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     scrollDirection: Axis.horizontal,
                     itemCount: categories.length,
-                    separatorBuilder: (_, __) => w12,
+                    separatorBuilder: (_, _) => w12,
                     itemBuilder: (context, index) {
                       final category = categories[index];
 

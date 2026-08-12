@@ -28,7 +28,7 @@ class SimilarProductsWidget extends StatelessWidget {
             shrinkWrap: true,
             padding: EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
-            separatorBuilder: (_, __) => w16,
+            separatorBuilder: (_, _) => w16,
             itemCount: 10,
             itemBuilder: (context, index) {
               return SizedBox(width: 160, child: ProductCard());

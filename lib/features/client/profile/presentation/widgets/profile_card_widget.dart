@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 
 class ProfileCard extends StatelessWidget {
-  ProfileCard({super.key, required this.icon, required this.title});
+  const ProfileCard({super.key, required this.icon, required this.title});
   final String icon;
   final String title;
   //notificaon car and place

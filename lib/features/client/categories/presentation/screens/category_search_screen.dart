@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/helpers/clear_filter.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
-import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
 import 'package:qitai/features/client/categories/presentation/widgets/category_product_card_widget.dart';
-import 'package:qitai/features/client/home/presentation/widgets/card_product_widget.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_provider.dart';
 import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
-import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 

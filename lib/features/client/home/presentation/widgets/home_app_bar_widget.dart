@@ -13,6 +13,7 @@ import 'package:qitai/core/constants/colors.dart';
 class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBarWidget({super.key});
 
+  @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override

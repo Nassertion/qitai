@@ -96,7 +96,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       padding: const EdgeInsets.only(top: 8),
 
                       itemCount: state.products.length,
-                      separatorBuilder: (_, __) => h8,
+                      separatorBuilder: (_, _) => h8,
                       itemBuilder: (context, index) {
                         final item = state.products[index];
                         return SearchCardProductWidget(
