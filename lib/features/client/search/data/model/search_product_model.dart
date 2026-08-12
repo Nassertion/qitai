@@ -1,4 +1,3 @@
-import 'package:qitai/features/client/categories/data/model/cateogry_model.dart' ;
 
 class SearchProductModel {
   final int id;
@@ -8,11 +7,11 @@ class SearchProductModel {
   final String partNumber;
   final String condition;
   final String quality;
-  final String price;
+  final int price;
   final int stock;
   final int isActive;
   final String description;
-final CategoryModel? category;
+final ProductCategoryModel? category;
   const SearchProductModel({
     required this.id,
     required this.categoryId,
@@ -37,13 +36,36 @@ final CategoryModel? category;
       partNumber: json['part_number'] as String? ?? '',
       condition: json['condition'] as String? ?? '',
       quality: json['quality'] as String? ?? '',
-      price: json['price'] as String? ?? '',
+      price: json['price'] as int? ?? 0,
       stock: json['stock'] as int? ?? 0,
       isActive: json['is_active'] as int? ?? 0,
       description: json['description'] as String? ?? '',
       category: json['category'] != null
-          ? CategoryModel.fromJson(json['category'] as Map<String, dynamic>)
-          : null,
+    ? ProductCategoryModel.fromJson(json['category'] as Map<String, dynamic>)
+    : null,
+    );
+  }
+}
+
+class ProductCategoryModel {
+  final int id;
+  final String name;
+  final int? parentId;
+  final String? iconUrl;
+
+  const ProductCategoryModel({
+    required this.id,
+    required this.name,
+    this.parentId,
+    this.iconUrl,
+  });
+
+  factory ProductCategoryModel.fromJson(Map<String, dynamic> json) {
+    return ProductCategoryModel(
+      id: json['id'] as int,
+      name: json['name'] as String? ?? '',
+      parentId: json['parent_id'] as int?,
+      iconUrl: json['icon_url'] as String?,
     );
   }
 }

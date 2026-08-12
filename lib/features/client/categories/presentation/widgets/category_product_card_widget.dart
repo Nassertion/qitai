@@ -100,7 +100,7 @@ class CategoryProductCardWidget extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      product.price,
+                      "${product.price}",
                       style: AppTextStyles.semiBoldBody.copyWith(
                         color: AppColors.primaryText,
                       ),

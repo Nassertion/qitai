@@ -15,7 +15,6 @@ class SearchCardProductWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final SearchProductModel product;
 
-  
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -88,7 +87,7 @@ class SearchCardProductWidget extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            product.price,
+                            "${product.price}",
                             style: AppTextStyles.semiBoldBody.copyWith(
                               color: AppColors.primaryText,
                             ),

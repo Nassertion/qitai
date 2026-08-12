@@ -23,23 +23,18 @@ class CategorySearchScreen extends ConsumerStatefulWidget {
 
 class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
   @override
-  void initState() {
-    super.initState();
+ @override
+void initState() {
+  super.initState();
 
-    Future.microtask(() {
-      clearClassificationFilters(ref);
-
-      ref.read(searchProvider.notifier).submitSearch(categoryId: widget.id);
-    });
-  }
-
-  @override
-  void dispose() {
+  Future(() {
     clearClassificationFilters(ref);
 
-    super.dispose();
-  }
-
+    ref.read(searchProvider.notifier).submitSearch(
+      categoryId: widget.id,
+    );
+  });
+}
   @override
   Widget build(BuildContext context) {
     final searchState = ref.watch(searchProvider);

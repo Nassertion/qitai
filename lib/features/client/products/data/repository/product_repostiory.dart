@@ -8,7 +8,7 @@ class ProductRepostiory {
   Future<ProductDetailModel> fetchProduuctDetail(int id) async{
     return handleDioRequest(() async {
       final response = await dio.get("/products/$id");
-      return ProductDetailModel.fromJson(response.data as Map<String,dynamic>); 
+      return ProductDetailModel.fromJson(response.data['data'] as Map<String,dynamic>); 
     });
   } 
   }

@@ -3,7 +3,7 @@ class ProductDetailModel {
   final String name;
   final String sku;
   final String partNumber;
-  final double price;
+  final int price;
   final int stock;
   final String stockStatus;
   final String condition;
@@ -35,7 +35,7 @@ class ProductDetailModel {
       name: json['name'] as String? ?? '',
       sku: json['sku'] as String? ?? '',
       partNumber: json['part_number'] as String? ?? '',
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      price: json['price'] as int? ?? 0,
       stock: json['stock'] as int? ?? 0,
       stockStatus: json['stock_status'] as String? ?? '',
       condition: json['condition'] as String? ?? '',
