@@ -1,12 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/vehicles/data/model/vehicles_model.dart';
 import 'package:qitai/features/client/vehicles/data/repository/vehicles_repository.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles.provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class ClassificationNotifier extends Notifier<ClassificationState> {
+part 'vehicles_notifier.g.dart';
+
+@riverpod
+ClassificationRepository classificationRepository(Ref ref) {
+  final dio = ref.read(dioProvider);
+  return ClassificationRepository(dio);
+}
+
+@riverpod
+class ClassificationNotifier extends _$ClassificationNotifier {
   late final ClassificationRepository repo;
-
   @override
   ClassificationState build() {
     repo = ref.read(classificationRepositoryProvider);
@@ -14,18 +23,12 @@ class ClassificationNotifier extends Notifier<ClassificationState> {
   }
 
   Future<void> loadBrands() async {
-    state = state.copyWith(
-      isBrandsLoading: true,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(isBrandsLoading: true, clearErrorMessage: true);
 
     try {
       final brands = await repo.fetchCarBrands();
 
-      state = state.copyWith(
-        carBrands: brands,
-        isBrandsLoading: false,
-      );
+      state = state.copyWith(carBrands: brands, isBrandsLoading: false);
     } catch (e) {
       state = state.copyWith(
         isBrandsLoading: false,
@@ -48,10 +51,7 @@ class ClassificationNotifier extends Notifier<ClassificationState> {
     try {
       final fetchedModels = await repo.fetchCarModels(carBrand.id);
 
-      state = state.copyWith(
-        models: fetchedModels,
-        isModelsLoading: false,
-      );
+      state = state.copyWith(models: fetchedModels, isModelsLoading: false);
     } catch (e) {
       state = state.copyWith(
         isModelsLoading: false,
@@ -72,15 +72,9 @@ class ClassificationNotifier extends Notifier<ClassificationState> {
     try {
       final fetchedYears = await repo.fetchCarYears(model.id);
 
-      state = state.copyWith(
-        carYears: fetchedYears,
-        isYearsLoading: false,
-      );
+      state = state.copyWith(carYears: fetchedYears, isYearsLoading: false);
     } catch (e) {
-      state = state.copyWith(
-        isYearsLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isYearsLoading: false, errorMessage: e.toString());
     }
   }
 
@@ -107,20 +101,19 @@ class ClassificationNotifier extends Notifier<ClassificationState> {
   }
 
   void clearYear() {
+    state = state.copyWith(clearSelectedCarYear: true);
+  }
+
+  void clearAll() {
     state = state.copyWith(
+      clearSelectedCarBrand: true,
+      clearSelectedModel: true,
       clearSelectedCarYear: true,
+      models: [],
+      carYears: [],
+      isModelsLoading: false,
+      isYearsLoading: false,
+      clearErrorMessage: true,
     );
   }
-  void clearAll() {
-  state = state.copyWith(
-    clearSelectedCarBrand: true,
-    clearSelectedModel: true,
-    clearSelectedCarYear: true,
-    models: [],
-    carYears: [],
-    isModelsLoading: false,
-    isYearsLoading: false,
-    clearErrorMessage: true,
-  );
-}
 }

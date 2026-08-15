@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/features/client/vehicles/data/model/vehicles_model.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles.provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_bottom_sheet.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
-
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 class VehicleSelectorSection extends ConsumerWidget {
   const VehicleSelectorSection({super.key});
 

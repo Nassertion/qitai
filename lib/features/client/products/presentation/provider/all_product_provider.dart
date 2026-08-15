@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_product_state.dart';
 import 'package:qitai/features/client/search/data/repository/search_repository.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_provider.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles.provider.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 
 final allProductsProvider =

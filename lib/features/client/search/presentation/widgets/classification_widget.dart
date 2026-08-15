@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles.provider.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_selector_section.dart';
 
 class ClassificationWidget extends ConsumerStatefulWidget {
