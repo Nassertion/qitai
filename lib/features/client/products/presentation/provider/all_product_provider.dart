@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_product_state.dart';
-import 'package:qitai/features/client/search/data/repository/search_repository.dart';
+import 'package:qitai/core/repositories/product_catalog_repository.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
@@ -11,7 +11,7 @@ final allProductsProvider =
 );
 
 class AllProductsNotifier extends Notifier<AllProductsState> {
-  late final SearchRepository repo;
+  late final ProductCatalogRepository repo;
 
   @override
   AllProductsState build() {

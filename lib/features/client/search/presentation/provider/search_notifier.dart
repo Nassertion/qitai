@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:qitai/core/network/dio_provider.dart';
-import 'package:qitai/features/client/search/data/repository/search_repository.dart';
+import 'package:qitai/core/repositories/product_catalog_repository.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
@@ -9,14 +9,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'search_notifier.g.dart';
 
 @riverpod
-SearchRepository searchRepository(Ref ref) {
+ProductCatalogRepository searchRepository(Ref ref) {
   final dio = ref.read(dioProvider);
-  return SearchRepository(dio);
+  return ProductCatalogRepository(dio);
 }
 
 @riverpod
 class SearchNotifier extends _$SearchNotifier {
-  late final SearchRepository repo;
+  late final ProductCatalogRepository repo;
   Timer? _debounce;
 
   @override

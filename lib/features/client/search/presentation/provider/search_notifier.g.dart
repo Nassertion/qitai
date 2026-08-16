@@ -15,11 +15,11 @@ final searchRepositoryProvider = SearchRepositoryProvider._();
 final class SearchRepositoryProvider
     extends
         $FunctionalProvider<
-          SearchRepository,
-          SearchRepository,
-          SearchRepository
+          ProductCatalogRepository,
+          ProductCatalogRepository,
+          ProductCatalogRepository
         >
-    with $Provider<SearchRepository> {
+    with $Provider<ProductCatalogRepository> {
   SearchRepositoryProvider._()
     : super(
         from: null,
@@ -36,24 +36,25 @@ final class SearchRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<SearchRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<ProductCatalogRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
-  SearchRepository create(Ref ref) {
+  ProductCatalogRepository create(Ref ref) {
     return searchRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SearchRepository value) {
+  Override overrideWithValue(ProductCatalogRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<SearchRepository>(value),
+      providerOverride: $SyncValueProvider<ProductCatalogRepository>(value),
     );
   }
 }
 
-String _$searchRepositoryHash() => r'5f38a36bc840b1ffafd8c5bebac168ed842297c5';
+String _$searchRepositoryHash() => r'c3e9447fb6c89b1b8cb02dc699f843be573c5124';
 
 @ProviderFor(SearchNotifier)
 final searchProvider = SearchNotifierProvider._();
@@ -87,7 +88,7 @@ final class SearchNotifierProvider
   }
 }
 
-String _$searchNotifierHash() => r'b8a3643667b83f0255c2236828cedd0fa4484e9b';
+String _$searchNotifierHash() => r'3041eaee2bed9edc9ffca774e3e79869f201e31d';
 
 abstract class _$SearchNotifier extends $Notifier<SearchState> {
   SearchState build();
