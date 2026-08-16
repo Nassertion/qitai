@@ -7,18 +7,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'vehicles_notifier.g.dart';
 
 @riverpod
-ClassificationRepository classificationRepository(Ref ref) {
+VehicleRepository vehicleRepository(Ref ref) {
   final dio = ref.read(dioProvider);
-  return ClassificationRepository(dio);
+  return VehicleRepository(dio);
 }
 
 @riverpod
-class ClassificationNotifier extends _$ClassificationNotifier {
-  late final ClassificationRepository repo;
+class VehicleNotifier extends _$VehicleNotifier {
+  late final VehicleRepository repo;
   @override
-  ClassificationState build() {
-    repo = ref.read(classificationRepositoryProvider);
-    return const ClassificationState();
+  VehicleState build() {
+    repo = ref.read(vehicleRepositoryProvider);
+    return const VehicleState();
   }
 
   Future<void> loadBrands() async {

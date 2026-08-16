@@ -10,8 +10,8 @@ class VehicleSelectorSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(classificationProvider);
-    final notifier = ref.read(classificationProvider.notifier);
+    final state = ref.watch(vehicleProvider);
+    final notifier = ref.read(vehicleProvider.notifier);
 
     void onBrandTap() {
       VehicleFilterBottomSheet.show<CarBrand>(
@@ -26,8 +26,8 @@ class VehicleSelectorSection extends ConsumerWidget {
     }
 
     void onModelTap() {
-      final state = ref.read(classificationProvider);
-      final notifier = ref.read(classificationProvider.notifier);
+      final state = ref.read(vehicleProvider);
+      final notifier = ref.read(vehicleProvider.notifier);
 
       if (state.selectedCarBrand == null) return;
       if (state.isModelsLoading) return;
@@ -47,8 +47,8 @@ class VehicleSelectorSection extends ConsumerWidget {
     }
 
     void onYearTap() {
-      final state = ref.read(classificationProvider);
-      final notifier = ref.read(classificationProvider.notifier);
+      final state = ref.read(vehicleProvider);
+      final notifier = ref.read(vehicleProvider.notifier);
 
       if (state.selectedModel == null) return;
       if (state.isYearsLoading) return;

@@ -20,15 +20,15 @@ class AllProductsScreen extends ConsumerStatefulWidget {
 }
 
 class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
-    late final ClassificationNotifier _classificationNotifier;
+    late final VehicleNotifier _vehicleNotifier;
 
   @override
   void initState() {
     super.initState();
-    _classificationNotifier = ref.read(classificationProvider.notifier);
+    _vehicleNotifier = ref.read(vehicleProvider.notifier);
     Future.microtask(() {
       // clearClassificationFilters(ref);
-      _classificationNotifier.clearAll;
+      _vehicleNotifier.clearAll();
       ref.read(allProductsProvider.notifier).loadProducts();
     });
   }
@@ -36,7 +36,7 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
 
   @override
   void dispose() {
-    _classificationNotifier.clearAll();
+    _vehicleNotifier.clearAll();
     super.dispose();
   }
 

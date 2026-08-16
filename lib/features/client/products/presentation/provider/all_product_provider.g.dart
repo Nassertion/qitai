@@ -42,7 +42,7 @@ final class AllProductsNotifierProvider
 }
 
 String _$allProductsNotifierHash() =>
-    r'79fba990173bfd670e41b7894fd524c9e99da567';
+    r'060123266ca67611701d596bae4f8448edf0fc1f';
 
 abstract class _$AllProductsNotifier extends $Notifier<AllProductsState> {
   AllProductsState build();

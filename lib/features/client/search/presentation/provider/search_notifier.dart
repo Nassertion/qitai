@@ -22,7 +22,7 @@ class SearchNotifier extends _$SearchNotifier {
       _debounce?.cancel();
     });
 
-    ref.listen<ClassificationState>(classificationProvider, (previous, next) {
+    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
       final prevBrandId = previous?.selectedCarBrand?.id;
       final nextBrandId = next.selectedCarBrand?.id;
 
@@ -99,7 +99,7 @@ class SearchNotifier extends _$SearchNotifier {
     final rawValue = customQuery ?? state.query;
     final value = rawValue.trim().toUpperCase();
 
-    final classificationState = ref.read(classificationProvider);
+    final classificationState = ref.read(vehicleProvider);
 
     final brandId = classificationState.selectedCarBrand?.id;
     final modelId = classificationState.selectedModel?.id;

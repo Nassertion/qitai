@@ -9,100 +9,98 @@ part of 'vehicles_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(classificationRepository)
-final classificationRepositoryProvider = ClassificationRepositoryProvider._();
+@ProviderFor(vehicleRepository)
+final vehicleRepositoryProvider = VehicleRepositoryProvider._();
 
-final class ClassificationRepositoryProvider
+final class VehicleRepositoryProvider
     extends
         $FunctionalProvider<
-          ClassificationRepository,
-          ClassificationRepository,
-          ClassificationRepository
+          VehicleRepository,
+          VehicleRepository,
+          VehicleRepository
         >
-    with $Provider<ClassificationRepository> {
-  ClassificationRepositoryProvider._()
+    with $Provider<VehicleRepository> {
+  VehicleRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'classificationRepositoryProvider',
+        name: r'vehicleRepositoryProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$classificationRepositoryHash();
+  String debugGetCreateSourceHash() => _$vehicleRepositoryHash();
 
   @$internal
   @override
-  $ProviderElement<ClassificationRepository> $createElement(
+  $ProviderElement<VehicleRepository> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  ClassificationRepository create(Ref ref) {
-    return classificationRepository(ref);
+  VehicleRepository create(Ref ref) {
+    return vehicleRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ClassificationRepository value) {
+  Override overrideWithValue(VehicleRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ClassificationRepository>(value),
+      providerOverride: $SyncValueProvider<VehicleRepository>(value),
     );
   }
 }
 
-String _$classificationRepositoryHash() =>
-    r'9dcc05ba5ae4e5b759b37699165dfe84db02a8d2';
+String _$vehicleRepositoryHash() => r'012e5d942c780767dad71e92022b5797f4cdcf68';
 
-@ProviderFor(ClassificationNotifier)
-final classificationProvider = ClassificationNotifierProvider._();
+@ProviderFor(VehicleNotifier)
+final vehicleProvider = VehicleNotifierProvider._();
 
-final class ClassificationNotifierProvider
-    extends $NotifierProvider<ClassificationNotifier, ClassificationState> {
-  ClassificationNotifierProvider._()
+final class VehicleNotifierProvider
+    extends $NotifierProvider<VehicleNotifier, VehicleState> {
+  VehicleNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'classificationProvider',
+        name: r'vehicleProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$classificationNotifierHash();
+  String debugGetCreateSourceHash() => _$vehicleNotifierHash();
 
   @$internal
   @override
-  ClassificationNotifier create() => ClassificationNotifier();
+  VehicleNotifier create() => VehicleNotifier();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ClassificationState value) {
+  Override overrideWithValue(VehicleState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ClassificationState>(value),
+      providerOverride: $SyncValueProvider<VehicleState>(value),
     );
   }
 }
 
-String _$classificationNotifierHash() =>
-    r'a5b563ca154c836027fdb010e7f0556e9141e967';
+String _$vehicleNotifierHash() => r'0bc8da71212dbb40cb30a1d77c53a83634af2849';
 
-abstract class _$ClassificationNotifier extends $Notifier<ClassificationState> {
-  ClassificationState build();
+abstract class _$VehicleNotifier extends $Notifier<VehicleState> {
+  VehicleState build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<ClassificationState, ClassificationState>;
+    final ref = this.ref as $Ref<VehicleState, VehicleState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<ClassificationState, ClassificationState>,
-              ClassificationState,
+              AnyNotifier<VehicleState, VehicleState>,
+              VehicleState,
               Object?,
               Object?
             >;

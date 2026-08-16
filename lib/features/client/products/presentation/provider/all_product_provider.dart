@@ -18,7 +18,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
   AllProductsState build() {
     repo = ref.read(productCatalogRepositoryProvider);
 
-    ref.listen<ClassificationState>(classificationProvider, (previous, next) {
+    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
       final prevBrandId = previous?.selectedCarBrand?.id;
       final nextBrandId = next.selectedCarBrand?.id;
 
@@ -42,7 +42,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
   }
 
   Future<void> loadProducts() async {
-    final classificationState = ref.read(classificationProvider);
+    final classificationState = ref.read(vehicleProvider);
 
     final brandId = classificationState.selectedCarBrand?.id;
     final modelId = classificationState.selectedModel?.id;

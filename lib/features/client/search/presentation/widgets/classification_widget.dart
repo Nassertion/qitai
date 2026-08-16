@@ -16,7 +16,7 @@ class _ClassificationWidgetState extends ConsumerState<ClassificationWidget> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(classificationProvider.notifier).loadBrands();
+      ref.read(vehicleProvider.notifier).loadBrands();
     });
   }
 

@@ -1,15 +1,18 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
 import 'package:qitai/features/client/categories/data/model/cateogry_model.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
+part 'category_provider.g.dart';
+
+@riverpod
+CategoryRepository categoryRepository(Ref ref) {
   final dio = ref.read(dioProvider);
   return CategoryRepository(dio);
-});
+}
 
-final categoriesProvider = FutureProvider<List<CategoryModel>>((ref) async {
-  // await Future.delayed(Duration(seconds: 5));
+@riverpod
+Future<List<CategoryModel>> categories(Ref ref) {
   final repo = ref.read(categoryRepositoryProvider);
   return repo.fetchCategories();
-});
+}

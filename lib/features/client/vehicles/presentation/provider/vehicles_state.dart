@@ -1,6 +1,6 @@
 import 'package:qitai/features/client/vehicles/data/model/vehicles_model.dart';
 
-class ClassificationState {
+class VehicleState {
   final List<CarBrand> carBrands;
   final List<CarModel> models;
   final List<CarYear> carYears;
@@ -15,7 +15,7 @@ class ClassificationState {
 
   final String? errorMessage;
 
-  const ClassificationState({
+  const VehicleState({
     this.carBrands = const [],
     this.models = const [],
     this.carYears = const [],
@@ -28,7 +28,7 @@ class ClassificationState {
     this.errorMessage,
   });
 
-  ClassificationState copyWith({
+  VehicleState copyWith({
     List<CarBrand>? carBrands,
     List<CarModel>? models,
     List<CarYear>? carYears,
@@ -44,7 +44,7 @@ class ClassificationState {
     bool clearSelectedCarYear = false,
     bool clearErrorMessage = false,
   }) {
-    return ClassificationState(
+    return VehicleState(
       carBrands: carBrands ?? this.carBrands,
       models: models ?? this.models,
       carYears: carYears ?? this.carYears,

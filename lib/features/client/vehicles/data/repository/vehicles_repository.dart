@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
 import 'package:qitai/features/client/vehicles/data/model/vehicles_model.dart';
 
-class ClassificationRepository {
+class VehicleRepository {
   final Dio dio;
 
-  ClassificationRepository(this.dio);
+  VehicleRepository(this.dio);
 
   Future<List<CarBrand>> fetchCarBrands() async {
     return handleDioRequest(() async {
