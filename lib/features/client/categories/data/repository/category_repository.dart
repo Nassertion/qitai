@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
-import 'package:qitai/features/client/categories/data/model/cateogry_model.dart';
+import 'package:qitai/features/client/categories/data/model/category_model.dart';
 
 class CategoryRepository {
   final Dio dio;

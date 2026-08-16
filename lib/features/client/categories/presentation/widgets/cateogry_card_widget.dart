@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/features/client/categories/data/model/cateogry_model.dart';
+import 'package:qitai/features/client/categories/data/model/category_model.dart';
 import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
 
 class CategoryCardWidget extends StatelessWidget {

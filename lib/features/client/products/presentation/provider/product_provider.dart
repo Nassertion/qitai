@@ -1,6 +1,6 @@
 import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/products/data/model/product_detail_model.dart';
-import 'package:qitai/features/client/products/data/repository/product_repostiory.dart';
+import 'package:qitai/features/client/products/data/repository/product_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_provider.g.dart';

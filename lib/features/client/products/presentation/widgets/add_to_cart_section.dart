@@ -4,7 +4,7 @@ import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
-import 'package:qitai/features/client/products/presentation/widgets/quiantity_widget.dart';
+import 'package:qitai/features/client/products/presentation/widgets/quantity_widget.dart';
 
 class AddToCartSection extends StatefulWidget {
   const AddToCartSection({super.key});

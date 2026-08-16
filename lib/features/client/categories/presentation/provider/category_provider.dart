@@ -1,6 +1,6 @@
 import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
-import 'package:qitai/features/client/categories/data/model/cateogry_model.dart';
+import 'package:qitai/features/client/categories/data/model/category_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'category_provider.g.dart';
