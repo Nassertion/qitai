@@ -1,7 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
 import 'package:qitai/features/client/search/data/model/search_product_model.dart';
 import 'package:qitai/features/client/search/data/model/search_suggestion_model.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'product_catalog_repository.g.dart';
+
+@riverpod
+ProductCatalogRepository productCatalogRepository(Ref ref) {
+  final dio = ref.read(dioProvider);
+  return ProductCatalogRepository(dio);
+}
 
 class ProductCatalogRepository {
   final Dio dio;

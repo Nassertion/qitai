@@ -9,53 +9,6 @@ part of 'search_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(searchRepository)
-final searchRepositoryProvider = SearchRepositoryProvider._();
-
-final class SearchRepositoryProvider
-    extends
-        $FunctionalProvider<
-          ProductCatalogRepository,
-          ProductCatalogRepository,
-          ProductCatalogRepository
-        >
-    with $Provider<ProductCatalogRepository> {
-  SearchRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'searchRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$searchRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<ProductCatalogRepository> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  ProductCatalogRepository create(Ref ref) {
-    return searchRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ProductCatalogRepository value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<ProductCatalogRepository>(value),
-    );
-  }
-}
-
-String _$searchRepositoryHash() => r'c3e9447fb6c89b1b8cb02dc699f843be573c5124';
-
 @ProviderFor(SearchNotifier)
 final searchProvider = SearchNotifierProvider._();
 
@@ -88,7 +41,7 @@ final class SearchNotifierProvider
   }
 }
 
-String _$searchNotifierHash() => r'3041eaee2bed9edc9ffca774e3e79869f201e31d';
+String _$searchNotifierHash() => r'f9b1e176dba4c5df3c9fc3b560da32cd8826cba8';
 
 abstract class _$SearchNotifier extends $Notifier<SearchState> {
   SearchState build();

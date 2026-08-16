@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/core/repositories/product_catalog_repository.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
@@ -8,11 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_notifier.g.dart';
 
-@riverpod
-ProductCatalogRepository searchRepository(Ref ref) {
-  final dio = ref.read(dioProvider);
-  return ProductCatalogRepository(dio);
-}
+
 
 @riverpod
 class SearchNotifier extends _$SearchNotifier {
@@ -21,7 +16,7 @@ class SearchNotifier extends _$SearchNotifier {
 
   @override
   SearchState build() {
-    repo = ref.read(searchRepositoryProvider);
+    repo = ref.read(productCatalogRepositoryProvider);
 
     ref.onDispose(() {
       _debounce?.cancel();

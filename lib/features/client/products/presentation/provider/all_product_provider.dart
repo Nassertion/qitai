@@ -1,21 +1,22 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_product_state.dart';
 import 'package:qitai/core/repositories/product_catalog_repository.dart';
-import 'package:qitai/features/client/search/presentation/provider/search_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final allProductsProvider =
-    NotifierProvider<AllProductsNotifier, AllProductsState>(
-  AllProductsNotifier.new,
-);
+part 'all_product_provider.g.dart';
 
-class AllProductsNotifier extends Notifier<AllProductsState> {
+// final allProductsProvider =
+//     NotifierProvider<AllProductsNotifier, AllProductsState>(
+//   AllProductsNotifier.new,
+// );
+@Riverpod(keepAlive: true)
+class AllProductsNotifier extends _$AllProductsNotifier {
   late final ProductCatalogRepository repo;
 
   @override
   AllProductsState build() {
-    repo = ref.read(searchRepositoryProvider);
+    repo = ref.read(productCatalogRepositoryProvider);
 
     ref.listen<ClassificationState>(classificationProvider, (previous, next) {
       final prevBrandId = previous?.selectedCarBrand?.id;
@@ -47,10 +48,7 @@ class AllProductsNotifier extends Notifier<AllProductsState> {
     final modelId = classificationState.selectedModel?.id;
     final year = classificationState.selectedCarYear?.year;
 
-    state = state.copyWith(
-      isLoading: true,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(isLoading: true, clearErrorMessage: true);
 
     try {
       final products = await repo.searchProducts(
@@ -59,15 +57,9 @@ class AllProductsNotifier extends Notifier<AllProductsState> {
         year: year,
       );
 
-      state = state.copyWith(
-        products: products,
-        isLoading: false,
-      );
+      state = state.copyWith(products: products, isLoading: false);
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 }

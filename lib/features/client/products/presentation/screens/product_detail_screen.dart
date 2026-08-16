@@ -15,7 +15,7 @@ class ProductDetailScreen extends ConsumerWidget {
   final int id;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productDetailAsync = ref.watch(producDetailtProvider(id));
+    final productDetailAsync = ref.watch(productDetailProvider(id));
     return Scaffold(
       bottomNavigationBar: const SafeArea(child: AddToCartSection()),
       appBar: CustomAppbar(
