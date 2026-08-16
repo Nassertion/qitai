@@ -1,12 +1,21 @@
 import 'dart:async';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/search/data/repository/search_repository.dart';
-import 'package:qitai/features/client/search/presentation/provider/search_provider.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class SearchNotifier extends Notifier<SearchState> {
+part 'search_notifier.g.dart';
+
+@riverpod
+SearchRepository searchRepository(Ref ref) {
+  final dio = ref.read(dioProvider);
+  return SearchRepository(dio);
+}
+
+@riverpod
+class SearchNotifier extends _$SearchNotifier {
   late final SearchRepository repo;
   Timer? _debounce;
 
@@ -91,10 +100,7 @@ class SearchNotifier extends Notifier<SearchState> {
     }
   }
 
-  Future<void> submitSearch({
-  String? customQuery,
-  int? categoryId,
-}) async {
+  Future<void> submitSearch({String? customQuery, int? categoryId}) async {
     final rawValue = customQuery ?? state.query;
     final value = rawValue.trim().toUpperCase();
 
@@ -110,9 +116,9 @@ class SearchNotifier extends Notifier<SearchState> {
     final hasText = value.isNotEmpty;
     final hasVehicleFilter = brandId != null || modelId != null || year != null;
 
-   final hasCategoryFilter = finalCategoryId != null;
+    final hasCategoryFilter = finalCategoryId != null;
 
-if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
+    if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
 
     state = state.copyWith(
       query: value,
@@ -150,8 +156,8 @@ if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
     state = const SearchState();
   }
 
-bool _isVin(String value) {
-  final vinRegex = RegExp(r'^[A-Z0-9]{17}$', caseSensitive: false);
-  return vinRegex.hasMatch(value);
-}
+  bool _isVin(String value) {
+    final vinRegex = RegExp(r'^[A-Z0-9]{17}$', caseSensitive: false);
+    return vinRegex.hasMatch(value);
+  }
 }
