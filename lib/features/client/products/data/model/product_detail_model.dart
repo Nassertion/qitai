@@ -35,8 +35,8 @@ class ProductDetailModel {
       name: json['name'] as String? ?? '',
       sku: json['sku'] as String? ?? '',
       partNumber: json['part_number'] as String? ?? '',
-      price: json['price'] as int? ?? 0,
-      stock: json['stock'] as int? ?? 0,
+      price: (json['price'] as num?)?.toInt() ?? 0,
+      stock: ((json['stock'] as int?) ?? 0),
       stockStatus: json['stock_status'] as String? ?? '',
       condition: json['condition'] as String? ?? '',
       quality: json['quality'] as String? ?? '',
@@ -120,10 +120,7 @@ class ProductBrandModel {
   final int id;
   final String name;
 
-  const ProductBrandModel({
-    required this.id,
-    required this.name,
-  });
+  const ProductBrandModel({required this.id, required this.name});
 
   factory ProductBrandModel.fromJson(Map<String, dynamic> json) {
     return ProductBrandModel(
@@ -137,10 +134,7 @@ class ProductCarModel {
   final int id;
   final String name;
 
-  const ProductCarModel({
-    required this.id,
-    required this.name,
-  });
+  const ProductCarModel({required this.id, required this.name});
 
   factory ProductCarModel.fromJson(Map<String, dynamic> json) {
     return ProductCarModel(

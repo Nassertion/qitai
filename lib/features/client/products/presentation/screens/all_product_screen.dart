@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/spaces.dart';
-import 'package:qitai/core/helpers/clear_filter.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
@@ -11,6 +10,7 @@ import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_product_provider.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 
 class AllProductsScreen extends ConsumerStatefulWidget {
   const AllProductsScreen({super.key});
@@ -20,21 +20,23 @@ class AllProductsScreen extends ConsumerStatefulWidget {
 }
 
 class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
+    late final ClassificationNotifier _classificationNotifier;
+
   @override
   void initState() {
     super.initState();
-
+    _classificationNotifier = ref.read(classificationProvider.notifier);
     Future.microtask(() {
-      clearClassificationFilters(ref);
-
+      // clearClassificationFilters(ref);
+      _classificationNotifier.clearAll;
       ref.read(allProductsProvider.notifier).loadProducts();
     });
   }
 
+
   @override
   void dispose() {
-    clearClassificationFilters(ref);
-
+    _classificationNotifier.clearAll();
     super.dispose();
   }
 

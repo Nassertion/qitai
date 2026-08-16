@@ -36,7 +36,7 @@ final ProductCategoryModel? category;
       partNumber: json['part_number'] as String? ?? '',
       condition: json['condition'] as String? ?? '',
       quality: json['quality'] as String? ?? '',
-      price: json['price'] as int? ?? 0,
+      price: (json['price'] as num?)?.toInt() ?? 0,
       stock: json['stock'] as int? ?? 0,
       isActive: json['is_active'] as int? ?? 0,
       description: json['description'] as String? ?? '',
