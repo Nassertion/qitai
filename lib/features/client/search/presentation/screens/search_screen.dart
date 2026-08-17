@@ -13,6 +13,7 @@ import 'package:qitai/features/client/search/presentation/provider/search_notifi
 import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_card_product_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_suggestion_widget.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -23,24 +24,30 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   late final TextEditingController _controller;
+  late final VehicleNotifier _vehicleNotifier;
+  late final SearchNotifier _searchNotifier;
 
   @override
   void initState() {
     super.initState();
+
     _controller = TextEditingController();
-      Future.microtask(() {
-            clearClassificationFilters(ref);
+    _vehicleNotifier = ref.read(vehicleProvider.notifier);
+    _searchNotifier = ref.read(searchProvider.notifier);
 
-    ref.read(searchProvider.notifier).clearSearch();
-  });
-
+    Future.microtask(() {
+      _vehicleNotifier.clearAll();
+      _searchNotifier.clearSearch();
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
-      clearClassificationFilters(ref);
-  ref.read(searchProvider.notifier).clearSearch();
+    Future(() {
+    _vehicleNotifier.clearAll();
+    _searchNotifier.clearSearch();
+  });
 
     super.dispose();
   }

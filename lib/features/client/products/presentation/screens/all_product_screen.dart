@@ -27,7 +27,6 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
     super.initState();
     _vehicleNotifier = ref.read(vehicleProvider.notifier);
     Future.microtask(() {
-      // clearClassificationFilters(ref);
       _vehicleNotifier.clearAll();
       ref.read(allProductsProvider.notifier).loadProducts();
     });
@@ -36,7 +35,9 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
 
   @override
   void dispose() {
+    Future(() {
     _vehicleNotifier.clearAll();
+  });
     super.dispose();
   }
 

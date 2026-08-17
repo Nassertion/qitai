@@ -13,7 +13,7 @@ part 'search_notifier.g.dart';
 class SearchNotifier extends _$SearchNotifier {
   late final ProductCatalogRepository repo;
   Timer? _debounce;
-
+  int _searchRequestId = 0;
   @override
   SearchState build() {
     repo = ref.read(productCatalogRepositoryProvider);
@@ -39,7 +39,7 @@ class SearchNotifier extends _$SearchNotifier {
 
       if (!filtersChanged) return;
 
-      if (!state.hasSearched) return;
+      // if (!state.hasSearched) return;
 
       submitSearch();
     });
@@ -95,56 +95,55 @@ class SearchNotifier extends _$SearchNotifier {
     }
   }
 
-  Future<void> submitSearch({String? customQuery, int? categoryId}) async {
-    final rawValue = customQuery ?? state.query;
-    final value = rawValue.trim().toUpperCase();
+Future<void> submitSearch({String? customQuery, int? categoryId}) async {
+  final rawValue = customQuery ?? state.query;
+  final value = rawValue.trim().toUpperCase();
 
-    final classificationState = ref.read(vehicleProvider);
+  final classificationState = ref.read(vehicleProvider);
+  final brandId = classificationState.selectedCarBrand?.id;
+  final modelId = classificationState.selectedModel?.id;
+  final year = classificationState.selectedCarYear?.year;
+  final finalCategoryId = categoryId ?? state.categoryId;
 
-    final brandId = classificationState.selectedCarBrand?.id;
-    final modelId = classificationState.selectedModel?.id;
-    final year = classificationState.selectedCarYear?.year;
-    final finalCategoryId = categoryId ?? state.categoryId;
+  _debounce?.cancel();
 
-    _debounce?.cancel();
+  final hasText = value.isNotEmpty;
+  final hasVehicleFilter = brandId != null || modelId != null || year != null;
+  final hasCategoryFilter = finalCategoryId != null;
 
-    final hasText = value.isNotEmpty;
-    final hasVehicleFilter = brandId != null || modelId != null || year != null;
+  if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
 
-    final hasCategoryFilter = finalCategoryId != null;
+  final requestId = ++_searchRequestId;   // ← سطر جديد وحيد هنا، بعد الفحص المبكر
 
-    if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
+  state = state.copyWith(
+    query: value,
+    suggestions: [],
+    products: [],
+    hasSearched: true,
+    isProductsLoading: true,
+    clearErrorMessage: true,
+    categoryId: finalCategoryId,
+  );
 
-    state = state.copyWith(
-      query: value,
-      suggestions: [],
-      products: [],
-      hasSearched: true,
-      isProductsLoading: true,
-      clearErrorMessage: true,
+  try {
+    final isVin = hasText && _isVin(value);
+
+    final products = await repo.searchProducts(
+      query: hasText && !isVin ? value : null,
+      vin: hasText && isVin ? value : null,
+      brandId: brandId,
+      modelId: modelId,
+      year: year,
       categoryId: finalCategoryId,
     );
 
-    try {
-      final isVin = hasText && _isVin(value);
-
-      final products = await repo.searchProducts(
-        query: hasText && !isVin ? value : null,
-        vin: hasText && isVin ? value : null,
-        brandId: brandId,
-        modelId: modelId,
-        year: year,
-        categoryId: finalCategoryId,
-      );
-
-      state = state.copyWith(products: products, isProductsLoading: false);
-    } catch (e) {
-      state = state.copyWith(
-        isProductsLoading: false,
-        errorMessage: e.toString(),
-      );
-    }
+    if (requestId != _searchRequestId) return;   // ← سطر جديد قبل كل كتابة state
+    state = state.copyWith(products: products, isProductsLoading: false);
+  } catch (e) {
+    if (requestId != _searchRequestId) return;   // ← نفسه بالـ catch
+    state = state.copyWith(isProductsLoading: false, errorMessage: e.toString());
   }
+}
 
   void clearSearch() {
     _debounce?.cancel();

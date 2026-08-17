@@ -6,8 +6,8 @@ class CategoryModel {
   final int? parentId;
   final int sortOrder;
   final bool isActive;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   CategoryModel({
     required this.id,
@@ -23,15 +23,20 @@ class CategoryModel {
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: json['id'],
-      name: json['name'],
-      iconPath: json['icon_path'],
-      iconUrl: json['icon_url'],
-      parentId: json['parent_id'],
-      sortOrder: json['sort_order'],
-      isActive: json['is_active'] == 1,
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      id: json['id'] as int,
+      name: json['name'] as String,
+      iconPath: json['icon_path'] as String?,
+      iconUrl: json['icon_url'] as String?,
+      parentId: json['parent_id'] as int?,
+      sortOrder: json['sort_order'] as int,
+      isActive: (json['is_active'] as int?) == 1,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
+
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : null,
     );
   }
 
@@ -44,8 +49,8 @@ class CategoryModel {
       'parent_id': parentId,
       'sort_order': sortOrder,
       'is_active': isActive ? 1 : 0,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 }

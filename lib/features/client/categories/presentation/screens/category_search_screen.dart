@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qitai/core/helpers/clear_filter.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
+import 'package:qitai/features/client/categories/presentation/provider/category_search_notifier.dart';
 import 'package:qitai/features/client/categories/presentation/widgets/category_product_card_widget.dart';
-import 'package:qitai/features/client/search/presentation/provider/search_notifier.dart';
 import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
 
 class CategorySearchScreen extends ConsumerStatefulWidget {
@@ -23,34 +22,16 @@ class CategorySearchScreen extends ConsumerStatefulWidget {
 
 class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
   @override
- @override
-void initState() {
-  super.initState();
-
-  Future(() {
-    clearClassificationFilters(ref);
-
-    ref.read(searchProvider.notifier).submitSearch(
-      categoryId: widget.id,
-    );
-  });
-}
-  @override
   Widget build(BuildContext context) {
-    final searchState = ref.watch(searchProvider);
+    final searchState = ref.watch(categorySearchProvider(widget.id));
 
     return Scaffold(
       appBar: CustomAppbar(
         title: widget.name,
         action: IconButton(
           padding: const EdgeInsets.only(left: 4),
-          onPressed: () async {
-            ref.read(searchProvider.notifier).clearSearch();
-
-            await context.push("/search");
-            ref
-                .read(searchProvider.notifier)
-                .submitSearch(categoryId: widget.id);
+          onPressed: () {
+            context.push("/search");
           },
           icon: SvgPicture.asset(
             "assets/icons/search-normal.svg",
@@ -64,7 +45,7 @@ void initState() {
           slivers: [
             const SliverToBoxAdapter(child: ClassificationWidget()),
 
-            if (searchState.isProductsLoading)
+            if (searchState.isLoading)
               const SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(child: CustomLoading()),
