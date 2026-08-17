@@ -100,6 +100,7 @@ Future<void> submitSearch({String? customQuery, int? categoryId}) async {
   final value = rawValue.trim().toUpperCase();
 
   final classificationState = ref.read(vehicleProvider);
+
   final brandId = classificationState.selectedCarBrand?.id;
   final modelId = classificationState.selectedModel?.id;
   final year = classificationState.selectedCarYear?.year;
@@ -108,12 +109,13 @@ Future<void> submitSearch({String? customQuery, int? categoryId}) async {
   _debounce?.cancel();
 
   final hasText = value.isNotEmpty;
-  final hasVehicleFilter = brandId != null || modelId != null || year != null;
+  final hasVehicleFilter =
+      brandId != null || modelId != null || year != null;
   final hasCategoryFilter = finalCategoryId != null;
 
   if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
 
-  final requestId = ++_searchRequestId;   // ← سطر جديد وحيد هنا، بعد الفحص المبكر
+  final requestId = ++_searchRequestId;
 
   state = state.copyWith(
     query: value,
@@ -137,11 +139,21 @@ Future<void> submitSearch({String? customQuery, int? categoryId}) async {
       categoryId: finalCategoryId,
     );
 
-    if (requestId != _searchRequestId) return;   // ← سطر جديد قبل كل كتابة state
-    state = state.copyWith(products: products, isProductsLoading: false);
+    if (!ref.mounted) return;
+    if (requestId != _searchRequestId) return;
+
+    state = state.copyWith(
+      products: products,
+      isProductsLoading: false,
+    );
   } catch (e) {
-    if (requestId != _searchRequestId) return;   // ← نفسه بالـ catch
-    state = state.copyWith(isProductsLoading: false, errorMessage: e.toString());
+    if (!ref.mounted) return;
+    if (requestId != _searchRequestId) return;
+
+    state = state.copyWith(
+      isProductsLoading: false,
+      errorMessage: e.toString(),
+    );
   }
 }
 

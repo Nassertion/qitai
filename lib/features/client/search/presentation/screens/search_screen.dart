@@ -41,16 +41,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    Future(() {
-    _vehicleNotifier.clearAll();
-    _searchNotifier.clearSearch();
-  });
 
-    super.dispose();
-  }
+  @override
+void dispose() {
+  _controller.dispose();
+  super.dispose();
+}
   
 
   @override
