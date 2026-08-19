@@ -1,5 +1,5 @@
 import 'package:qitai/core/network/dio_provider.dart';
-import 'package:qitai/features/client/categories/data/datasources/category_remote_data_sourcs.dart';
+import 'package:qitai/features/client/categories/data/datasources/category_remote_data_sources.dart';
 import 'package:qitai/features/client/categories/data/repositories/category_repository_impl.dart';
 import 'package:qitai/features/client/categories/domain/entities/category.dart';
 import 'package:qitai/features/client/categories/domain/repositories/category_repository.dart';

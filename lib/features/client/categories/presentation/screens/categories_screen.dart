@@ -4,7 +4,7 @@ import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
-import 'package:qitai/features/client/categories/presentation/widgets/cateogry_card_widget.dart';
+import 'package:qitai/features/client/categories/presentation/widgets/category_card_widget.dart';
 
 class CategoriesScreen extends ConsumerWidget {
   const CategoriesScreen({super.key});
