@@ -2,51 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/features/client/categories/data/model/category_model.dart';
-import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
+import 'package:qitai/features/client/categories/domain/entities/category.dart';
+import 'package:qitai/features/client/home/presentation/screens/client_home_screen.dart';
 
 class CategoryCardWidget extends StatelessWidget {
   const CategoryCardWidget({super.key, required this.category});
 
-  final CategoryModel category;
+  final Category category;
 
   @override
   Widget build(BuildContext context) {
     final imagePath = getIcon(category.name);
 
-    return
-     InkWell(onTap: () => context.push("/categories/${category.id}",extra: category.name),
-      child:
-    Container(
-      decoration: BoxDecoration(
-        color: AppColors.backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Stack(
-        children: [
-          Center(
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.image_not_supported_outlined, size: 40);
-              },
-            ),
-          ),
-          Positioned(
-            right: 8,
-            bottom: 5,
-            child: Text(
-              category.name,
-              style: AppTextStyles.semiBoldCaption.copyWith(
-                color: AppColors.primaryText,
+    return InkWell(
+      onTap: () =>
+          context.push("/categories/${category.id}", extra: category.name),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.backgroundColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Stack(
+          children: [
+            Center(
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.image_not_supported_outlined,
+                    size: 40,
+                  );
+                },
               ),
             ),
-          ),
-        ],
+            Positioned(
+              right: 8,
+              bottom: 5,
+              child: Text(
+                category.name,
+                style: AppTextStyles.semiBoldCaption.copyWith(
+                  color: AppColors.primaryText,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    )
     );
   }
 }

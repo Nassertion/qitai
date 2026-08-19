@@ -7,7 +7,6 @@ import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
-import 'package:qitai/features/client/categories/data/repository/category_repository.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
 import 'package:qitai/features/client/home/presentation/widgets/add_car_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
@@ -200,3 +199,55 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     );
   }
 }
+
+// temp only
+String getCategoryIcon(String name) {
+  switch (name) {
+    case "الفرامل":
+      return "assets/images/breaks.png";
+    case "المحرك":
+      return "assets/images/engine.png";
+    case "الكهرباء":
+      return "assets/images/boaji.png";
+    case "الزيوت والسوائل":
+      return "assets/images/oils.png";
+    case "التعليق":
+      return "assets/images/t3le8.png";
+    default:
+      return "assets/images/default.png";
+  }
+}
+
+String getIcon(String name) {
+  switch (name) {
+    case "الفرامل":
+      return "assets/images/cate/breaks.png";
+    case "المحرك":
+      return "assets/images/cate/test30.png";
+    case "الكهرباء":
+      return "assets/images/cate/boaji.png";
+    case "الزيوت والسوائل":
+      return "assets/images/cate/oils.png";
+    case "التعليق":
+      return "assets/images/cate/t3le8.png";
+    default:
+      return "assets/images/cate/default.png";
+  }
+}
+
+// String test(String name) {
+//   switch (name) {
+//     case "الفرامل":
+//       return "assets/icons/test40.svg";
+//     case "المحرك":
+//       return "assets/images/test30.";
+//     // case "الكهرباء":
+//     //   return "assets/images/boaji.png";
+//     // case "الزيوت والسوائل":
+//     //   return "assets/images/oils.png";
+//     // case "التعليق":
+//     //   return "assets/images/t3le8.png";
+//     default:
+//       return "assets/icons/def.svg";
+//   }
+// }

@@ -9,6 +9,54 @@ part of 'category_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(categoryRemoteDataSource)
+final categoryRemoteDataSourceProvider = CategoryRemoteDataSourceProvider._();
+
+final class CategoryRemoteDataSourceProvider
+    extends
+        $FunctionalProvider<
+          CategoryRemoteDataSource,
+          CategoryRemoteDataSource,
+          CategoryRemoteDataSource
+        >
+    with $Provider<CategoryRemoteDataSource> {
+  CategoryRemoteDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'categoryRemoteDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$categoryRemoteDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<CategoryRemoteDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CategoryRemoteDataSource create(Ref ref) {
+    return categoryRemoteDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CategoryRemoteDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CategoryRemoteDataSource>(value),
+    );
+  }
+}
+
+String _$categoryRemoteDataSourceHash() =>
+    r'f123978b6d7b8b00fe6accdd918b76248bc7445d';
+
 @ProviderFor(categoryRepository)
 final categoryRepositoryProvider = CategoryRepositoryProvider._();
 
@@ -55,7 +103,48 @@ final class CategoryRepositoryProvider
 }
 
 String _$categoryRepositoryHash() =>
-    r'6ef421c493e9eb865ae91459d89f8707409c3c31';
+    r'd8f962176d6cb10749c79a128b280160fe2ab1bf';
+
+@ProviderFor(getCategories)
+final getCategoriesProvider = GetCategoriesProvider._();
+
+final class GetCategoriesProvider
+    extends $FunctionalProvider<GetCategories, GetCategories, GetCategories>
+    with $Provider<GetCategories> {
+  GetCategoriesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getCategoriesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getCategoriesHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetCategories> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  GetCategories create(Ref ref) {
+    return getCategories(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetCategories value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetCategories>(value),
+    );
+  }
+}
+
+String _$getCategoriesHash() => r'b1fd3cd8b52494b23f5be565cdd574e1694d3f7d';
 
 @ProviderFor(categories)
 final categoriesProvider = CategoriesProvider._();
@@ -63,13 +152,11 @@ final categoriesProvider = CategoriesProvider._();
 final class CategoriesProvider
     extends
         $FunctionalProvider<
-          AsyncValue<List<CategoryModel>>,
-          List<CategoryModel>,
-          FutureOr<List<CategoryModel>>
+          AsyncValue<List<Category>>,
+          List<Category>,
+          FutureOr<List<Category>>
         >
-    with
-        $FutureModifier<List<CategoryModel>>,
-        $FutureProvider<List<CategoryModel>> {
+    with $FutureModifier<List<Category>>, $FutureProvider<List<Category>> {
   CategoriesProvider._()
     : super(
         from: null,
@@ -86,14 +173,14 @@ final class CategoriesProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<CategoryModel>> $createElement(
+  $FutureProviderElement<List<Category>> $createElement(
     $ProviderPointer pointer,
   ) => $FutureProviderElement(pointer);
 
   @override
-  FutureOr<List<CategoryModel>> create(Ref ref) {
+  FutureOr<List<Category>> create(Ref ref) {
     return categories(ref);
   }
 }
 
-String _$categoriesHash() => r'6f703169fa798eafa5507275d1d8cd7b842491b3';
+String _$categoriesHash() => r'f6dc5d9e5a1ca2d5443cc26189f47b3943891226';

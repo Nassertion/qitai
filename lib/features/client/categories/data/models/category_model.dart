@@ -1,3 +1,5 @@
+import 'package:qitai/features/client/categories/domain/entities/category.dart';
+
 class CategoryModel {
   final int id;
   final String name;
@@ -52,5 +54,17 @@ class CategoryModel {
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
+  }
+
+  Category toEntity() {
+    return Category(
+      id: id,
+      name: name,
+      sortOrder: sortOrder,
+      isActive: isActive,
+      iconPath: iconPath,
+      iconUrl: iconUrl,
+      parentId: parentId,
+    );
   }
 }

@@ -1,0 +1,5 @@
+import 'package:qitai/features/client/categories/domain/entities/category.dart';
+
+abstract interface class CategoryRepository {
+  Future<List<Category>> getCategories();
+}
