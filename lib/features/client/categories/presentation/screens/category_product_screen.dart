@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
-import 'package:qitai/features/client/categories/presentation/provider/category_search_notifier.dart';
+import 'package:qitai/features/client/categories/presentation/provider/category_product_notifier.dart';
 import 'package:qitai/features/client/categories/presentation/widgets/category_product_card_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
 

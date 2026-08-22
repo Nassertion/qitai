@@ -1,5 +1,5 @@
 import 'package:qitai/core/repositories/product_catalog_repository.dart';
-import 'package:qitai/features/client/categories/presentation/provider/category_search_state.dart';
+import 'package:qitai/features/client/categories/presentation/provider/category_product_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
