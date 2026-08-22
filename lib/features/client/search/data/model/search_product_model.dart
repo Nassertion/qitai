@@ -1,4 +1,3 @@
-
 class SearchProductModel {
   final int id;
   final int categoryId;
