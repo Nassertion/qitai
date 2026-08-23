@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
 import 'package:qitai/features/client/products/data/model/product_detail_model.dart';
 
-class ProductRepository {
+class ProductRepository1 {
   final Dio dio;
 
-  ProductRepository(this.dio);
+  ProductRepository1(this.dio);
 
   Future<ProductDetailModel> fetchProductDetail(int id) async {
     return handleDioRequest(() async {

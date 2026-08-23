@@ -15,11 +15,11 @@ final productRepositoryProvider = ProductRepositoryProvider._();
 final class ProductRepositoryProvider
     extends
         $FunctionalProvider<
-          ProductRepository,
-          ProductRepository,
-          ProductRepository
+          ProductRepository1,
+          ProductRepository1,
+          ProductRepository1
         >
-    with $Provider<ProductRepository> {
+    with $Provider<ProductRepository1> {
   ProductRepositoryProvider._()
     : super(
         from: null,
@@ -36,25 +36,25 @@ final class ProductRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<ProductRepository> $createElement(
+  $ProviderElement<ProductRepository1> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  ProductRepository create(Ref ref) {
+  ProductRepository1 create(Ref ref) {
     return productRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ProductRepository value) {
+  Override overrideWithValue(ProductRepository1 value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ProductRepository>(value),
+      providerOverride: $SyncValueProvider<ProductRepository1>(value),
     );
   }
 }
 
-String _$productRepositoryHash() => r'47dfb6a8a58a14cdc16c6f609cd757f9d9c6beec';
+String _$productRepositoryHash() => r'23985cbb4d5380ee34d24aa9188b3980b6f19ee0';
 
 @ProviderFor(productDetail)
 final productDetailProvider = ProductDetailFamily._();
