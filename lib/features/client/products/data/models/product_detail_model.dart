@@ -1,3 +1,6 @@
+import 'package:qitai/features/client/products/data/models/product_image_model.dart';
+import 'package:qitai/features/client/products/domain/entities/product_details.dart';
+
 class ProductDetailModel {
   final int id;
   final String name;
@@ -9,8 +12,8 @@ class ProductDetailModel {
   final String condition;
   final String quality;
   final String description;
-  final ProductCategoryModel? category;
-  final List<String> images;
+  final ProductDetailCategoryModel? category;
+  final List<ProductImageModel> images;
   final List<ProductCompatibilityModel> compatibilities;
 
   const ProductDetailModel({
@@ -42,12 +45,14 @@ class ProductDetailModel {
       quality: json['quality'] as String? ?? '',
       description: json['description'] as String? ?? '',
       category: json['category'] != null
-          ? ProductCategoryModel.fromJson(
+          ? ProductDetailCategoryModel.fromJson(
               json['category'] as Map<String, dynamic>,
             )
           : null,
       images: (json['images'] as List<dynamic>? ?? [])
-          .map((item) => item.toString())
+          .map(
+            (item) => ProductImageModel.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
       compatibilities: (json['compatibilities'] as List<dynamic>? ?? [])
           .map(
@@ -58,88 +63,89 @@ class ProductDetailModel {
           .toList(),
     );
   }
+  ProductDetail toEntity() {
+    return ProductDetail(
+      id: id,
+      name: name,
+      sku: sku,
+      partNumber: partNumber,
+      price: price,
+      stock: stock,
+      stockStatus: stockStatus,
+      condition: condition,
+      quality: quality,
+      description: description,
+      category: category?.toEntity(),
+      images: images.map((image) => image.toEntity()).toList(),
+        compatibilities: compatibilities
+          .map((compatibility) => compatibility.toEntity())
+          .toList(),
+    );
+  }
 }
 
-class ProductCategoryModel {
+class ProductDetailCategoryModel {
   final int id;
   final String name;
   final String? icon;
 
-  const ProductCategoryModel({
+  const ProductDetailCategoryModel({
     required this.id,
     required this.name,
     required this.icon,
   });
 
-  factory ProductCategoryModel.fromJson(Map<String, dynamic> json) {
-    return ProductCategoryModel(
+  factory ProductDetailCategoryModel.fromJson(Map<String, dynamic> json) {
+    return ProductDetailCategoryModel(
       id: json['id'] as int,
       name: json['name'] as String? ?? '',
       icon: json['icon'] as String?,
     );
   }
+  ProductDetailCategory toEntity() {
+    return ProductDetailCategory(id: id, name: name, icon: icon);
+  }
 }
 
 class ProductCompatibilityModel {
-  final String type;
-  final String label;
-  final String? vinValue;
-  final ProductBrandModel? brand;
-  final ProductCarModel? model;
+  final int id;
+  final String matchType;
+  final int? modelId;
+  final String? vin;
+  final String? modelName;
   final int? yearFrom;
   final int? yearTo;
 
   const ProductCompatibilityModel({
-    required this.type,
-    required this.label,
-    this.vinValue,
-    this.brand,
-    this.model,
-    this.yearFrom,
-    this.yearTo,
+    required this.id,
+    required this.matchType,
+    required this.modelId,
+    required this.vin,
+    required this.modelName,
+    required this.yearFrom,
+    required this.yearTo,
   });
 
   factory ProductCompatibilityModel.fromJson(Map<String, dynamic> json) {
     return ProductCompatibilityModel(
-      type: json['type'] as String? ?? '',
-      label: json['label'] as String? ?? '',
-      vinValue: json['vin_value'] as String?,
-      brand: json['brand'] != null
-          ? ProductBrandModel.fromJson(json['brand'] as Map<String, dynamic>)
-          : null,
-      model: json['model'] != null
-          ? ProductCarModel.fromJson(json['model'] as Map<String, dynamic>)
-          : null,
+      id: json['id'] as int,
+      matchType: json['match_type'] as String? ?? '',
+      modelId: json['model_id'] as int?,
+      vin: json['vin'] as String?,
+      modelName: json['model_name'] as String?,
       yearFrom: json['year_from'] as int?,
       yearTo: json['year_to'] as int?,
     );
   }
-}
-
-class ProductBrandModel {
-  final int id;
-  final String name;
-
-  const ProductBrandModel({required this.id, required this.name});
-
-  factory ProductBrandModel.fromJson(Map<String, dynamic> json) {
-    return ProductBrandModel(
-      id: json['id'] as int,
-      name: json['name'] as String? ?? '',
-    );
-  }
-}
-
-class ProductCarModel {
-  final int id;
-  final String name;
-
-  const ProductCarModel({required this.id, required this.name});
-
-  factory ProductCarModel.fromJson(Map<String, dynamic> json) {
-    return ProductCarModel(
-      id: json['id'] as int,
-      name: json['name'] as String? ?? '',
+  ProductCompatibility toEntity() {
+    return ProductCompatibility(
+      id: id,
+      matchType: matchType,
+      modelId: modelId,
+      vin: vin,
+      modelName: modelName,
+      yearFrom: yearFrom,
+      yearTo: yearTo,
     );
   }
 }

@@ -4,11 +4,11 @@ import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
-import 'package:qitai/features/client/products/data/model/product_detail_model.dart';
+import 'package:qitai/features/client/products/domain/entities/product_details.dart';
 
 class ProductInfoWidget extends StatelessWidget {
   const ProductInfoWidget({super.key, required this.product});
-  final ProductDetailModel product;
+  final ProductDetail product;
   String get qualityLabel {
     switch (product.quality.toLowerCase()) {
       case 'oem':
@@ -19,8 +19,6 @@ class ProductInfoWidget extends StatelessWidget {
         return product.quality;
     }
   }
-  
-
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +87,9 @@ class ProductInfoWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                product.compatibilities.map((e) => e.label).join(" - "),
-
+                product.compatibilities
+                    .map((e) => e.modelName ?? '')
+                    .join(" - "),
                 style: AppTextStyles.semiBoldOverline.copyWith(
                   color: AppColors.primaryText,
                 ),

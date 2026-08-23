@@ -11,7 +11,7 @@ class ProductDetail {
   final String condition;
   final String quality;
   final String description;
-  final ProductCategory? category;
+  final ProductDetailCategory? category;
   final List<ProductImage> images;
   final List<ProductCompatibility> compatibilities;
 
@@ -32,12 +32,12 @@ class ProductDetail {
   });
 }
 
-class ProductCategory {
+class ProductDetailCategory {
   final int id;
   final String name;
   final String? icon;
 
-  const ProductCategory({
+  const ProductDetailCategory({
     required this.id,
     required this.name,
     required this.icon,
@@ -53,7 +53,7 @@ class ProductCompatibility {
   final int? yearFrom;
   final int? yearTo;
 
-  ProductCompatibility({
+ const ProductCompatibility({
     required this.id,
     required this.matchType,
     required this.modelId,
