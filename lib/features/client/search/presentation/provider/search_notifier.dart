@@ -1,19 +1,18 @@
 import 'dart:async';
-import 'package:qitai/core/repositories/product_catalog_repository.dart';
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
+import 'package:qitai/features/client/search/domain/usecases/search_suggestions_use_case.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
+import 'package:qitai/features/client/search/presentation/provider/search_sugesstions_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_notifier.g.dart';
 
-
-
 @riverpod
 class SearchNotifier extends _$SearchNotifier {
-  late final ProductCatalogRepository oldRepo;
+  late final GetSuggestions getSuggestions;
 
   late final GetProducts getProducts;
   Timer? _debounce;
@@ -21,7 +20,7 @@ class SearchNotifier extends _$SearchNotifier {
   @override
   SearchState build() {
     getProducts = ref.read(getProductsProvider);
-oldRepo = ref.read(productCatalogRepositoryProvider);
+    getSuggestions = ref.read(getSuggestionsProvider);
 
     ref.onDispose(() {
       _debounce?.cancel();
@@ -84,7 +83,7 @@ oldRepo = ref.read(productCatalogRepositoryProvider);
     state = state.copyWith(isSuggestionsLoading: true, clearErrorMessage: true);
 
     try {
-      final suggestions = await oldRepo.fetchSuggestions(query: query);
+      final suggestions = await getSuggestions(query: query,);
 
       if (state.query.trim() != query) return;
 
@@ -100,67 +99,63 @@ oldRepo = ref.read(productCatalogRepositoryProvider);
     }
   }
 
-Future<void> submitSearch({String? customQuery, int? categoryId}) async {
-  final rawValue = customQuery ?? state.query;
-  final value = rawValue.trim().toUpperCase();
+  Future<void> submitSearch({String? customQuery, int? categoryId}) async {
+    final rawValue = customQuery ?? state.query;
+    final value = rawValue.trim().toUpperCase();
 
-  final classificationState = ref.read(vehicleProvider);
+    final classificationState = ref.read(vehicleProvider);
 
-  final brandId = classificationState.selectedCarBrand?.id;
-  final modelId = classificationState.selectedModel?.id;
-  final year = classificationState.selectedCarYear?.year;
-  final finalCategoryId = categoryId ?? state.categoryId;
+    final brandId = classificationState.selectedCarBrand?.id;
+    final modelId = classificationState.selectedModel?.id;
+    final year = classificationState.selectedCarYear?.year;
+    final finalCategoryId = categoryId ?? state.categoryId;
 
-  _debounce?.cancel();
+    _debounce?.cancel();
 
-  final hasText = value.isNotEmpty;
-  final hasVehicleFilter =
-      brandId != null || modelId != null || year != null;
-  final hasCategoryFilter = finalCategoryId != null;
+    final hasText = value.isNotEmpty;
+    final hasVehicleFilter = brandId != null || modelId != null || year != null;
+    final hasCategoryFilter = finalCategoryId != null;
 
-  if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
+    if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
 
-  final requestId = ++_searchRequestId;
+    final requestId = ++_searchRequestId;
 
-  state = state.copyWith(
-    query: value,
-    suggestions: [],
-    products: [],
-    hasSearched: true,
-    isProductsLoading: true,
-    clearErrorMessage: true,
-    categoryId: finalCategoryId,
-  );
-
-  try {
-    final isVin = hasText && _isVin(value);
-
-    final products = await getProducts(
-      query: hasText && !isVin ? value : null,
-      vin: hasText && isVin ? value : null,
-      brandId: brandId,
-      modelId: modelId,
-      year: year,
+    state = state.copyWith(
+      query: value,
+      suggestions: [],
+      products: [],
+      hasSearched: true,
+      isProductsLoading: true,
+      clearErrorMessage: true,
       categoryId: finalCategoryId,
     );
 
-    if (!ref.mounted) return;
-    if (requestId != _searchRequestId) return;
+    try {
+      final isVin = hasText && _isVin(value);
 
-    state = state.copyWith(
-      products: products,
-      isProductsLoading: false,
-    );
-  } catch (e) {
-    if (!ref.mounted) return;
-    if (requestId != _searchRequestId) return;
+      final products = await getProducts(
+        query: hasText && !isVin ? value : null,
+        vin: hasText && isVin ? value : null,
+        brandId: brandId,
+        modelId: modelId,
+        year: year,
+        categoryId: finalCategoryId,
+      );
 
-    state = state.copyWith(
-      isProductsLoading: false,
-      errorMessage: e.toString(),
-    );
+      if (!ref.mounted) return;
+      if (requestId != _searchRequestId) return;
+
+      state = state.copyWith(products: products, isProductsLoading: false);
+    } catch (e) {
+      if (!ref.mounted) return;
+      if (requestId != _searchRequestId) return;
+
+      state = state.copyWith(
+        isProductsLoading: false,
+        errorMessage: e.toString(),
+      );
+    }
   }
-}
 
   void clearSearch() {
     _debounce?.cancel();

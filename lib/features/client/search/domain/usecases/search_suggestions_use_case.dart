@@ -6,10 +6,10 @@ class GetSuggestions {
   GetSuggestions(this.repo);
 
   Future<List<SearchSuggestions>> call({
-    required String query , int ?limit
+    required String query
 
   }){
-    return repo.getSuggestions(query: query,limit: limit);
+    return repo.getSuggestions(query: query);
   }
   
 }

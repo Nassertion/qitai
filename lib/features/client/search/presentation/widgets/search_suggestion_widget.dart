@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/features/client/search/data/model/search_suggestion_model.dart';
+import 'package:qitai/features/client/search/domain/entities/search_suggestions.dart';
 
 class SuggestionWidget extends StatelessWidget {
   const SuggestionWidget({
@@ -11,8 +11,8 @@ class SuggestionWidget extends StatelessWidget {
     this.onTapSuggestion,
   });
 
-  final List<SearchSuggestionModel> suggestions;
-  final ValueChanged<SearchSuggestionModel>? onTapSuggestion;
+  final List<SearchSuggestions> suggestions;
+  final ValueChanged<SearchSuggestions>? onTapSuggestion;
 
   @override
   Widget build(BuildContext context) {
