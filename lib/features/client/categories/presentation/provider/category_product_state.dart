@@ -1,23 +1,23 @@
 import 'package:qitai/features/client/products/domain/entities/product.dart';
 
-class CategorySearchState {
+class CategoryProductState {
   final List<Product> products;
   final bool isLoading;
   final String? errorMessage;
 
-  const CategorySearchState({
+  const CategoryProductState({
     this.products = const [],
     this.isLoading = false,
     this.errorMessage,
   });
 
-  CategorySearchState copyWith({
+  CategoryProductState copyWith({
     List<Product>? products,
     bool? isLoading,
     String? errorMessage,
     bool clearErrorMessage = false,
   }) {
-    return CategorySearchState(
+    return CategoryProductState(
       products: products ?? this.products,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),

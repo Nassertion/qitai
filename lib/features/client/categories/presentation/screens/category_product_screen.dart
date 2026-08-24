@@ -9,25 +9,23 @@ import 'package:qitai/features/client/categories/presentation/provider/category_
 import 'package:qitai/features/client/categories/presentation/widgets/category_product_card_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
 
-class CategorySearchScreen extends ConsumerStatefulWidget {
-  const CategorySearchScreen({super.key, required this.id, required this.name});
+class CategoryProductsScreen extends ConsumerWidget {
+  const CategoryProductsScreen({
+    super.key,
+    required this.id,
+    required this.name,
+  });
 
   final int id;
   final String name;
 
   @override
-  ConsumerState<CategorySearchScreen> createState() =>
-      _CategorySearchScreenState();
-}
-
-class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final searchState = ref.watch(categorySearchProvider(widget.id));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productsState = ref.watch(categoryProductProvider(id));
 
     return Scaffold(
       appBar: CustomAppbar(
-        title: widget.name,
+        title: name,
         action: IconButton(
           padding: const EdgeInsets.only(left: 4),
           onPressed: () {
@@ -43,26 +41,41 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
       body: AppPagePadding(
         child: CustomScrollView(
           slivers: [
-            const SliverToBoxAdapter(child: ClassificationWidget()),
+            const SliverToBoxAdapter(
+              child: ClassificationWidget(),
+            ),
 
-            if (searchState.isLoading)
+            if (productsState.isLoading)
               const SliverFillRemaining(
                 hasScrollBody: false,
-                child: Center(child: CustomLoading()),
+                child: Center(
+                  child: CustomLoading(),
+                ),
+              )
+            else if (productsState.errorMessage != null)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Text(productsState.errorMessage!),
+                ),
               )
             else
               SliverGrid(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final product = searchState.products[index];
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final product = productsState.products[index];
 
-                  return CategoryProductCardWidget(
-                    product: product,
-                    onTap: () {
-                      context.push("/product/${product.id}");
-                    },
-                  );
-                }, childCount: searchState.products.length),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    return CategoryProductCardWidget(
+                      product: product,
+                      onTap: () {
+                        context.push("/product/${product.id}");
+                      },
+                    );
+                  },
+                  childCount: productsState.products.length,
+                ),
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
@@ -70,7 +83,9 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 ),
               ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
+            ),
           ],
         ),
       ),

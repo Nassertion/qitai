@@ -1,4 +1,3 @@
-import 'package:qitai/core/repositories/product_catalog_repository.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_product_state.dart';
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
@@ -6,15 +5,15 @@ import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_no
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'category_search_notifier.g.dart';
+part 'category_product_notifier.g.dart';
 
 @riverpod
-class CategorySearchNotifier extends _$CategorySearchNotifier {
+class CategoryProductNotifier extends _$CategoryProductNotifier {
   late final GetProducts getProducts;
   late final int _categoryId;
 
   @override
-  CategorySearchState build(int categoryId) {
+  CategoryProductState build(int categoryId) {
     getProducts = ref.read(getProductsProvider);
     _categoryId = categoryId;
 
@@ -38,10 +37,9 @@ class CategorySearchNotifier extends _$CategorySearchNotifier {
       loadProducts();
     });
 
-      Future.microtask(() => loadProducts());  
+    Future.microtask(() => loadProducts());
 
-
-    return const CategorySearchState();
+    return const CategoryProductState();
   }
 
   Future<void> loadProducts() async {
