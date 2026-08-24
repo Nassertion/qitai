@@ -1,10 +1,10 @@
-import 'package:qitai/features/client/search/data/model/search_product_model.dart';
+import 'package:qitai/features/client/products/domain/entities/product.dart';
 import 'package:qitai/features/client/search/data/model/search_suggestion_model.dart';
 
 class SearchState {
   final String query;
   final List<SearchSuggestionModel> suggestions;
-  final List<SearchProductModel> products;
+  final List<Product> products;
   final bool isSuggestionsLoading;
   final bool isProductsLoading;
   final bool hasSearched;
@@ -25,7 +25,7 @@ final int? categoryId;
   SearchState copyWith({
     String? query,
     List<SearchSuggestionModel>? suggestions,
-    List<SearchProductModel>? products,
+    List<Product>? products,
     bool? isSuggestionsLoading,
     bool? isProductsLoading,
     bool? hasSearched,

@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
-import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
+import 'package:qitai/features/client/products/presentation/provider/product_detail_provider.dart';
 import 'package:qitai/features/client/products/presentation/widgets/product_info_widget.dart';
 import 'package:qitai/features/client/products/presentation/widgets/product_slide_widget.dart';
 import 'package:qitai/features/client/products/presentation/widgets/add_to_cart_section.dart';

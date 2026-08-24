@@ -1,36 +1,28 @@
 import 'package:qitai/core/network/dio_provider.dart';
-import 'package:qitai/features/client/products/data/datasources/product_detail_remote_data_source.dart';
-import 'package:qitai/features/client/products/data/repository/product_detail_repository_impl.dart';
-import 'package:qitai/features/client/products/domain/entities/product_details.dart';
-import 'package:qitai/features/client/products/domain/repositories/product_details_repository.dart';
-import 'package:qitai/features/client/products/domain/usecases/get_product_details.dart';
+import 'package:qitai/features/client/products/data/datasources/product_remote_data_source.dart';
+import 'package:qitai/features/client/products/data/repository/product_repository_impl.dart';
+import 'package:qitai/features/client/products/domain/repositories/product_repository.dart';
+import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_provider.g.dart';
 
 @riverpod
-ProductDetailRemoteDataSource productDetailRemoteDataSource(Ref ref) {
+ProductRemoteDataSource productRemoteDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
-  return ProductDetailRemoteDataSource(dio);
+  return ProductRemoteDataSource(dio);
 }
 
 @riverpod
-ProductDetailsRepository productDetailsRepository(Ref ref) {
-  final dataSource = ref.watch(productDetailRemoteDataSourceProvider);
+ProductRepository productRepository(Ref ref) {
+  final dataSource = ref.watch(productRemoteDataSourceProvider);
 
-  return ProductDetailRepositoryImpl(dataSource);
+  return ProductRepositoryImpl(dataSource);
 }
 
 @riverpod
-GetProductDetails getProductDetails(Ref ref) {
-  final repository = ref.watch(productDetailsRepositoryProvider);
+GetProducts getProducts(Ref ref) {
+  final repository = ref.watch(productRepositoryProvider);
 
-  return GetProductDetails(repository);
-}
-
-@riverpod
-Future<ProductDetail> productDetail(Ref ref, int productId) {
-  final getProductDetails = ref.watch(getProductDetailsProvider);
-
-  return getProductDetails(productId);
+  return GetProducts(repository);
 }

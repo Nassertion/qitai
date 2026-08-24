@@ -1,5 +1,7 @@
+import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_product_state.dart';
 import 'package:qitai/core/repositories/product_catalog_repository.dart';
+import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,11 +14,11 @@ part 'all_product_provider.g.dart';
 // );
 @Riverpod(keepAlive: true)
 class AllProductsNotifier extends _$AllProductsNotifier {
-  late final ProductCatalogRepository repo;
+  late final GetProducts getProducts;
 
   @override
   AllProductsState build() {
-    repo = ref.read(productCatalogRepositoryProvider);
+    getProducts = ref.read(getProductsProvider);
 
     ref.listen<VehicleState>(vehicleProvider, (previous, next) {
       final prevBrandId = previous?.selectedCarBrand?.id;
@@ -51,7 +53,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
     state = state.copyWith(isLoading: true, clearErrorMessage: true);
 
     try {
-      final products = await repo.searchProducts(
+      final products = await getProducts(
         brandId: brandId,
         modelId: modelId,
         year: year,

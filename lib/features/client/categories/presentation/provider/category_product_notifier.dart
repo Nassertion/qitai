@@ -1,5 +1,7 @@
 import 'package:qitai/core/repositories/product_catalog_repository.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_product_state.dart';
+import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
+import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -8,12 +10,12 @@ part 'category_search_notifier.g.dart';
 
 @riverpod
 class CategorySearchNotifier extends _$CategorySearchNotifier {
-  late final ProductCatalogRepository repo;
+  late final GetProducts getProducts;
   late final int _categoryId;
 
   @override
   CategorySearchState build(int categoryId) {
-    repo = ref.read(productCatalogRepositoryProvider);
+    getProducts = ref.read(getProductsProvider);
     _categoryId = categoryId;
 
     ref.listen<VehicleState>(vehicleProvider, (previous, next) {
@@ -52,7 +54,7 @@ class CategorySearchNotifier extends _$CategorySearchNotifier {
     state = state.copyWith(isLoading: true, clearErrorMessage: true);
 
     try {
-      final products = await repo.searchProducts(
+      final products = await getProducts(
         brandId: brandId,
         modelId: modelId,
         year: year,

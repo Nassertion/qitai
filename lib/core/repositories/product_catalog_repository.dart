@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
+import 'package:qitai/features/client/products/data/models/product_model.dart';
 import 'package:qitai/features/client/search/data/model/search_product_model.dart';
 import 'package:qitai/features/client/search/data/model/search_suggestion_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -38,7 +39,7 @@ class ProductCatalogRepository {
     });
   }
 
-  Future<List<SearchProductModel>> searchProducts({
+  Future<List<ProductModel>> searchProducts({
     String? query,
     String? vin,
     int? brandId,
@@ -63,7 +64,7 @@ class ProductCatalogRepository {
 
       return data
           .map(
-            (item) => SearchProductModel.fromJson(item as Map<String, dynamic>),
+            (item) => ProductModel.fromJson(item as Map<String, dynamic>),
           )
           .toList();
     });

@@ -20,7 +20,7 @@ class AllProductsScreen extends ConsumerStatefulWidget {
 }
 
 class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
-    late final VehicleNotifier _vehicleNotifier;
+  late final VehicleNotifier _vehicleNotifier;
 
   @override
   void initState() {
@@ -32,12 +32,11 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
     });
   }
 
-
   @override
   void dispose() {
     Future(() {
-    _vehicleNotifier.clearAll();
-  });
+      _vehicleNotifier.clearAll();
+    });
     super.dispose();
   }
 

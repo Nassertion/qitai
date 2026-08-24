@@ -4,7 +4,7 @@ import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/helpers/quality_helper.dart';
-import 'package:qitai/features/client/search/data/model/search_product_model.dart';
+import 'package:qitai/features/client/products/domain/entities/product.dart';
 
 class CategoryProductCardWidget extends StatelessWidget {
   const CategoryProductCardWidget({
@@ -13,7 +13,7 @@ class CategoryProductCardWidget extends StatelessWidget {
     this.onTap,
   });
 
-  final SearchProductModel product;
+  final Product product;
   final VoidCallback? onTap;
 
 

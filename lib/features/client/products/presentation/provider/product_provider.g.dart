@@ -9,223 +9,138 @@ part of 'product_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(productDetailRemoteDataSource)
-final productDetailRemoteDataSourceProvider =
-    ProductDetailRemoteDataSourceProvider._();
+@ProviderFor(productRemoteDataSource)
+final productRemoteDataSourceProvider = ProductRemoteDataSourceProvider._();
 
-final class ProductDetailRemoteDataSourceProvider
+final class ProductRemoteDataSourceProvider
     extends
         $FunctionalProvider<
-          ProductDetailRemoteDataSource,
-          ProductDetailRemoteDataSource,
-          ProductDetailRemoteDataSource
+          ProductRemoteDataSource,
+          ProductRemoteDataSource,
+          ProductRemoteDataSource
         >
-    with $Provider<ProductDetailRemoteDataSource> {
-  ProductDetailRemoteDataSourceProvider._()
+    with $Provider<ProductRemoteDataSource> {
+  ProductRemoteDataSourceProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'productDetailRemoteDataSourceProvider',
+        name: r'productRemoteDataSourceProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$productDetailRemoteDataSourceHash();
+  String debugGetCreateSourceHash() => _$productRemoteDataSourceHash();
 
   @$internal
   @override
-  $ProviderElement<ProductDetailRemoteDataSource> $createElement(
+  $ProviderElement<ProductRemoteDataSource> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  ProductDetailRemoteDataSource create(Ref ref) {
-    return productDetailRemoteDataSource(ref);
+  ProductRemoteDataSource create(Ref ref) {
+    return productRemoteDataSource(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ProductDetailRemoteDataSource value) {
+  Override overrideWithValue(ProductRemoteDataSource value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ProductDetailRemoteDataSource>(
-        value,
-      ),
+      providerOverride: $SyncValueProvider<ProductRemoteDataSource>(value),
     );
   }
 }
 
-String _$productDetailRemoteDataSourceHash() =>
-    r'4d33ded9f9b1668e6f42d4882b280e179c924da1';
+String _$productRemoteDataSourceHash() =>
+    r'f199ec8d720c1fe924cfabaac7950c34720b009d';
 
-@ProviderFor(productDetailsRepository)
-final productDetailsRepositoryProvider = ProductDetailsRepositoryProvider._();
+@ProviderFor(productRepository)
+final productRepositoryProvider = ProductRepositoryProvider._();
 
-final class ProductDetailsRepositoryProvider
+final class ProductRepositoryProvider
     extends
         $FunctionalProvider<
-          ProductDetailsRepository,
-          ProductDetailsRepository,
-          ProductDetailsRepository
+          ProductRepository,
+          ProductRepository,
+          ProductRepository
         >
-    with $Provider<ProductDetailsRepository> {
-  ProductDetailsRepositoryProvider._()
+    with $Provider<ProductRepository> {
+  ProductRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'productDetailsRepositoryProvider',
+        name: r'productRepositoryProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$productDetailsRepositoryHash();
+  String debugGetCreateSourceHash() => _$productRepositoryHash();
 
   @$internal
   @override
-  $ProviderElement<ProductDetailsRepository> $createElement(
+  $ProviderElement<ProductRepository> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  ProductDetailsRepository create(Ref ref) {
-    return productDetailsRepository(ref);
+  ProductRepository create(Ref ref) {
+    return productRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ProductDetailsRepository value) {
+  Override overrideWithValue(ProductRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ProductDetailsRepository>(value),
+      providerOverride: $SyncValueProvider<ProductRepository>(value),
     );
   }
 }
 
-String _$productDetailsRepositoryHash() =>
-    r'60984303993b7f221ce723630f5b84f1e58caed1';
+String _$productRepositoryHash() => r'9a7bdb94d9fb8e88574459ba2312bd97fbea3d7e';
 
-@ProviderFor(getProductDetails)
-final getProductDetailsProvider = GetProductDetailsProvider._();
+@ProviderFor(getProducts)
+final getProductsProvider = GetProductsProvider._();
 
-final class GetProductDetailsProvider
-    extends
-        $FunctionalProvider<
-          GetProductDetails,
-          GetProductDetails,
-          GetProductDetails
-        >
-    with $Provider<GetProductDetails> {
-  GetProductDetailsProvider._()
+final class GetProductsProvider
+    extends $FunctionalProvider<GetProducts, GetProducts, GetProducts>
+    with $Provider<GetProducts> {
+  GetProductsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'getProductDetailsProvider',
+        name: r'getProductsProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$getProductDetailsHash();
+  String debugGetCreateSourceHash() => _$getProductsHash();
 
   @$internal
   @override
-  $ProviderElement<GetProductDetails> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  $ProviderElement<GetProducts> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  GetProductDetails create(Ref ref) {
-    return getProductDetails(ref);
+  GetProducts create(Ref ref) {
+    return getProducts(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetProductDetails value) {
+  Override overrideWithValue(GetProducts value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<GetProductDetails>(value),
+      providerOverride: $SyncValueProvider<GetProducts>(value),
     );
   }
 }
 
-String _$getProductDetailsHash() => r'a2e9e13f50f89a0b5c382630b0fc8c1b7514f95d';
-
-@ProviderFor(productDetail)
-final productDetailProvider = ProductDetailFamily._();
-
-final class ProductDetailProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<ProductDetail>,
-          ProductDetail,
-          FutureOr<ProductDetail>
-        >
-    with $FutureModifier<ProductDetail>, $FutureProvider<ProductDetail> {
-  ProductDetailProvider._({
-    required ProductDetailFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'productDetailProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
-
-  @override
-  String debugGetCreateSourceHash() => _$productDetailHash();
-
-  @override
-  String toString() {
-    return r'productDetailProvider'
-        ''
-        '($argument)';
-  }
-
-  @$internal
-  @override
-  $FutureProviderElement<ProductDetail> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<ProductDetail> create(Ref ref) {
-    final argument = this.argument as int;
-    return productDetail(ref, argument);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ProductDetailProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$productDetailHash() => r'3d1c5cdb4cb790d480c36de98812975b20bc8e2c';
-
-final class ProductDetailFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<ProductDetail>, int> {
-  ProductDetailFamily._()
-    : super(
-        retry: null,
-        name: r'productDetailProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  ProductDetailProvider call(int productId) =>
-      ProductDetailProvider._(argument: productId, from: this);
-
-  @override
-  String toString() => r'productDetailProvider';
-}
+String _$getProductsHash() => r'873154fffb66478eb2f53d68bb36eb81fcf50be5';

@@ -1,7 +1,7 @@
-import 'package:qitai/features/client/search/data/model/search_product_model.dart';
+import 'package:qitai/features/client/products/domain/entities/product.dart';
 
 class AllProductsState {
-  final List<SearchProductModel> products;
+  final List<Product> products;
   final bool isLoading;
   final String? errorMessage;
 
@@ -12,7 +12,7 @@ class AllProductsState {
   });
 
   AllProductsState copyWith({
-    List<SearchProductModel>? products,
+    List<Product>? products,
     bool? isLoading,
     String? errorMessage,
     bool clearErrorMessage = false,
@@ -20,8 +20,9 @@ class AllProductsState {
     return AllProductsState(
       products: products ?? this.products,
       isLoading: isLoading ?? this.isLoading,
-      errorMessage:
-          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: clearErrorMessage
+          ? null
+          : (errorMessage ?? this.errorMessage),
     );
   }
 }

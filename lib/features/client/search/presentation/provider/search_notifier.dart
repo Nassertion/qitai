@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:qitai/core/repositories/product_catalog_repository.dart';
+import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
+import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
@@ -11,12 +13,15 @@ part 'search_notifier.g.dart';
 
 @riverpod
 class SearchNotifier extends _$SearchNotifier {
-  late final ProductCatalogRepository repo;
+  late final ProductCatalogRepository oldRepo;
+
+  late final GetProducts getProducts;
   Timer? _debounce;
   int _searchRequestId = 0;
   @override
   SearchState build() {
-    repo = ref.read(productCatalogRepositoryProvider);
+    getProducts = ref.read(getProductsProvider);
+oldRepo = ref.read(productCatalogRepositoryProvider);
 
     ref.onDispose(() {
       _debounce?.cancel();
@@ -79,7 +84,7 @@ class SearchNotifier extends _$SearchNotifier {
     state = state.copyWith(isSuggestionsLoading: true, clearErrorMessage: true);
 
     try {
-      final suggestions = await repo.fetchSuggestions(query: query);
+      final suggestions = await oldRepo.fetchSuggestions(query: query);
 
       if (state.query.trim() != query) return;
 
@@ -130,7 +135,7 @@ Future<void> submitSearch({String? customQuery, int? categoryId}) async {
   try {
     final isVin = hasText && _isVin(value);
 
-    final products = await repo.searchProducts(
+    final products = await getProducts(
       query: hasText && !isVin ? value : null,
       vin: hasText && isVin ? value : null,
       brandId: brandId,

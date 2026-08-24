@@ -1,6 +1,6 @@
- import 'package:qitai/features/client/search/data/model/search_product_model.dart';
+import 'package:qitai/features/client/products/domain/entities/product.dart';
 
-String qualityLabel (SearchProductModel product){
+String qualityLabel (Product product){
     switch (product.quality.toLowerCase()) {
       case 'oem':
         return 'أصلي';
@@ -11,6 +11,6 @@ String qualityLabel (SearchProductModel product){
     }
   }
 
-  bool isAftermarket(SearchProductModel product) {
+  bool isAftermarket(Product product) {
     return product.quality.toLowerCase() == 'aftermarket';
   }
