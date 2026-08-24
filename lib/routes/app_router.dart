@@ -73,7 +73,7 @@ final GoRouter appRouter = GoRouter(
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           final name = state.extra as String;
-          return CategorySearchScreen( id : int.parse(id) , name: name,);
+          return CategoryProductsScreen( id : int.parse(id) , name: name,);
         },
       ),
   ],
