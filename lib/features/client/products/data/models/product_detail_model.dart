@@ -1,5 +1,5 @@
 import 'package:qitai/features/client/products/data/models/product_image_model.dart';
-import 'package:qitai/features/client/products/domain/entities/product_details.dart';
+import 'package:qitai/features/client/products/domain/entities/product_detail.dart';
 
 class ProductDetailModel {
   final int id;

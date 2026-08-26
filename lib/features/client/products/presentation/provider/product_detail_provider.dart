@@ -1,9 +1,9 @@
 import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/products/data/datasources/product_detail_remote_data_source.dart';
-import 'package:qitai/features/client/products/data/repository/product_detail_repository_impl.dart';
-import 'package:qitai/features/client/products/domain/entities/product_details.dart';
-import 'package:qitai/features/client/products/domain/repositories/product_details_repository.dart';
-import 'package:qitai/features/client/products/domain/usecases/get_product_details.dart';
+import 'package:qitai/features/client/products/data/repositories/product_detail_repository_impl.dart';
+import 'package:qitai/features/client/products/domain/entities/product_detail.dart';
+import 'package:qitai/features/client/products/domain/repositories/product_detail_repository.dart';
+import 'package:qitai/features/client/products/domain/usecases/get_product_detail.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_detail_provider.g.dart';
@@ -15,22 +15,22 @@ ProductDetailRemoteDataSource productDetailRemoteDataSource(Ref ref) {
 }
 
 @riverpod
-ProductDetailsRepository productDetailsRepository(Ref ref) {
+ProductDetailRepository productDetailRepository(Ref ref) {
   final dataSource = ref.watch(productDetailRemoteDataSourceProvider);
 
   return ProductDetailRepositoryImpl(dataSource);
 }
 
 @riverpod
-GetProductDetails getProductDetails(Ref ref) {
-  final repository = ref.watch(productDetailsRepositoryProvider);
+GetProductDetail getProductDetail(Ref ref) {
+  final repository = ref.watch(productDetailRepositoryProvider);
 
-  return GetProductDetails(repository);
+  return GetProductDetail(repository);
 }
 
 @riverpod
 Future<ProductDetail> productDetail(Ref ref, int productId) {
-  final getProductDetails = ref.watch(getProductDetailsProvider);
+  final getProductDetail = ref.watch(getProductDetailProvider);
 
-  return getProductDetails(productId);
+  return getProductDetail(productId);
 }

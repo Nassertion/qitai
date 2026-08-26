@@ -27,7 +27,7 @@ class ProductRemoteDataSource {
         },
       );
 
-      final List data = response.data['data'] as List;
+      final data = response.data['data'] as List<dynamic>;
 
       return data
           .map(

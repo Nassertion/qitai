@@ -1,11 +1,10 @@
 import 'package:qitai/features/client/products/data/datasources/product_remote_data_source.dart';
-import 'package:qitai/features/client/products/data/models/product_model.dart';
 import 'package:qitai/features/client/products/domain/entities/product.dart';
 import 'package:qitai/features/client/products/domain/repositories/product_repository.dart';
 
 class ProductRepositoryImpl implements ProductRepository { 
-  final ProductRemoteDataSource datasource;
-  ProductRepositoryImpl(this.datasource);
+  final ProductRemoteDataSource dataSource;
+  ProductRepositoryImpl(this.dataSource);
 @override
   Future<List<Product>> getProducts({
     int? brandId,
@@ -15,7 +14,7 @@ class ProductRepositoryImpl implements ProductRepository {
     String? vin,
     int? year,
   }) async {
-    final List<ProductModel> productModel = await datasource.getProducts(
+    final productModels = await dataSource.getProducts(
       brandId: brandId,
       categoryId: categoryId,
       modelId: modelId,
@@ -23,8 +22,7 @@ class ProductRepositoryImpl implements ProductRepository {
       vin: vin,
       year: year,
     );
-    final List<Product> product = productModel.map((model) => model.toEntity()).toList();
-    return product;
+    return productModels.map((model) => model.toEntity()).toList();
     
   }
 }
