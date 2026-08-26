@@ -1,13 +1,12 @@
-  import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
 import 'package:qitai/features/client/search/data/models/search_suggestion_model.dart';
 
+class SearchSuggestionRemoteDataSource {
+  final Dio dio;
+  SearchSuggestionRemoteDataSource(this.dio);
 
-  class SearchSuggestionsRemoteDataSource {
-    final Dio dio;
-    SearchSuggestionsRemoteDataSource(this.dio);
-
-    Future<List<SearchSuggestionModel>> getSuggestions({
+  Future<List<SearchSuggestionModel>> getSuggestions({
     required String query,
     int limit = 6,
   }) async {
@@ -27,5 +26,4 @@ import 'package:qitai/features/client/search/data/models/search_suggestion_model
           .toList();
     });
   }
-    
-  }
+}

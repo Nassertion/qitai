@@ -1,15 +1,15 @@
 import 'package:qitai/features/client/products/domain/entities/product.dart';
-import 'package:qitai/features/client/search/domain/entities/search_suggestions.dart';
+import 'package:qitai/features/client/search/domain/entities/search_suggestion.dart';
 
 class SearchState {
   final String query;
-  final List<SearchSuggestions> suggestions;
+  final List<SearchSuggestion> suggestions;
   final List<Product> products;
   final bool isSuggestionsLoading;
   final bool isProductsLoading;
   final bool hasSearched;
   final String? errorMessage;
-final int? categoryId;
+  final int? categoryId;
 
   const SearchState({
     this.query = '',
@@ -19,20 +19,19 @@ final int? categoryId;
     this.isProductsLoading = false,
     this.hasSearched = false,
     this.errorMessage,
-    this.categoryId
+    this.categoryId,
   });
 
   SearchState copyWith({
     String? query,
-    List<SearchSuggestions>? suggestions,
+    List<SearchSuggestion>? suggestions,
     List<Product>? products,
     bool? isSuggestionsLoading,
     bool? isProductsLoading,
     bool? hasSearched,
     String? errorMessage,
     bool clearErrorMessage = false,
-      int? categoryId,
-
+    int? categoryId,
   }) {
     return SearchState(
       query: query ?? this.query,
@@ -41,10 +40,10 @@ final int? categoryId;
       isSuggestionsLoading: isSuggestionsLoading ?? this.isSuggestionsLoading,
       isProductsLoading: isProductsLoading ?? this.isProductsLoading,
       hasSearched: hasSearched ?? this.hasSearched,
-      errorMessage:
-          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
-              categoryId: categoryId ?? this.categoryId,
-
+      errorMessage: clearErrorMessage
+          ? null
+          : (errorMessage ?? this.errorMessage),
+      categoryId: categoryId ?? this.categoryId,
     );
   }
 }

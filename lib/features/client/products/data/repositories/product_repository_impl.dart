@@ -14,7 +14,7 @@ class ProductRepositoryImpl implements ProductRepository {
     String? vin,
     int? year,
   }) async {
-    final productModels = await dataSource.getProducts(
+    final productModel = await dataSource.getProducts(
       brandId: brandId,
       categoryId: categoryId,
       modelId: modelId,
@@ -22,7 +22,7 @@ class ProductRepositoryImpl implements ProductRepository {
       vin: vin,
       year: year,
     );
-    return productModels.map((model) => model.toEntity()).toList();
+    return productModel.map((model) => model.toEntity()).toList();
     
   }
 }

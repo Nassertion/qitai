@@ -1,5 +1,5 @@
-import 'package:qitai/features/client/search/domain/entities/search_suggestions.dart';
+import 'package:qitai/features/client/search/domain/entities/search_suggestion.dart';
 
-abstract interface class SearchSuggestionsRepository {
-  Future<List<SearchSuggestions>> getSuggestions({required String query});
+abstract interface class SearchSuggestionRepository {
+  Future<List<SearchSuggestion>> getSuggestions({required String query});
 }

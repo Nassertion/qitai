@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
-import 'package:qitai/features/client/search/domain/usecases/search_suggestions_use_case.dart';
+import 'package:qitai/features/client/search/domain/usecases/get_search_suggestions.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
-import 'package:qitai/features/client/search/presentation/provider/search_sugesstions_provider.dart';
+import 'package:qitai/features/client/search/presentation/provider/search_suggestions_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,7 +12,7 @@ part 'search_notifier.g.dart';
 
 @riverpod
 class SearchNotifier extends _$SearchNotifier {
-  late final GetSuggestions getSuggestions;
+  late final GetSearchSuggestions getSuggestions;
 
   late final GetProducts getProducts;
   Timer? _debounce;
@@ -20,8 +20,7 @@ class SearchNotifier extends _$SearchNotifier {
   @override
   SearchState build() {
     getProducts = ref.read(getProductsProvider);
-    getSuggestions = ref.read(getSuggestionsProvider);
-
+getSuggestions = ref.read(getSearchSuggestionsProvider);
     ref.onDispose(() {
       _debounce?.cancel();
     });

@@ -1,4 +1,4 @@
-import 'package:qitai/features/client/search/domain/entities/search_suggestions.dart';
+import 'package:qitai/features/client/search/domain/entities/search_suggestion.dart';
 
 class SearchSuggestionModel {
   final int id;
@@ -24,8 +24,8 @@ class SearchSuggestionModel {
       categoryId: json['category_id'] as int? ?? 0,
     );
   }
-  SearchSuggestions toEntity() {
-    return SearchSuggestions(
+  SearchSuggestion toEntity() {
+    return SearchSuggestion(
       id: id,
       name: name,
       sku: sku,
