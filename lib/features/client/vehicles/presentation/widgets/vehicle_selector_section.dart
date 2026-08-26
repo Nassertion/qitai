@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/constants/spaces.dart';
-import 'package:qitai/features/client/vehicles/data/model/vehicles_model1.dart';
+import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
+import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
+import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_bottom_sheet.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
@@ -14,7 +16,7 @@ class VehicleSelectorSection extends ConsumerWidget {
     final notifier = ref.read(vehicleProvider.notifier);
 
     void onBrandTap() {
-      VehicleFilterBottomSheet.show<CarBrand1>(
+      VehicleFilterBottomSheet.show<CarBrand>(
         context: context,
         items: state.carBrands,
         title: 'اختر نوع البراند',
@@ -26,13 +28,12 @@ class VehicleSelectorSection extends ConsumerWidget {
     }
 
     void onModelTap() {
-      final state = ref.read(vehicleProvider);
-      final notifier = ref.read(vehicleProvider.notifier);
+
 
       if (state.selectedCarBrand == null) return;
       if (state.isModelsLoading) return;
 
-      VehicleFilterBottomSheet.show<CarModel1>(
+      VehicleFilterBottomSheet.show<CarModel>(
         context: context,
         items: state.models,
         title: 'اختر الموديل',
@@ -47,13 +48,12 @@ class VehicleSelectorSection extends ConsumerWidget {
     }
 
     void onYearTap() {
-      final state = ref.read(vehicleProvider);
-      final notifier = ref.read(vehicleProvider.notifier);
+
 
       if (state.selectedModel == null) return;
       if (state.isYearsLoading) return;
 
-      VehicleFilterBottomSheet.show<CarYear1>(
+      VehicleFilterBottomSheet.show<CarYear>(
         context: context,
         items: state.carYears,
         title: 'اختر السنة',

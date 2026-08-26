@@ -9,53 +9,6 @@ part of 'vehicles_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(vehicleRepository)
-final vehicleRepositoryProvider = VehicleRepositoryProvider._();
-
-final class VehicleRepositoryProvider
-    extends
-        $FunctionalProvider<
-          VehicleRepository1,
-          VehicleRepository1,
-          VehicleRepository1
-        >
-    with $Provider<VehicleRepository1> {
-  VehicleRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'vehicleRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$vehicleRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<VehicleRepository1> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  VehicleRepository1 create(Ref ref) {
-    return vehicleRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(VehicleRepository1 value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<VehicleRepository1>(value),
-    );
-  }
-}
-
-String _$vehicleRepositoryHash() => r'ba3fd7aa41bed628bff3fec4197128d18880a3c6';
-
 @ProviderFor(VehicleNotifier)
 final vehicleProvider = VehicleNotifierProvider._();
 
@@ -88,7 +41,7 @@ final class VehicleNotifierProvider
   }
 }
 
-String _$vehicleNotifierHash() => r'733a0e08517a11d9a584df0c27648636529bb9b6';
+String _$vehicleNotifierHash() => r'fabf66d8bcc36d463d9fff04d9b9aaef5fc458c7';
 
 abstract class _$VehicleNotifier extends $Notifier<VehicleState> {
   VehicleState build();

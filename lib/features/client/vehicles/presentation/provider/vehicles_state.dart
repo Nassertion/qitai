@@ -1,13 +1,15 @@
-import 'package:qitai/features/client/vehicles/data/model/vehicles_model1.dart';
+import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
+import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
+import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
 
 class VehicleState {
-  final List<CarBrand1> carBrands;
-  final List<CarModel1> models;
-  final List<CarYear1> carYears;
+  final List<CarBrand> carBrands;
+  final List<CarModel> models;
+  final List<CarYear> carYears;
 
-  final CarBrand1? selectedCarBrand;
-  final CarModel1? selectedModel;
-  final CarYear1? selectedCarYear;
+  final CarBrand? selectedCarBrand;
+  final CarModel? selectedModel;
+  final CarYear? selectedCarYear;
 
   final bool isBrandsLoading;
   final bool isModelsLoading;
@@ -29,12 +31,12 @@ class VehicleState {
   });
 
   VehicleState copyWith({
-    List<CarBrand1>? carBrands,
-    List<CarModel1>? models,
-    List<CarYear1>? carYears,
-    CarBrand1? selectedCarBrand,
-    CarModel1? selectedModel,
-    CarYear1? selectedCarYear,
+    List<CarBrand>? carBrands,
+    List<CarModel>? models,
+    List<CarYear>? carYears,
+    CarBrand? selectedCarBrand,
+    CarModel? selectedModel,
+    CarYear? selectedCarYear,
     bool? isBrandsLoading,
     bool? isModelsLoading,
     bool? isYearsLoading,
