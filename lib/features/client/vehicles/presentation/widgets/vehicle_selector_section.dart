@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/constants/spaces.dart';
-import 'package:qitai/features/client/vehicles/data/model/vehicles_model.dart';
+import 'package:qitai/features/client/vehicles/data/model/vehicles_model1.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_bottom_sheet.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
@@ -14,7 +14,7 @@ class VehicleSelectorSection extends ConsumerWidget {
     final notifier = ref.read(vehicleProvider.notifier);
 
     void onBrandTap() {
-      VehicleFilterBottomSheet.show<CarBrand>(
+      VehicleFilterBottomSheet.show<CarBrand1>(
         context: context,
         items: state.carBrands,
         title: 'اختر نوع البراند',
@@ -32,7 +32,7 @@ class VehicleSelectorSection extends ConsumerWidget {
       if (state.selectedCarBrand == null) return;
       if (state.isModelsLoading) return;
 
-      VehicleFilterBottomSheet.show<CarModel>(
+      VehicleFilterBottomSheet.show<CarModel1>(
         context: context,
         items: state.models,
         title: 'اختر الموديل',
@@ -53,7 +53,7 @@ class VehicleSelectorSection extends ConsumerWidget {
       if (state.selectedModel == null) return;
       if (state.isYearsLoading) return;
 
-      VehicleFilterBottomSheet.show<CarYear>(
+      VehicleFilterBottomSheet.show<CarYear1>(
         context: context,
         items: state.carYears,
         title: 'اختر السنة',

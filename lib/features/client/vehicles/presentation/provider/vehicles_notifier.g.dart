@@ -15,11 +15,11 @@ final vehicleRepositoryProvider = VehicleRepositoryProvider._();
 final class VehicleRepositoryProvider
     extends
         $FunctionalProvider<
-          VehicleRepository,
-          VehicleRepository,
-          VehicleRepository
+          VehicleRepository1,
+          VehicleRepository1,
+          VehicleRepository1
         >
-    with $Provider<VehicleRepository> {
+    with $Provider<VehicleRepository1> {
   VehicleRepositoryProvider._()
     : super(
         from: null,
@@ -36,25 +36,25 @@ final class VehicleRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<VehicleRepository> $createElement(
+  $ProviderElement<VehicleRepository1> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  VehicleRepository create(Ref ref) {
+  VehicleRepository1 create(Ref ref) {
     return vehicleRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(VehicleRepository value) {
+  Override overrideWithValue(VehicleRepository1 value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<VehicleRepository>(value),
+      providerOverride: $SyncValueProvider<VehicleRepository1>(value),
     );
   }
 }
 
-String _$vehicleRepositoryHash() => r'012e5d942c780767dad71e92022b5797f4cdcf68';
+String _$vehicleRepositoryHash() => r'ba3fd7aa41bed628bff3fec4197128d18880a3c6';
 
 @ProviderFor(VehicleNotifier)
 final vehicleProvider = VehicleNotifierProvider._();
@@ -88,7 +88,7 @@ final class VehicleNotifierProvider
   }
 }
 
-String _$vehicleNotifierHash() => r'0bc8da71212dbb40cb30a1d77c53a83634af2849';
+String _$vehicleNotifierHash() => r'733a0e08517a11d9a584df0c27648636529bb9b6';
 
 abstract class _$VehicleNotifier extends $Notifier<VehicleState> {
   VehicleState build();

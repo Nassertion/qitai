@@ -1,24 +1,26 @@
 import 'package:dio/dio.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
-import 'package:qitai/features/client/vehicles/data/model/vehicles_model.dart';
+import 'package:qitai/features/client/vehicles/data/model/car_brand_model.dart';
+import 'package:qitai/features/client/vehicles/data/model/car_model_model.dart';
+import 'package:qitai/features/client/vehicles/data/model/car_year_model.dart';
 
-class VehicleRepository {
+class VehicleRemoteDataSource {
   final Dio dio;
 
-  VehicleRepository(this.dio);
+  VehicleRemoteDataSource(this.dio);
 
-  Future<List<CarBrand>> fetchCarBrands() async {
+  Future<List<CarBrandModel>> getCarBrands() async {
     return handleDioRequest(() async {
       final response = await dio.get("/vehicles/brands");
       final List data = response.data;
 
       return data
-          .map((item) => CarBrand.fromJson(item as Map<String, dynamic>))
+          .map((item) => CarBrandModel.fromJson(item as Map<String, dynamic>))
           .toList();
     });
   }
 
-  Future<List<CarModel>> fetchCarModels(int brandId) async {
+  Future<List<CarModelModel>> getCarModels(int brandId) async {
     return handleDioRequest(() async {
       final response = await dio.get(
         "/vehicles/models",
@@ -28,12 +30,12 @@ class VehicleRepository {
       final List data = response.data;
 
       return data
-          .map((item) => CarModel.fromJson(item as Map<String, dynamic>))
+          .map((item) => CarModelModel.fromJson(item as Map<String, dynamic>))
           .toList();
     });
   }
 
-  Future<List<CarYear>> fetchCarYears(int modelId) async {
+  Future<List<CarYearModel>> getCarYears(int modelId) async {
     return handleDioRequest(() async {
       final response = await dio.get(
         "/vehicles/years",
@@ -43,7 +45,7 @@ class VehicleRepository {
       final List data = response.data;
 
       return data
-          .map((item) => CarYear.fromJson(item as Map<String, dynamic>))
+          .map((item) => CarYearModel.fromJson(item as Map<String, dynamic>))
           .toList();
     });
   }

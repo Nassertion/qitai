@@ -1,12 +1,12 @@
 import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/repositories/vehicles_repository.dart';
 
-class VehicelsUseCase {
+class GetCarModels {
   final VehiclesRepository repo;
-  VehicelsUseCase(this.repo);
+  GetCarModels(this.repo);
 
   Future<List<CarModel>> call(int brandId){
-    return repo.getModels(brandId : brandId);
+    return repo.getCarModels(brandId : brandId);
   }
 
 }

@@ -3,6 +3,6 @@ class  CarYear {
   final int modelId;
   final int year;
 
-   CarYear({required this.id, required this.modelId,required this.year });
+  const CarYear({required this.id, required this.modelId,required this.year });
 }
 

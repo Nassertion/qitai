@@ -1,14 +1,14 @@
-class CarBrand {
+class CarBrand1 {
   final int id;
   final String name;
 
-  CarBrand({
+  CarBrand1({
     required this.id,
     required this.name,
   });
 
-  factory CarBrand.fromJson(Map<String, dynamic> json) {
-    return CarBrand(
+  factory CarBrand1.fromJson(Map<String, dynamic> json) {
+    return CarBrand1(
       id: json['id'],
       name: json['name'],
     );
@@ -22,19 +22,19 @@ class CarBrand {
   }
 }
 
-class CarModel {
+class CarModel1 {
   final int id;
   final int brandId;
   final String name;
 
-  CarModel({
+  CarModel1({
     required this.id,
     required this.brandId,
     required this.name,
   });
 
-  factory CarModel.fromJson(Map<String, dynamic> json) {
-    return CarModel(
+  factory CarModel1.fromJson(Map<String, dynamic> json) {
+    return CarModel1(
       id: json['id'],
       brandId: json['brand_id'],
       name: json['name'],
@@ -50,19 +50,19 @@ class CarModel {
   }
 }
 
-class CarYear {
+class CarYear1 {
   final int id;
   final int modelId;
   final int year;
 
-  CarYear({
+  CarYear1({
     required this.id,
     required this.modelId,
     required this.year,
   });
 
-  factory CarYear.fromJson(Map<String, dynamic> json) {
-    return CarYear(
+  factory CarYear1.fromJson(Map<String, dynamic> json) {
+    return CarYear1(
       id: json['id'],
       modelId: json['model_id'],
       year: json['year'],

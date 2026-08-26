@@ -1,20 +1,20 @@
 import 'package:qitai/core/network/dio_provider.dart';
-import 'package:qitai/features/client/vehicles/data/model/vehicles_model.dart';
-import 'package:qitai/features/client/vehicles/data/repository/vehicles_repository.dart';
+import 'package:qitai/features/client/vehicles/data/model/vehicles_model1.dart';
+import 'package:qitai/features/client/vehicles/data/repositories/vehicles_repository1.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'vehicles_notifier.g.dart';
 
 @riverpod
-VehicleRepository vehicleRepository(Ref ref) {
+VehicleRepository1 vehicleRepository(Ref ref) {
   final dio = ref.read(dioProvider);
-  return VehicleRepository(dio);
+  return VehicleRepository1(dio);
 }
 
 @riverpod
 class VehicleNotifier extends _$VehicleNotifier {
-  late final VehicleRepository repo;
+  late final VehicleRepository1 repo;
   @override
   VehicleState build() {
     repo = ref.read(vehicleRepositoryProvider);
@@ -36,7 +36,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     }
   }
 
-  Future<void> selectBrand(CarBrand carBrand) async {
+  Future<void> selectBrand(CarBrand1 carBrand) async {
     state = state.copyWith(
       selectedCarBrand: carBrand,
       clearSelectedModel: true,
@@ -59,7 +59,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     }
   }
 
-  Future<void> selectModel(CarModel model) async {
+  Future<void> selectModel(CarModel1 model) async {
     state = state.copyWith(
       selectedModel: model,
       clearSelectedCarYear: true,
@@ -77,7 +77,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     }
   }
 
-  void selectCarYear(CarYear carYear) {
+  void selectCarYear(CarYear1 carYear) {
     state = state.copyWith(selectedCarYear: carYear);
   }
 

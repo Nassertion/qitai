@@ -14,9 +14,6 @@ class SearchSuggestionRepositoryImpl implements SearchSuggestionsRepository {
   }) async {
     final List<SearchSuggestionModel> suggestionsModel = await dataSource
         .getSuggestions(query: query);
-    final List<SearchSuggestions> suggestions = suggestionsModel
-        .map((model) => model.toEntity())
-        .toList();
-        return suggestions;
+    return suggestionsModel.map((model) => model.toEntity()).toList();
   }
 }

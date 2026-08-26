@@ -3,6 +3,6 @@ class  CarModel {
   final int brandId;
   final String name;
 
-   CarModel({required this.id, required this.brandId,required this.name });
+  const CarModel({required this.id, required this.brandId,required this.name });
 }
 
