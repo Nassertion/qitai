@@ -11,7 +11,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'vehicles_notifier.g.dart';
 
 @riverpod
-@riverpod
 class VehicleNotifier extends _$VehicleNotifier {
   late final GetCarBrands getCarBrands;
   late final GetCarModels getCarModels;

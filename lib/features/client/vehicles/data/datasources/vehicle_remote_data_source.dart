@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
-import 'package:qitai/features/client/vehicles/data/model/car_brand_model.dart';
-import 'package:qitai/features/client/vehicles/data/model/car_model_model.dart';
-import 'package:qitai/features/client/vehicles/data/model/car_year_model.dart';
+import 'package:qitai/features/client/vehicles/data/models/car_brand_model.dart';
+import 'package:qitai/features/client/vehicles/data/models/car_model_model.dart';
+import 'package:qitai/features/client/vehicles/data/models/car_year_model.dart';
 
 class VehicleRemoteDataSource {
   final Dio dio;
