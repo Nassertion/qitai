@@ -5,7 +5,7 @@ import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_no
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'all_product_provider.g.dart';
+part 'all_product_notifier.g.dart';
 
 // final allProductsProvider =
 //     NotifierProvider<AllProductsNotifier, AllProductsState>(
@@ -38,6 +38,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
 
       loadProducts();
     });
+    Future.microtask(loadProducts);
 
     return const AllProductsState();
   }

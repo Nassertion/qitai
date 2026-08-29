@@ -7,7 +7,7 @@ import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
-import 'package:qitai/features/client/products/presentation/provider/all_product_provider.dart';
+import 'package:qitai/features/client/products/presentation/provider/all_product_notifier.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';

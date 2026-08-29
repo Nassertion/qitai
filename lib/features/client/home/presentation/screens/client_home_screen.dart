@@ -12,27 +12,14 @@ import 'package:qitai/features/client/home/presentation/widgets/add_car_widget.d
 import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
-import 'package:qitai/features/client/products/presentation/provider/all_product_provider.dart';
+import 'package:qitai/features/client/products/presentation/provider/all_product_notifier.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
 
-class ClientHomeScreen extends ConsumerStatefulWidget {
+class ClientHomeScreen extends ConsumerWidget {
   const ClientHomeScreen({super.key});
 
   @override
-  ConsumerState<ClientHomeScreen> createState() => _ClientHomeScreenState();
-}
-
-class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      ref.read(allProductsProvider.notifier).loadProducts();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final categoriesAsync = ref.watch(categoriesProvider);
     final productsState = ref.watch(allProductsProvider);
 
@@ -43,12 +30,18 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
       body: RefreshIndicator(
         backgroundColor: AppColors.inputFieldAndCards,
         color: AppColors.actionText,
-        onRefresh: () async {
-          ref.invalidate(categoriesProvider);
-          await ref.read(categoriesProvider.future);
+       onRefresh: () async {
+  ref.invalidate(categoriesProvider);
+  final categoriesFuture = ref.read(categoriesProvider.future);
 
-          await ref.read(allProductsProvider.notifier).loadProducts();
-        },
+  final productsFuture =
+      ref.read(allProductsProvider.notifier).loadProducts();
+
+  await Future.wait([
+    categoriesFuture,
+    productsFuture,
+  ]);
+},
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
@@ -160,7 +153,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               )
             else if (productsState.errorMessage != null)
               SliverToBoxAdapter(
-                child: Center(child: Text(productsState.errorMessage!)),
+                child: Center(
+                  child: Text(productsState.errorMessage!),
+                ),
               )
             else if (homeProducts.isEmpty)
               const SliverToBoxAdapter(
@@ -175,17 +170,21 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
                 sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final product = homeProducts[index];
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final product = homeProducts[index];
 
-                    return AllProductCardWidget(
-                      product: product,
-                      onTap: () {
-                        context.push("/product/${product.id}");
-                      },
-                    );
-                  }, childCount: 4),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      return AllProductCardWidget(
+                        product: product,
+                        onTap: () {
+                          context.push("/product/${product.id}");
+                        },
+                      );
+                    },
+                    childCount: 4,
+                  ),
+                  gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
@@ -199,7 +198,6 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     );
   }
 }
-
 // temp only
 String getCategoryIcon(String name) {
   switch (name) {

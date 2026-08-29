@@ -7,7 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'category_product_notifier.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CategoryProductNotifier extends _$CategoryProductNotifier {
   late final GetProducts getProducts;
   late final int _categoryId;

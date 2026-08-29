@@ -20,7 +20,7 @@ final class CategoryProductNotifierProvider
   }) : super(
          retry: null,
          name: r'categoryProductProvider',
-         isAutoDispose: true,
+         isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -60,7 +60,7 @@ final class CategoryProductNotifierProvider
 }
 
 String _$categoryProductNotifierHash() =>
-    r'3ee35a3c07ac0e0b3ab8894b0446d4cdd06d5858';
+    r'03a96b3273af321957258532b0330b54ed69c647';
 
 final class CategoryProductNotifierFamily extends $Family
     with
@@ -77,7 +77,7 @@ final class CategoryProductNotifierFamily extends $Family
         name: r'categoryProductProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: true,
+        isAutoDispose: false,
       );
 
   CategoryProductNotifierProvider call(int categoryId) =>

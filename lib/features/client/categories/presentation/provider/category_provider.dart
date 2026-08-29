@@ -27,8 +27,11 @@ GetCategories getCategories(Ref ref) {
   final categoryRepo = ref.watch(categoryRepositoryProvider);
   return GetCategories(categoryRepo);
 }
-@riverpod
+
+@Riverpod(keepAlive: true)
 Future<List<Category>> categories(Ref ref) {
   final getCategories = ref.watch(getCategoriesProvider);
+  print('CATEGORIES API CALLED');
+
   return getCategories();
 }
