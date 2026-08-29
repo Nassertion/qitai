@@ -3,7 +3,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:qitai/features/client/products/domain/entities/product.dart';
 import 'package:qitai/features/client/products/domain/repositories/product_repository.dart';
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class mockProductRepository extends Mock implements ProductRepository {}
 

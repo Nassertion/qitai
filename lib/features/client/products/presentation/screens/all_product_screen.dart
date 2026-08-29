@@ -64,7 +64,7 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
           children: [
             h12,
             const ClassificationWidget(),
-            h12,
+            // h4,
             Expanded(
               child: Builder(
                 builder: (context) {

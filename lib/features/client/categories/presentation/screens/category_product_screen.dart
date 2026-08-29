@@ -39,52 +39,47 @@ class CategoryProductsScreen extends ConsumerWidget {
         ),
       ),
       body: AppPagePadding(
-        child: CustomScrollView(
-          slivers: [
-            const SliverToBoxAdapter(
-              child: ClassificationWidget(),
-            ),
+        child: Column(
+          children: [
+            const ClassificationWidget(),
 
-            if (productsState.isLoading)
-              const SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: CustomLoading(),
-                ),
-              )
-            else if (productsState.errorMessage != null)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: Text(productsState.errorMessage!),
-                ),
-              )
-            else
-              SliverGrid(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final product = productsState.products[index];
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  if (productsState.isLoading)
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(child: CustomLoading()),
+                    )
+                  else if (productsState.errorMessage != null)
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(child: Text(productsState.errorMessage!)),
+                    )
+                  else
+                    SliverGrid(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final product = productsState.products[index];
 
-                    return CategoryProductCardWidget(
-                      product: product,
-                      onTap: () {
-                        context.push("/product/${product.id}");
-                      },
-                    );
-                  },
-                  childCount: productsState.products.length,
-                ),
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  mainAxisExtent: 265,
-                ),
+                        return CategoryProductCardWidget(
+                          product: product,
+                          onTap: () {
+                            context.push("/product/${product.id}");
+                          },
+                        );
+                      }, childCount: productsState.products.length),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            mainAxisExtent: 265,
+                          ),
+                    ),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                ],
               ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
             ),
           ],
         ),
