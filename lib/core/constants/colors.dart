@@ -29,6 +29,6 @@ abstract class AppColors {
   // Material
   static const Color surface = Color(0xFFFEFEFE);
   static const Color onSurface = Color(0xFF060D13);
-  static const Color primary = Color(0xFF1B7CD0);
-  static const Color onPrimary = Color(0xFFFEFEFE);
+  static const Color onPrimary = Color(0xFF1B7CD0);
+  static const Color noInternet = Color(0xFF0F1E2E);
 }

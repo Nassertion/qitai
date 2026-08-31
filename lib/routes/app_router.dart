@@ -76,5 +76,6 @@ final GoRouter appRouter = GoRouter(
           return CategoryProductsScreen( id : int.parse(id) , name: name,);
         },
       ),
+      
   ],
 );
