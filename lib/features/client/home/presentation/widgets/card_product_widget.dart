@@ -24,7 +24,7 @@ class ProductCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Image.asset(
-                  'assets/images/test.png',
+                  'assets/images/placeholder.jpg',
                   fit: BoxFit.contain,
                 ),
               ),

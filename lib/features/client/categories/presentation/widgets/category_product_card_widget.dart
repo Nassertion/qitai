@@ -16,7 +16,6 @@ class CategoryProductCardWidget extends StatelessWidget {
   final Product product;
   final VoidCallback? onTap;
 
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -36,7 +35,7 @@ class CategoryProductCardWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Image.asset(
-                    'assets/images/rfrf.png',
+                    'assets/images/placeholder.jpg',
                     // 'assets/images/battery.png',
                     fit: BoxFit.contain,
                   ),

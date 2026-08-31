@@ -7,7 +7,7 @@ import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_product_notifier.dart';
 import 'package:qitai/features/client/categories/presentation/widgets/category_product_card_widget.dart';
-import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
+import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
 class CategoryProductsScreen extends ConsumerWidget {
   const CategoryProductsScreen({
@@ -41,7 +41,7 @@ class CategoryProductsScreen extends ConsumerWidget {
       body: AppPagePadding(
         child: Column(
           children: [
-            const ClassificationWidget(),
+            const VehiclesWidget(),
 
             Expanded(
               child: CustomScrollView(

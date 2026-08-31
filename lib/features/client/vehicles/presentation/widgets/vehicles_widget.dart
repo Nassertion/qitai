@@ -3,15 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_selector_section.dart';
 
-class ClassificationWidget extends ConsumerStatefulWidget {
-  const ClassificationWidget({super.key});
+class VehiclesWidget extends ConsumerStatefulWidget {
+  const VehiclesWidget({super.key});
 
   @override
-  ConsumerState<ClassificationWidget> createState() =>
-      _ClassificationWidgetState();
+  ConsumerState<VehiclesWidget> createState() => _VehiclesWidgetState();
 }
 
-class _ClassificationWidgetState extends ConsumerState<ClassificationWidget> {
+class _VehiclesWidgetState extends ConsumerState<VehiclesWidget> {
   @override
   void initState() {
     super.initState();

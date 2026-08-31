@@ -30,18 +30,16 @@ class ClientHomeScreen extends ConsumerWidget {
       body: RefreshIndicator(
         backgroundColor: AppColors.inputFieldAndCards,
         color: AppColors.actionText,
-       onRefresh: () async {
-  ref.invalidate(categoriesProvider);
-  final categoriesFuture = ref.read(categoriesProvider.future);
+        onRefresh: () async {
+          ref.invalidate(categoriesProvider);
+          final categoriesFuture = ref.read(categoriesProvider.future);
 
-  final productsFuture =
-      ref.read(allProductsProvider.notifier).loadProducts();
+          final productsFuture = ref
+              .read(allProductsProvider.notifier)
+              .loadProducts();
 
-  await Future.wait([
-    categoriesFuture,
-    productsFuture,
-  ]);
-},
+          await Future.wait([categoriesFuture, productsFuture]);
+        },
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
@@ -153,9 +151,7 @@ class ClientHomeScreen extends ConsumerWidget {
               )
             else if (productsState.errorMessage != null)
               SliverToBoxAdapter(
-                child: Center(
-                  child: Text(productsState.errorMessage!),
-                ),
+                child: Center(child: Text(productsState.errorMessage!)),
               )
             else if (homeProducts.isEmpty)
               const SliverToBoxAdapter(
@@ -170,21 +166,17 @@ class ClientHomeScreen extends ConsumerWidget {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
                 sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final product = homeProducts[index];
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final product = homeProducts[index];
 
-                      return AllProductCardWidget(
-                        product: product,
-                        onTap: () {
-                          context.push("/product/${product.id}");
-                        },
-                      );
-                    },
-                    childCount: 4,
-                  ),
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                    return AllProductCardWidget(
+                      product: product,
+                      onTap: () {
+                        context.push("/product/${product.id}");
+                      },
+                    );
+                  }, childCount: 4),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
@@ -198,6 +190,7 @@ class ClientHomeScreen extends ConsumerWidget {
     );
   }
 }
+
 // temp only
 String getCategoryIcon(String name) {
   switch (name) {
@@ -216,22 +209,7 @@ String getCategoryIcon(String name) {
   }
 }
 
-String getIcon(String name) {
-  switch (name) {
-    case "الفرامل":
-      return "assets/images/cate/breaks.png";
-    case "المحرك":
-      return "assets/images/cate/test30.png";
-    case "الكهرباء":
-      return "assets/images/cate/boaji.png";
-    case "الزيوت والسوائل":
-      return "assets/images/cate/oils.png";
-    case "التعليق":
-      return "assets/images/cate/t3le8.png";
-    default:
-      return "assets/images/cate/default.png";
-  }
-}
+// 
 
 // String test(String name) {
 //   switch (name) {

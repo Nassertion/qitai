@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/features/client/categories/domain/entities/category.dart';
-import 'package:qitai/features/client/home/presentation/screens/client_home_screen.dart';
 
 class CategoryCardWidget extends StatelessWidget {
   const CategoryCardWidget({super.key, required this.category});
@@ -51,5 +50,21 @@ class CategoryCardWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+String getIcon(String name) {
+  switch (name) {
+    case "الفرامل":
+      return "assets/images/cate/breaks.png";
+    case "المحرك":
+      return "assets/images/cate/test30.png";
+    case "الكهرباء":
+      return "assets/images/cate/boaji.png";
+    case "الزيوت والسوائل":
+      return "assets/images/cate/oils.png";
+    case "التعليق":
+      return "assets/images/cate/t3le8.png";
+    default:
+      return "assets/images/cate/default.png";
   }
 }

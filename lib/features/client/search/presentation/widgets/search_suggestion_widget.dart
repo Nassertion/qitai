@@ -33,7 +33,7 @@ class SuggestionWidget extends StatelessWidget {
                 children: [
                   h16,
                   Image.asset(
-                    "assets/images/search/test.png",
+                    "assets/images/search/test2.png",
                     height: 44,
                     width: 44,
                   ),

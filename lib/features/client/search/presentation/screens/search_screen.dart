@@ -9,10 +9,10 @@ import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_notifier.dart';
-import 'package:qitai/features/client/search/presentation/widgets/classification_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_card_product_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_suggestion_widget.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
+import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -82,7 +82,7 @@ void dispose() {
                     .submitSearch(customQuery:  _controller.text);
               },
             ),
-            const ClassificationWidget(),
+            const VehiclesWidget(),
             Expanded(
               child: Builder(
                 builder: (context) {
