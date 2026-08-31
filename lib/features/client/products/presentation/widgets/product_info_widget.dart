@@ -3,22 +3,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
+import 'package:qitai/core/helpers/quality_helper.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/products/domain/entities/product_detail.dart';
 
 class ProductInfoWidget extends StatelessWidget {
   const ProductInfoWidget({super.key, required this.product});
   final ProductDetail product;
-  String get qualityLabel {
-    switch (product.quality.toLowerCase()) {
-      case 'oem':
-        return 'أصلي';
-      case 'aftermarket':
-        return 'تجاري';
-      default:
-        return product.quality;
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +62,7 @@ class ProductInfoWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                qualityLabel,
+                qualityLabel(product.quality),
                 style: AppTextStyles.semiBoldOverline.copyWith(
                   color: AppColors.primaryText,
                 ),

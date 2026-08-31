@@ -46,15 +46,15 @@ class AllProductCardWidget extends StatelessWidget {
                       vertical: 3,
                     ),
                     decoration: BoxDecoration(
-                      color: isAftermarket(product)
+                      color: isAftermarket(product.quality)
                           ? AppColors.inputFieldAndCards
                           : AppColors.actionText,
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Text(
-                      qualityLabel(product),
+                      qualityLabel(product.quality),
                       style: AppTextStyles.semiBoldOverline.copyWith(
-                        color: isAftermarket(product)
+                        color: isAftermarket(product.quality)
                             ? AppColors.primaryText
                             : AppColors.whiteText,
                       ),

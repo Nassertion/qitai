@@ -1,16 +1,15 @@
-import 'package:qitai/features/client/products/domain/entities/product.dart';
 
-String qualityLabel (Product product){
-    switch (product.quality.toLowerCase()) {
+String qualityLabel (String quality){
+    switch (quality.toLowerCase()) {
       case 'oem':
         return 'أصلي';
       case 'aftermarket':
         return 'تجاري';
       default:
-        return product.quality;
+        return quality;
     }
   }
 
-  bool isAftermarket(Product product) {
-    return product.quality.toLowerCase() == 'aftermarket';
+  bool isAftermarket(String quality) {
+    return quality.toLowerCase() == 'aftermarket';
   }
