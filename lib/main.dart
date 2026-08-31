@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/constants/colors.dart';
+import 'package:qitai/core/theme/app_theme.dart';
 import 'package:qitai/routes/app_router.dart';
 
 void main() {
@@ -15,13 +16,7 @@ class Qitai extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: AppColors.backgroundColor,
-        appBarTheme: const AppBarTheme(
-          scrolledUnderElevation: 0,
-          surfaceTintColor: Colors.transparent,
-        ),
-      ),
+      theme: AppTheme.lightTheme,
       supportedLocales: const [Locale('ar'), Locale('en')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

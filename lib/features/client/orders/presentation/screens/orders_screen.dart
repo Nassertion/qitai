@@ -21,6 +21,8 @@ class OrdersScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: AppColors.backgroundColor,
           bottom: TabBar(
+            dividerColor: AppColors.border,
+
             indicator: UnderlineTabIndicator(
               borderSide: BorderSide(width: 1.5, color: AppColors.actionText),
               insets: EdgeInsetsGeometry.symmetric(horizontal: 48),
