@@ -7,10 +7,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'all_product_notifier.g.dart';
 
-// final allProductsProvider =
-//     NotifierProvider<AllProductsNotifier, AllProductsState>(
-//   AllProductsNotifier.new,
-// );
 @Riverpod(keepAlive: true)
 class AllProductsNotifier extends _$AllProductsNotifier {
   late final GetProducts getProducts;
@@ -38,6 +34,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
 
       loadProducts();
     });
+
     Future.microtask(loadProducts);
 
     return const AllProductsState();
@@ -50,18 +47,78 @@ class AllProductsNotifier extends _$AllProductsNotifier {
     final modelId = classificationState.selectedModel?.id;
     final year = classificationState.selectedCarYear?.year;
 
-    state = state.copyWith(isLoading: true, clearErrorMessage: true);
+    state = state.copyWith(
+      isLoading: true,
+      isLoadingMore: false,
+      currentPage: 1,
+      lastPage: 1,
+      clearErrorMessage: true,
+    );
 
     try {
-      final products = await getProducts(
+      final result = await getProducts(
         brandId: brandId,
         modelId: modelId,
         year: year,
+        page: 1,
       );
 
-      state = state.copyWith(products: products, isLoading: false);
+      state = state.copyWith(
+        products: result.products,
+        currentPage: result.currentPage,
+        lastPage: result.lastPage,
+        isLoading: false,
+        isLoadingMore: false,
+      );
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        isLoadingMore: false,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> loadNextPage() async {
+    if (state.isLoading) return;
+    if (state.isLoadingMore) return;
+    if (!state.hasNextPage) return;
+
+    final classificationState = ref.read(vehicleProvider);
+
+    final brandId = classificationState.selectedCarBrand?.id;
+    final modelId = classificationState.selectedModel?.id;
+    final year = classificationState.selectedCarYear?.year;
+
+    final nextPage = state.currentPage + 1;
+
+    state = state.copyWith(
+      isLoadingMore: true,
+      clearErrorMessage: true,
+    );
+
+    try {
+      final result = await getProducts(
+        brandId: brandId,
+        modelId: modelId,
+        year: year,
+        page: nextPage,
+      );
+
+      state = state.copyWith(
+        products: [
+          ...state.products,
+          ...result.products,
+        ],
+        currentPage: result.currentPage,
+        lastPage: result.lastPage,
+        isLoadingMore: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: e.toString(),
+      );
     }
   }
 }

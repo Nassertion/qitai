@@ -52,14 +52,14 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
     state = state.copyWith(isLoading: true, clearErrorMessage: true);
 
     try {
-      final products = await getProducts(
+      final result = await getProducts(
         brandId: brandId,
         modelId: modelId,
         year: year,
-        categoryId: _categoryId,
+        categoryId: _categoryId,page: 1
       );
 
-      state = state.copyWith(products: products, isLoading: false);
+      state = state.copyWith(products: result.products, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }

@@ -21,22 +21,42 @@ class AllProductsScreen extends ConsumerStatefulWidget {
 
 class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
   late final VehicleNotifier _vehicleNotifier;
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+
     _vehicleNotifier = ref.read(vehicleProvider.notifier);
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+
     Future.microtask(() {
       _vehicleNotifier.clearAll();
       ref.read(allProductsProvider.notifier).loadProducts();
     });
   }
 
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+
+    if (position.pixels >= position.maxScrollExtent - 300) {
+      ref.read(allProductsProvider.notifier).loadNextPage();
+    }
+  }
+
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+
     Future(() {
       _vehicleNotifier.clearAll();
     });
+
     super.dispose();
   }
 
@@ -64,16 +84,19 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
           children: [
             h12,
             const VehiclesWidget(),
-            // h4,
             Expanded(
               child: Builder(
                 builder: (context) {
                   if (state.isLoading) {
-                    return const Center(child: CustomLoading());
+                    return const Center(
+                      child: CustomLoading(),
+                    );
                   }
 
                   if (state.errorMessage != null) {
-                    return Center(child: Text(state.errorMessage!));
+                    return Center(
+                      child: Text(state.errorMessage!),
+                    );
                   }
 
                   if (state.products.isEmpty) {
@@ -84,15 +107,24 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
                   }
 
                   return GridView.builder(
-                    itemCount: state.products.length,
+                    controller: _scrollController,
+                    itemCount: state.products.length +
+                        (state.isLoadingMore ? 1 : 0),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          mainAxisExtent: 265,
-                        ),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      mainAxisExtent: 265,
+                    ),
                     itemBuilder: (context, index) {
+                      // آخر عنصر يظهر Loading أثناء تحميل الصفحة التالية.
+                      if (index >= state.products.length) {
+                        return const Center(
+                          child: CustomLoading(),
+                        );
+                      }
+
                       final product = state.products[index];
 
                       return AllProductCardWidget(

@@ -132,19 +132,19 @@ getSuggestions = ref.read(getSearchSuggestionsProvider);
     try {
       final isVin = hasText && _isVin(value);
 
-      final products = await getProducts(
+      final result = await getProducts(
         query: hasText && !isVin ? value : null,
         vin: hasText && isVin ? value : null,
         brandId: brandId,
         modelId: modelId,
         year: year,
-        categoryId: finalCategoryId,
+        categoryId: finalCategoryId,page: 1
       );
 
       if (!ref.mounted) return;
       if (requestId != _searchRequestId) return;
 
-      state = state.copyWith(products: products, isProductsLoading: false);
+      state = state.copyWith(products: result.products, isProductsLoading: false);
     } catch (e) {
       if (!ref.mounted) return;
       if (requestId != _searchRequestId) return;
