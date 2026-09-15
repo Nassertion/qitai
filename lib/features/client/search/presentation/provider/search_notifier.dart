@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
 import 'package:qitai/features/client/search/domain/usecases/get_search_suggestions.dart';
@@ -13,14 +14,16 @@ part 'search_notifier.g.dart';
 @riverpod
 class SearchNotifier extends _$SearchNotifier {
   late final GetSearchSuggestions getSuggestions;
-
   late final GetProducts getProducts;
+
   Timer? _debounce;
   int _searchRequestId = 0;
+
   @override
   SearchState build() {
     getProducts = ref.read(getProductsProvider);
-getSuggestions = ref.read(getSearchSuggestionsProvider);
+    getSuggestions = ref.read(getSearchSuggestionsProvider);
+
     ref.onDispose(() {
       _debounce?.cancel();
     });
@@ -42,8 +45,6 @@ getSuggestions = ref.read(getSearchSuggestionsProvider);
 
       if (!filtersChanged) return;
 
-      // if (!state.hasSearched) return;
-
       submitSearch();
     });
 
@@ -57,6 +58,9 @@ getSuggestions = ref.read(getSearchSuggestionsProvider);
       query: value,
       products: [],
       hasSearched: false,
+      currentPage: 1,
+      lastPage: 1,
+      isLoadingMore: false,
       clearErrorMessage: true,
     );
 
@@ -69,6 +73,7 @@ getSuggestions = ref.read(getSearchSuggestionsProvider);
         hasSearched: false,
         isSuggestionsLoading: false,
         isProductsLoading: false,
+        isLoadingMore: false,
       );
       return;
     }
@@ -82,7 +87,7 @@ getSuggestions = ref.read(getSearchSuggestionsProvider);
     state = state.copyWith(isSuggestionsLoading: true, clearErrorMessage: true);
 
     try {
-      final suggestions = await getSuggestions(query: query,);
+      final suggestions = await getSuggestions(query: query);
 
       if (state.query.trim() != query) return;
 
@@ -107,15 +112,17 @@ getSuggestions = ref.read(getSearchSuggestionsProvider);
     final brandId = classificationState.selectedCarBrand?.id;
     final modelId = classificationState.selectedModel?.id;
     final year = classificationState.selectedCarYear?.year;
-    final finalCategoryId = categoryId ?? state.categoryId;
+    // final finalCategoryId = categoryId ?? state.categoryId;
 
     _debounce?.cancel();
 
     final hasText = value.isNotEmpty;
     final hasVehicleFilter = brandId != null || modelId != null || year != null;
-    final hasCategoryFilter = finalCategoryId != null;
+    // final hasCategoryFilter = finalCategoryId != null;
 
-    if (!hasText && !hasVehicleFilter && !hasCategoryFilter) return;
+    if (!hasText && !hasVehicleFilter) {
+      return;
+    }
 
     final requestId = ++_searchRequestId;
 
@@ -125,8 +132,11 @@ getSuggestions = ref.read(getSearchSuggestionsProvider);
       products: [],
       hasSearched: true,
       isProductsLoading: true,
+      isLoadingMore: false,
+      currentPage: 1,
+      lastPage: 1,
       clearErrorMessage: true,
-      categoryId: finalCategoryId,
+      // categoryId: finalCategoryId,
     );
 
     try {
@@ -138,31 +148,87 @@ getSuggestions = ref.read(getSearchSuggestionsProvider);
         brandId: brandId,
         modelId: modelId,
         year: year,
-        categoryId: finalCategoryId,page: 1
+        // categoryId: finalCategoryId,
+        page: 1,
       );
 
       if (!ref.mounted) return;
       if (requestId != _searchRequestId) return;
 
-      state = state.copyWith(products: result.products, isProductsLoading: false);
+      state = state.copyWith(
+        products: result.products,
+        currentPage: result.currentPage,
+        lastPage: result.lastPage,
+        isProductsLoading: false,
+        isLoadingMore: false,
+      );
     } catch (e) {
       if (!ref.mounted) return;
       if (requestId != _searchRequestId) return;
 
       state = state.copyWith(
         isProductsLoading: false,
+        isLoadingMore: false,
         errorMessage: e.toString(),
       );
     }
   }
 
+  Future<void> loadNextPage() async {
+    if (state.isProductsLoading) return;
+    if (state.isLoadingMore) return;
+    if (!state.hasNextPage) return;
+
+    final value = state.query.trim().toUpperCase();
+
+    final classificationState = ref.read(vehicleProvider);
+
+    final brandId = classificationState.selectedCarBrand?.id;
+    final modelId = classificationState.selectedModel?.id;
+    final year = classificationState.selectedCarYear?.year;
+    // final finalCategoryId = state.categoryId;
+
+    final nextPage = state.currentPage + 1;
+
+    state = state.copyWith(isLoadingMore: true, clearErrorMessage: true);
+
+    try {
+      final isVin = value.isNotEmpty && _isVin(value);
+
+      final result = await getProducts(
+        query: value.isNotEmpty && !isVin ? value : null,
+        vin: value.isNotEmpty && isVin ? value : null,
+        brandId: brandId,
+        modelId: modelId,
+        year: year,
+        // categoryId: finalCategoryId,
+        page: nextPage,
+      );
+
+      if (!ref.mounted) return;
+
+      state = state.copyWith(
+        products: [...state.products, ...result.products],
+        currentPage: result.currentPage,
+        lastPage: result.lastPage,
+        isLoadingMore: false,
+      );
+    } catch (e) {
+      if (!ref.mounted) return;
+
+      state = state.copyWith(isLoadingMore: false, errorMessage: e.toString());
+    }
+  }
+
   void clearSearch() {
     _debounce?.cancel();
+    _searchRequestId++;
     state = const SearchState();
   }
 
   bool _isVin(String value) {
     final vinRegex = RegExp(r'^[A-Z0-9]{17}$', caseSensitive: false);
+
     return vinRegex.hasMatch(value);
   }
 }

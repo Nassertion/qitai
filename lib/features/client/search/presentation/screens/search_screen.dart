@@ -25,6 +25,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   late final TextEditingController _controller;
   late final VehicleNotifier _vehicleNotifier;
   late final SearchNotifier _searchNotifier;
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
@@ -34,19 +35,34 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _vehicleNotifier = ref.read(vehicleProvider.notifier);
     _searchNotifier = ref.read(searchProvider.notifier);
 
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+
     Future.microtask(() {
       _vehicleNotifier.clearAll();
       _searchNotifier.clearSearch();
     });
   }
 
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+
+    if (position.pixels >= position.maxScrollExtent - 300) {
+      ref.read(searchProvider.notifier).loadNextPage();
+    }
+  }
 
   @override
-void dispose() {
-  _controller.dispose();
-  super.dispose();
-}
-  
+  void dispose() {
+    _controller.dispose();
+
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +86,9 @@ void dispose() {
                 ref.read(searchProvider.notifier).onQueryChanged(value);
               },
               onFieldSubmitted: (value) {
-                ref.read(searchProvider.notifier).submitSearch(customQuery:  value);
+                ref
+                    .read(searchProvider.notifier)
+                    .submitSearch(customQuery: value);
               },
               onClear: () {
                 _controller.clear();
@@ -79,28 +97,46 @@ void dispose() {
               onSearchTap: () {
                 ref
                     .read(searchProvider.notifier)
-                    .submitSearch(customQuery:  _controller.text);
+                    .submitSearch(customQuery: _controller.text);
               },
             ),
+
             const VehiclesWidget(),
+
             Expanded(
               child: Builder(
                 builder: (context) {
                   if (state.isProductsLoading) {
                     return const Center(child: CustomLoading());
                   }
+
                   if (state.isSuggestionsLoading) {
                     return const Center(child: CustomLoading());
                   }
 
                   if (state.products.isNotEmpty) {
                     return ListView.separated(
-                      padding: const EdgeInsets.only(top: 8),
+                      controller: _scrollController,
+                      padding: const EdgeInsets.only(top: 8, bottom: 16),
+                      itemCount:
+                          state.products.length + (state.isLoadingMore ? 1 : 0),
+                      separatorBuilder: (_, index) {
+                        if (index >= state.products.length - 1) {
+                          return const SizedBox.shrink();
+                        }
 
-                      itemCount: state.products.length,
-                      separatorBuilder: (_, _) => h8,
+                        return h8;
+                      },
                       itemBuilder: (context, index) {
+                        if (index >= state.products.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CustomLoading()),
+                          );
+                        }
+
                         final item = state.products[index];
+
                         return SearchCardProductWidget(
                           product: item,
                           onTap: () {
@@ -112,9 +148,9 @@ void dispose() {
                   }
 
                   if (state.hasSearched && state.products.isEmpty) {
-                    return Padding(
-                      padding: EdgeInsetsGeometry.only(bottom: 100),
-                      child: const EmptyDataWidget(
+                    return const Padding(
+                      padding: EdgeInsets.only(bottom: 100),
+                      child: EmptyDataWidget(
                         text: "لاتوجد نتائج في البحث!",
                         img: "assets/icons/Object.svg",
                       ),
@@ -127,9 +163,10 @@ void dispose() {
                         suggestions: state.suggestions,
                         onTapSuggestion: (item) {
                           _controller.text = item.name;
+
                           ref
                               .read(searchProvider.notifier)
-                              .submitSearch(customQuery:  item.name);
+                              .submitSearch(customQuery: item.name);
                         },
                       ),
                     );
