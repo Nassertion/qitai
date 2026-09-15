@@ -37,7 +37,7 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
       loadProducts();
     });
 
-    Future.microtask(() => loadProducts());
+    Future.microtask(loadProducts);
 
     return const CategoryProductState();
   }
@@ -49,19 +49,80 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
     final modelId = vehicleState.selectedModel?.id;
     final year = vehicleState.selectedCarYear?.year;
 
-    state = state.copyWith(isLoading: true, clearErrorMessage: true);
+    state = state.copyWith(
+      isLoading: true,
+      isLoadingMore: false,
+      currentPage: 1,
+      lastPage: 1,
+      clearErrorMessage: true,
+    );
 
     try {
       final result = await getProducts(
         brandId: brandId,
         modelId: modelId,
         year: year,
-        categoryId: _categoryId,page: 1
+        categoryId: _categoryId,
+        page: 1,
       );
 
-      state = state.copyWith(products: result.products, isLoading: false);
+      state = state.copyWith(
+        products: result.products,
+        currentPage: result.currentPage,
+        lastPage: result.lastPage,
+        isLoading: false,
+        isLoadingMore: false,
+      );
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        isLoadingMore: false,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> loadNextPage() async {
+    if (state.isLoading) return;
+    if (state.isLoadingMore) return;
+    if (!state.hasNextPage) return;
+
+    final vehicleState = ref.read(vehicleProvider);
+
+    final brandId = vehicleState.selectedCarBrand?.id;
+    final modelId = vehicleState.selectedModel?.id;
+    final year = vehicleState.selectedCarYear?.year;
+
+    final nextPage = state.currentPage + 1;
+
+    state = state.copyWith(
+      isLoadingMore: true,
+      clearErrorMessage: true,
+    );
+
+    try {
+      final result = await getProducts(
+        brandId: brandId,
+        modelId: modelId,
+        year: year,
+        categoryId: _categoryId,
+        page: nextPage,
+      );
+
+      state = state.copyWith(
+        products: [
+          ...state.products,
+          ...result.products,
+        ],
+        currentPage: result.currentPage,
+        lastPage: result.lastPage,
+        isLoadingMore: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: e.toString(),
+      );
     }
   }
 }

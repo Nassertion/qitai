@@ -9,7 +9,7 @@ import 'package:qitai/features/client/categories/presentation/provider/category_
 import 'package:qitai/features/client/categories/presentation/widgets/category_product_card_widget.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
-class CategoryProductsScreen extends ConsumerWidget {
+class CategoryProductsScreen extends ConsumerStatefulWidget {
   const CategoryProductsScreen({
     super.key,
     required this.id,
@@ -20,12 +20,50 @@ class CategoryProductsScreen extends ConsumerWidget {
   final String name;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final productsState = ref.watch(categoryProductProvider(id));
+  ConsumerState<CategoryProductsScreen> createState() =>
+      _CategoryProductsScreenState();
+}
+
+class _CategoryProductsScreenState
+    extends ConsumerState<CategoryProductsScreen> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+
+    if (position.pixels >= position.maxScrollExtent - 300) {
+      ref
+          .read(categoryProductProvider(widget.id).notifier)
+          .loadNextPage();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final productsState = ref.watch(
+      categoryProductProvider(widget.id),
+    );
 
     return Scaffold(
       appBar: CustomAppbar(
-        title: name,
+        title: widget.name,
         action: IconButton(
           padding: const EdgeInsets.only(left: 4),
           onPressed: () {
@@ -45,39 +83,68 @@ class CategoryProductsScreen extends ConsumerWidget {
 
             Expanded(
               child: CustomScrollView(
+                controller: _scrollController,
                 slivers: [
                   if (productsState.isLoading)
                     const SliverFillRemaining(
                       hasScrollBody: false,
-                      child: Center(child: CustomLoading()),
+                      child: Center(
+                        child: CustomLoading(),
+                      ),
                     )
-                  else if (productsState.errorMessage != null)
+                  else if (productsState.errorMessage != null &&
+                      productsState.products.isEmpty)
                     SliverFillRemaining(
                       hasScrollBody: false,
-                      child: Center(child: Text(productsState.errorMessage!)),
+                      child: Center(
+                        child: Text(productsState.errorMessage!),
+                      ),
                     )
-                  else
+                  else if (productsState.products.isEmpty)
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Text("لا توجد منتجات"),
+                      ),
+                    )
+                  else ...[
                     SliverGrid(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final product = productsState.products[index];
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final product = productsState.products[index];
 
-                        return CategoryProductCardWidget(
-                          product: product,
-                          onTap: () {
-                            context.push("/product/${product.id}");
-                          },
-                        );
-                      }, childCount: productsState.products.length),
+                          return CategoryProductCardWidget(
+                            product: product,
+                            onTap: () {
+                              context.push("/product/${product.id}");
+                            },
+                          );
+                        },
+                        childCount: productsState.products.length,
+                      ),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            mainAxisExtent: 265,
-                          ),
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        mainAxisExtent: 265,
+                      ),
                     ),
 
-                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 16),
+                    ),
+
+                    if (productsState.isLoadingMore)
+                      const SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Center(
+                            child: CustomLoading(),
+                          ),
+                        ),
+                      ),
+                  ],
                 ],
               ),
             ),

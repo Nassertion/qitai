@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
-import 'package:qitai/features/client/products/data/models/product_model.dart';
 import 'package:qitai/features/client/products/data/models/product_pagination_model.dart';
 
 class ProductRemoteDataSource {
