@@ -184,3 +184,86 @@ final class CategoriesProvider
 }
 
 String _$categoriesHash() => r'af796a3b574bdb9c63e5536be1b57e07f62c36a1';
+
+@ProviderFor(getCategoryTree)
+final getCategoryTreeProvider = GetCategoryTreeProvider._();
+
+final class GetCategoryTreeProvider
+    extends
+        $FunctionalProvider<GetCategoryTree, GetCategoryTree, GetCategoryTree>
+    with $Provider<GetCategoryTree> {
+  GetCategoryTreeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getCategoryTreeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getCategoryTreeHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetCategoryTree> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  GetCategoryTree create(Ref ref) {
+    return getCategoryTree(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetCategoryTree value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetCategoryTree>(value),
+    );
+  }
+}
+
+String _$getCategoryTreeHash() => r'a1ed38e93436c223e8d76a7d564a53ad1e275cd1';
+
+@ProviderFor(categoryTree)
+final categoryTreeProvider = CategoryTreeProvider._();
+
+final class CategoryTreeProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<CategoryTree>>,
+          List<CategoryTree>,
+          FutureOr<List<CategoryTree>>
+        >
+    with
+        $FutureModifier<List<CategoryTree>>,
+        $FutureProvider<List<CategoryTree>> {
+  CategoryTreeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'categoryTreeProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$categoryTreeHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<CategoryTree>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<CategoryTree>> create(Ref ref) {
+    return categoryTree(ref);
+  }
+}
+
+String _$categoryTreeHash() => r'aca768746e50609b4ee77635694afe81d694504b';

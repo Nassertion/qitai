@@ -2,8 +2,10 @@ import 'package:qitai/core/network/dio_provider.dart';
 import 'package:qitai/features/client/categories/data/datasources/category_remote_data_sources.dart';
 import 'package:qitai/features/client/categories/data/repositories/category_repository_impl.dart';
 import 'package:qitai/features/client/categories/domain/entities/category.dart';
+import 'package:qitai/features/client/categories/domain/entities/category_tree.dart';
 import 'package:qitai/features/client/categories/domain/repositories/category_repository.dart';
 import 'package:qitai/features/client/categories/domain/usecases/get_categories.dart';
+import 'package:qitai/features/client/categories/domain/usecases/get_category_tree.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'category_provider.g.dart';
@@ -34,4 +36,16 @@ Future<List<Category>> categories(Ref ref) {
   print('CATEGORIES API CALLED');
 
   return getCategories();
+}
+@riverpod
+GetCategoryTree getCategoryTree(Ref ref) {
+  final categoryRepo = ref.watch(categoryRepositoryProvider);
+
+  return GetCategoryTree(categoryRepo);
+}
+@Riverpod(keepAlive: true)
+Future<List<CategoryTree>> categoryTree(Ref ref) {
+  final getCategoryTree = ref.watch(getCategoryTreeProvider);
+
+  return getCategoryTree();
 }
