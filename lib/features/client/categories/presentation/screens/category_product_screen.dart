@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
+import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
-import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_product_notifier.dart';
 import 'package:qitai/features/client/categories/presentation/widgets/category_product_card_widget.dart';
-import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
+import 'package:qitai/features/client/categories/presentation/widgets/category_section_filter.dart';
 
 class CategoryProductsScreen extends ConsumerStatefulWidget {
   const CategoryProductsScreen({
@@ -42,9 +42,7 @@ class _CategoryProductsScreenState
     final position = _scrollController.position;
 
     if (position.pixels >= position.maxScrollExtent - 300) {
-      ref
-          .read(categoryProductProvider(widget.id).notifier)
-          .loadNextPage();
+      ref.read(categoryProductProvider(widget.id).notifier).loadNextPage();
     }
   }
 
@@ -57,9 +55,7 @@ class _CategoryProductsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final productsState = ref.watch(
-      categoryProductProvider(widget.id),
-    );
+    final productsState = ref.watch(categoryProductProvider(widget.id));
 
     return Scaffold(
       appBar: CustomAppbar(
@@ -76,80 +72,70 @@ class _CategoryProductsScreenState
           ),
         ),
       ),
-      body: AppPagePadding(
-        child: Column(
-          children: [
-            const VehiclesWidget(),
+      body: Column(
+        children: [
+          CategoryFilterSelector(categoryId: widget.id),
+          Expanded(
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                if (productsState.isLoading)
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: CustomLoading()),
+                  )
+                else if (productsState.errorMessage != null &&
+                    productsState.products.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: Text(productsState.errorMessage!)),
+                  )
+                else if (productsState.products.isEmpty)
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: EmptyDataWidget(
+                      text: "لا توجد منتجات",
+                      img: "assets/icons/Object.svg",
+                    ),
+                  )
+                else ...[
+                  SliverPadding(
+                    padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
+                    sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final product = productsState.products[index];
 
-            Expanded(
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  if (productsState.isLoading)
-                    const SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: CustomLoading(),
-                      ),
-                    )
-                  else if (productsState.errorMessage != null &&
-                      productsState.products.isEmpty)
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: Text(productsState.errorMessage!),
-                      ),
-                    )
-                  else if (productsState.products.isEmpty)
-                    const SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: Text("لا توجد منتجات"),
-                      ),
-                    )
-                  else ...[
-                    SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final product = productsState.products[index];
-
-                          return CategoryProductCardWidget(
-                            product: product,
-                            onTap: () {
-                              context.push("/product/${product.id}");
-                            },
-                          );
-                        },
-                        childCount: productsState.products.length,
-                      ),
+                        return CategoryProductCardWidget(
+                          product: product,
+                          onTap: () {
+                            context.push("/product/${product.id}");
+                          },
+                        );
+                      }, childCount: productsState.products.length),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        mainAxisExtent: 265,
-                      ),
-                    ),
-
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: 16),
-                    ),
-
-                    if (productsState.isLoadingMore)
-                      const SliverToBoxAdapter(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(
-                            child: CustomLoading(),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            mainAxisExtent: 265,
                           ),
-                        ),
+                    ),
+                  ),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+                  if (productsState.isLoadingMore)
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: CustomLoading()),
                       ),
-                  ],
+                    ),
                 ],
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

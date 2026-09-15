@@ -17,21 +17,24 @@ class EmptyDataWidget extends StatelessWidget {
   //ontab
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        //in case no orders
-        children: [
-          //"assets/icons/box.svg"
-          SizedBox(height: 100, width: 130, child: SvgPicture.asset(img)),
-          h16,
-          Text(text, style: AppTextStyles.boldSubtitle),
-          if (buttonText != null) ...[
-            SizedBox(height: 48),
-            ButtonWidget(text: buttonText!),
+    return SizedBox.expand(
+      child: Transform.translate(
+        offset: Offset(10, -50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          //in case no orders
+          children: [
+            //"assets/icons/box.svg"
+            SizedBox(height: 100, width: 130, child: SvgPicture.asset(img)),
+            h16,
+            Text(text, style: AppTextStyles.boldSubtitle),
+            if (buttonText != null) ...[
+              SizedBox(height: 48),
+              ButtonWidget(text: buttonText!),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

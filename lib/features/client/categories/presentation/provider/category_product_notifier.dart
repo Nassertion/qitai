@@ -7,15 +7,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'category_product_notifier.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class CategoryProductNotifier extends _$CategoryProductNotifier {
   late final GetProducts getProducts;
-  late final int _categoryId;
+
+  // late final int _parentCategoryId;
 
   @override
   CategoryProductState build(int categoryId) {
     getProducts = ref.read(getProductsProvider);
-    _categoryId = categoryId;
+
+    // _parentCategoryId = categoryId;
 
     ref.listen<VehicleState>(vehicleProvider, (previous, next) {
       final prevBrandId = previous?.selectedCarBrand?.id;
@@ -39,7 +41,10 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
 
     Future.microtask(loadProducts);
 
-    return const CategoryProductState();
+    return CategoryProductState(
+      parentCategoryId: categoryId,
+      selectedCategoryId: categoryId,
+    );
   }
 
   Future<void> loadProducts() async {
@@ -62,7 +67,7 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
         brandId: brandId,
         modelId: modelId,
         year: year,
-        categoryId: _categoryId,
+        categoryId: state.selectedCategoryId,
         page: 1,
       );
 
@@ -105,7 +110,7 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
         brandId: brandId,
         modelId: modelId,
         year: year,
-        categoryId: _categoryId,
+        categoryId: state.selectedCategoryId,
         page: nextPage,
       );
 
@@ -124,5 +129,25 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
         errorMessage: e.toString(),
       );
     }
+  }
+
+  Future<void> selectSection(int categoryId) async {
+    if (categoryId == state.selectedCategoryId) return;
+
+    state = state.copyWith(
+      selectedCategoryId: categoryId,
+    );
+
+    await loadProducts();
+  }
+
+  Future<void> clearSection() async {
+    if (state.selectedCategoryId == state.parentCategoryId) return;
+
+    state = state.copyWith(
+      selectedCategoryId: state.parentCategoryId,
+    );
+
+    await loadProducts();
   }
 }

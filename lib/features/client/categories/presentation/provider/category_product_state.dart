@@ -5,8 +5,12 @@ class CategoryProductState {
   final bool isLoading;
   final bool isLoadingMore;
   final String? errorMessage;
+
   final int currentPage;
   final int lastPage;
+
+  final int parentCategoryId;
+  final int selectedCategoryId;
 
   const CategoryProductState({
     this.products = const [],
@@ -15,6 +19,8 @@ class CategoryProductState {
     this.errorMessage,
     this.currentPage = 1,
     this.lastPage = 1,
+    this.parentCategoryId = 0,
+    this.selectedCategoryId = 0,
   });
 
   bool get hasNextPage => currentPage < lastPage;
@@ -27,6 +33,8 @@ class CategoryProductState {
     bool clearErrorMessage = false,
     int? currentPage,
     int? lastPage,
+    int? parentCategoryId,
+    int? selectedCategoryId,
   }) {
     return CategoryProductState(
       products: products ?? this.products,
@@ -37,6 +45,9 @@ class CategoryProductState {
           : (errorMessage ?? this.errorMessage),
       currentPage: currentPage ?? this.currentPage,
       lastPage: lastPage ?? this.lastPage,
+      parentCategoryId: parentCategoryId ?? this.parentCategoryId,
+      selectedCategoryId:
+          selectedCategoryId ?? this.selectedCategoryId,
     );
   }
 }
