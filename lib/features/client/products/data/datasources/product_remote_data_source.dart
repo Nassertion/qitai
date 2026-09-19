@@ -21,10 +21,10 @@ class ProductRemoteDataSource {
         queryParameters: {
           if (query != null && query.isNotEmpty) "q": query,
           if (vin != null && vin.isNotEmpty) "vin": vin,
-          if (brandId != null) "brand_id": brandId,
-          if (modelId != null) "model_id": modelId,
-          if (year != null) "year": year,
-          if (categoryId != null) "category_id": categoryId,
+          "brand_id": ?brandId,
+          "model_id": ?modelId,
+          "year": ?year,
+          "category_id": ?categoryId,
           "page": page,
         },
       );

@@ -33,7 +33,6 @@ GetCategories getCategories(Ref ref) {
 @Riverpod(keepAlive: true)
 Future<List<Category>> categories(Ref ref) {
   final getCategories = ref.watch(getCategoriesProvider);
-  print('CATEGORIES API CALLED');
 
   return getCategories();
 }
