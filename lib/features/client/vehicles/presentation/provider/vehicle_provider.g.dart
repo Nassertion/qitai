@@ -57,53 +57,52 @@ final class VehicleRemoteDataSourceProvider
 String _$vehicleRemoteDataSourceHash() =>
     r'cb2d2b26b93809612c990031d8cb7a48df185353';
 
-@ProviderFor(vehiclesRepository)
-final vehiclesRepositoryProvider = VehiclesRepositoryProvider._();
+@ProviderFor(vehicleRepository)
+final vehicleRepositoryProvider = VehicleRepositoryProvider._();
 
-final class VehiclesRepositoryProvider
+final class VehicleRepositoryProvider
     extends
         $FunctionalProvider<
-          VehiclesRepository,
-          VehiclesRepository,
-          VehiclesRepository
+          VehicleRepository,
+          VehicleRepository,
+          VehicleRepository
         >
-    with $Provider<VehiclesRepository> {
-  VehiclesRepositoryProvider._()
+    with $Provider<VehicleRepository> {
+  VehicleRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'vehiclesRepositoryProvider',
+        name: r'vehicleRepositoryProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$vehiclesRepositoryHash();
+  String debugGetCreateSourceHash() => _$vehicleRepositoryHash();
 
   @$internal
   @override
-  $ProviderElement<VehiclesRepository> $createElement(
+  $ProviderElement<VehicleRepository> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  VehiclesRepository create(Ref ref) {
-    return vehiclesRepository(ref);
+  VehicleRepository create(Ref ref) {
+    return vehicleRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(VehiclesRepository value) {
+  Override overrideWithValue(VehicleRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<VehiclesRepository>(value),
+      providerOverride: $SyncValueProvider<VehicleRepository>(value),
     );
   }
 }
 
-String _$vehiclesRepositoryHash() =>
-    r'e4759db417a0228f872f714066e8f305ce643dfc';
+String _$vehicleRepositoryHash() => r'5295a0169ae47d93509e37ad359b3af9dbfab94b';
 
 @ProviderFor(getCarBrands)
 final getCarBrandsProvider = GetCarBrandsProvider._();
@@ -144,7 +143,7 @@ final class GetCarBrandsProvider
   }
 }
 
-String _$getCarBrandsHash() => r'6b44e41d036b85e3432623deaf81646dd20cb3a5';
+String _$getCarBrandsHash() => r'ee9cbf1c19105bcbec89230204cc97afd1a9ed46';
 
 @ProviderFor(getCarModels)
 final getCarModelsProvider = GetCarModelsProvider._();
@@ -185,7 +184,7 @@ final class GetCarModelsProvider
   }
 }
 
-String _$getCarModelsHash() => r'd33fc744b5cdb506161289b59097f39218a19d6e';
+String _$getCarModelsHash() => r'17a0e2786ed13c8f05149d38093d292737099798';
 
 @ProviderFor(getCarYears)
 final getCarYearsProvider = GetCarYearsProvider._();
@@ -226,4 +225,4 @@ final class GetCarYearsProvider
   }
 }
 
-String _$getCarYearsHash() => r'df22f492e18910d85fb8d49f7dd61343f6ca4fbc';
+String _$getCarYearsHash() => r'c146c059e12374146d65d8dfd6cd71f43b6847b2';

@@ -4,8 +4,8 @@ import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 
-class ClientAdressesScreen extends StatelessWidget {
-  const ClientAdressesScreen({super.key});
+class ClientAddressesScreen extends StatelessWidget {
+  const ClientAddressesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

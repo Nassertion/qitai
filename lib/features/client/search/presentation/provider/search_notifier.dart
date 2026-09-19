@@ -5,9 +5,9 @@ import 'package:qitai/features/client/products/presentation/provider/product_pro
 import 'package:qitai/features/client/search/domain/usecases/get_search_suggestions.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_state.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_suggestions_provider.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
-import 'package:qitai/features/client/vehicles/presentation/utiles/vehicle_filter_helper.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
+import 'package:qitai/features/client/vehicles/presentation/utils/vehicle_filter_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_notifier.g.dart';
@@ -75,7 +75,7 @@ ref.listen<VehicleState>(vehicleProvider, (previous, next) {
 
     try {
       final suggestions = await getSuggestions(query: query);
-
+if (!ref.mounted) return;
       if (state.query.trim() != query) return;
 
       state = state.copyWith(
@@ -83,6 +83,7 @@ ref.listen<VehicleState>(vehicleProvider, (previous, next) {
         isSuggestionsLoading: false,
       );
     } catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         isSuggestionsLoading: false,
         errorMessage: e.toString(),

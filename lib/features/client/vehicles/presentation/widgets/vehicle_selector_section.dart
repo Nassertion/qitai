@@ -6,7 +6,7 @@ import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_bottom_sheet.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 class VehicleSelectorSection extends ConsumerWidget {
   const VehicleSelectorSection({super.key});
 

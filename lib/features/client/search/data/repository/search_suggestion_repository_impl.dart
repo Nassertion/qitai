@@ -9,7 +9,6 @@ class SearchSuggestionRepositoryImpl implements SearchSuggestionRepository {
   @override
   Future<List<SearchSuggestion>> getSuggestions({
     required String query,
-    int? limit,
   }) async {
     final suggestionsModel = await dataSource
         .getSuggestions(query: query);

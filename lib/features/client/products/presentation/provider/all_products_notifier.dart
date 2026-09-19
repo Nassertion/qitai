@@ -1,12 +1,12 @@
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
-import 'package:qitai/features/client/products/presentation/provider/all_product_state.dart';
+import 'package:qitai/features/client/products/presentation/provider/all_products_state.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
-import 'package:qitai/features/client/vehicles/presentation/utiles/vehicle_filter_helper.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
+import 'package:qitai/features/client/vehicles/presentation/utils/vehicle_filter_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'all_product_notifier.g.dart';
+part 'all_products_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class AllProductsNotifier extends _$AllProductsNotifier {

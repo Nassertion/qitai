@@ -1,8 +1,8 @@
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
-import 'package:qitai/features/client/vehicles/domain/repositories/vehicles_repository.dart';
+import 'package:qitai/features/client/vehicles/domain/repositories/vehicle_repository.dart';
 
 class GetCarBrands {
-  final VehiclesRepository repo;
+  final VehicleRepository repo;
   GetCarBrands(this.repo);
 
   Future<List<CarBrand>> call(){

@@ -1,11 +1,11 @@
 import 'package:qitai/features/client/products/domain/entities/product_detail.dart';
 import 'package:qitai/features/client/products/domain/repositories/product_detail_repository.dart';
 
-class GetProductDetail {
+class GetProductsDetails {
   final ProductDetailRepository repo;
-  GetProductDetail(this.repo);
+  GetProductsDetails(this.repo);
 
   Future<ProductDetail> call(int productId){
-    return repo.getProductDetail(productId);
+    return repo.getProductsDetails(productId);
   }
 }

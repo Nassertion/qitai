@@ -3,7 +3,7 @@ import 'package:qitai/features/client/products/data/datasources/product_detail_r
 import 'package:qitai/features/client/products/data/repositories/product_detail_repository_impl.dart';
 import 'package:qitai/features/client/products/domain/entities/product_detail.dart';
 import 'package:qitai/features/client/products/domain/repositories/product_detail_repository.dart';
-import 'package:qitai/features/client/products/domain/usecases/get_product_detail.dart';
+import 'package:qitai/features/client/products/domain/usecases/get_products_details.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_detail_provider.g.dart';
@@ -22,15 +22,15 @@ ProductDetailRepository productDetailRepository(Ref ref) {
 }
 
 @riverpod
-GetProductDetail getProductDetail(Ref ref) {
+GetProductsDetails getProductsDetails(Ref ref) {
   final repository = ref.watch(productDetailRepositoryProvider);
 
-  return GetProductDetail(repository);
+  return GetProductsDetails(repository);
 }
 
 @riverpod
 Future<ProductDetail> productDetail(Ref ref, int productId) {
-  final getProductDetail = ref.watch(getProductDetailProvider);
+  final getProductDetail = ref.watch(getProductsDetailsProvider);
 
   return getProductDetail(productId);
 }

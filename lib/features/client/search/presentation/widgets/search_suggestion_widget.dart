@@ -4,8 +4,8 @@ import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/features/client/search/domain/entities/search_suggestion.dart';
 
-class SuggestionWidget extends StatelessWidget {
-  const SuggestionWidget({
+class SearchSuggestionWidget extends StatelessWidget {
+  const SearchSuggestionWidget({
     super.key,
     required this.suggestions,
     this.onTapSuggestion,

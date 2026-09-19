@@ -2,18 +2,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:qitai/features/client/products/domain/entities/product_detail.dart';
 import 'package:qitai/features/client/products/domain/repositories/product_detail_repository.dart';
-import 'package:qitai/features/client/products/domain/usecases/get_product_detail.dart';
+import 'package:qitai/features/client/products/domain/usecases/get_products_details.dart';
 
 class MockProductDetailRepository extends Mock
     implements ProductDetailRepository {}
 
 void main() {
   late MockProductDetailRepository repository;
-  late GetProductDetail getProductDetail;
+  late GetProductsDetails getProductsDetails;
 
   setUp(() {
     repository = MockProductDetailRepository();
-    getProductDetail = GetProductDetail(repository);
+    getProductsDetails = GetProductsDetails(repository);
   });
 
   test('should return product detail from repository', () async {
@@ -37,17 +37,17 @@ void main() {
     );
 
     when(
-      () => repository.getProductDetail(productId),
+      () => repository.getProductsDetails(productId),
     ).thenAnswer((_) async => productDetail);
 
     // Act
-    final result = await getProductDetail(productId);
+    final result = await getProductsDetails(productId);
 
     // Assert
     expect(result, productDetail);
 
     verify(
-      () => repository.getProductDetail(productId),
+      () => repository.getProductsDetails(productId),
     ).called(1);
   });
 }

@@ -1,9 +1,9 @@
 import 'package:qitai/features/client/categories/presentation/provider/category_product_state.dart';
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
-import 'package:qitai/features/client/vehicles/presentation/utiles/vehicle_filter_helper.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
+import 'package:qitai/features/client/vehicles/presentation/utils/vehicle_filter_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'category_product_notifier.g.dart';

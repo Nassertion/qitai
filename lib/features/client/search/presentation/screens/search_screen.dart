@@ -11,7 +11,7 @@ import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_notifier.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_card_product_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_suggestion_widget.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -159,7 +159,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                   if (state.suggestions.isNotEmpty) {
                     return SingleChildScrollView(
-                      child: SuggestionWidget(
+                      child: SearchSuggestionWidget(
                         suggestions: state.suggestions,
                         onTapSuggestion: (item) {
                           _controller.text = item.name;

@@ -1,4 +1,4 @@
-import 'package:qitai/features/client/categories/data/datasources/category_remote_data_sources.dart';
+import 'package:qitai/features/client/categories/data/datasources/category_remote_data_source.dart';
 import 'package:qitai/features/client/categories/domain/entities/category.dart';
 import 'package:qitai/features/client/categories/domain/entities/category_tree.dart';
 import 'package:qitai/features/client/categories/domain/repositories/category_repository.dart';

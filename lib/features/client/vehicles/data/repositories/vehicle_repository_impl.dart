@@ -2,9 +2,9 @@ import 'package:qitai/features/client/vehicles/data/datasources/vehicle_remote_d
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
-import 'package:qitai/features/client/vehicles/domain/repositories/vehicles_repository.dart';
+import 'package:qitai/features/client/vehicles/domain/repositories/vehicle_repository.dart';
 
-class VehicleRepositoryImpl implements VehiclesRepository {
+class VehicleRepositoryImpl implements VehicleRepository {
   final VehicleRemoteDataSource dataSource;
 
   VehicleRepositoryImpl(this.dataSource);

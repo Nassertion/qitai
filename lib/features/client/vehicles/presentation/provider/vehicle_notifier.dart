@@ -5,7 +5,7 @@ import 'package:qitai/features/client/vehicles/domain/usecases/get_car_brand.dar
 import 'package:qitai/features/client/vehicles/domain/usecases/get_car_models.dart';
 import 'package:qitai/features/client/vehicles/domain/usecases/get_car_years.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_provider.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'vehicles_notifier.g.dart';

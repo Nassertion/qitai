@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'all_product_notifier.dart';
+part of 'all_products_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -42,7 +42,7 @@ final class AllProductsNotifierProvider
 }
 
 String _$allProductsNotifierHash() =>
-    r'4ccfebbc2293e7084abd556c2de5daaf68aded01';
+    r'92076fce2edd10961876152c34a6ac393980c0d5';
 
 abstract class _$AllProductsNotifier extends $Notifier<AllProductsState> {
   AllProductsState build();

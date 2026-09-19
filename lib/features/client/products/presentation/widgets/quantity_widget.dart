@@ -4,16 +4,16 @@ import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 
-class QuiantityWidget extends StatefulWidget {
+class QuantityWidget extends StatefulWidget {
   final int initialQuantity;
 
-  const QuiantityWidget({super.key, required this.initialQuantity});
+  const QuantityWidget({super.key, required this.initialQuantity});
 
   @override
-  State<QuiantityWidget> createState() => _QuiantityWidgetState();
+  State<QuantityWidget> createState() => _QuantityWidgetState();
 }
 
-class _QuiantityWidgetState extends State<QuiantityWidget> {
+class _QuantityWidgetState extends State<QuantityWidget> {
   static const int maxQuantity = 10000;
 
   late final TextEditingController _controller;

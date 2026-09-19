@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class ProductViewWidget extends StatefulWidget {
-  const ProductViewWidget({super.key});
+class ProductSlideWidget extends StatefulWidget {
+  const ProductSlideWidget({super.key});
 
   @override
-  State<ProductViewWidget> createState() => _ProductViewWidgetState();
+  State<ProductSlideWidget> createState() => _ProductSlideWidgetState();
 }
 
-class _ProductViewWidgetState extends State<ProductViewWidget> {
+class _ProductSlideWidgetState extends State<ProductSlideWidget> {
   final PageController _controller = PageController();
 
   final List<String> banners = [
     'assets/images/product_test.png',
     'assets/images/product_test.png',
-   
   ];
 
   @override

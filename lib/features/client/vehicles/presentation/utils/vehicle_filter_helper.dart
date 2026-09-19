@@ -1,4 +1,4 @@
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 
 bool hasVehicleFiltersChanged(
   VehicleState? previous,

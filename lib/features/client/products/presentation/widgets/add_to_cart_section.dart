@@ -37,7 +37,7 @@ class _AddToCartSectionState extends State<AddToCartSection> {
       builder: (_) => Dialog(
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-        child: QuiantityWidget(initialQuantity: quantity),
+        child: QuantityWidget(initialQuantity: quantity),
       ),
     );
 
@@ -77,9 +77,7 @@ class _AddToCartSectionState extends State<AddToCartSection> {
                     child: const SizedBox(
                       width: 32,
                       height: 32,
-                      child: Center(
-                        child: Icon(Icons.remove, size: 18),
-                      ),
+                      child: Center(child: Icon(Icons.remove, size: 18)),
                     ),
                   ),
 
@@ -107,9 +105,7 @@ class _AddToCartSectionState extends State<AddToCartSection> {
                     child: const SizedBox(
                       width: 32,
                       height: 32,
-                      child: Center(
-                        child: Icon(Icons.add, size: 18),
-                      ),
+                      child: Center(child: Icon(Icons.add, size: 18)),
                     ),
                   ),
                 ],

@@ -2,10 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
-import 'package:qitai/features/client/vehicles/domain/repositories/vehicles_repository.dart';
+import 'package:qitai/features/client/vehicles/domain/repositories/vehicle_repository.dart';
 import 'package:qitai/features/client/vehicles/domain/usecases/get_car_years.dart';
 
-class MockVehiclesRepository extends Mock implements VehiclesRepository {}
+class MockVehiclesRepository extends Mock implements VehicleRepository {}
 
 void main() {
   late MockVehiclesRepository repository;

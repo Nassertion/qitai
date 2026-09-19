@@ -108,51 +108,53 @@ final class ProductDetailRepositoryProvider
 String _$productDetailRepositoryHash() =>
     r'49125ca08fe44265e9db75ecdd13f5f2400c3ee8';
 
-@ProviderFor(getProductDetail)
-final getProductDetailProvider = GetProductDetailProvider._();
+@ProviderFor(getProductsDetails)
+final getProductsDetailsProvider = GetProductsDetailsProvider._();
 
-final class GetProductDetailProvider
+final class GetProductsDetailsProvider
     extends
         $FunctionalProvider<
-          GetProductDetail,
-          GetProductDetail,
-          GetProductDetail
+          GetProductsDetails,
+          GetProductsDetails,
+          GetProductsDetails
         >
-    with $Provider<GetProductDetail> {
-  GetProductDetailProvider._()
+    with $Provider<GetProductsDetails> {
+  GetProductsDetailsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'getProductDetailProvider',
+        name: r'getProductsDetailsProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$getProductDetailHash();
+  String debugGetCreateSourceHash() => _$getProductsDetailsHash();
 
   @$internal
   @override
-  $ProviderElement<GetProductDetail> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<GetProductsDetails> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
-  GetProductDetail create(Ref ref) {
-    return getProductDetail(ref);
+  GetProductsDetails create(Ref ref) {
+    return getProductsDetails(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetProductDetail value) {
+  Override overrideWithValue(GetProductsDetails value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<GetProductDetail>(value),
+      providerOverride: $SyncValueProvider<GetProductsDetails>(value),
     );
   }
 }
 
-String _$getProductDetailHash() => r'ac8976262ce8699f40ba84a64a65ac1dc0b27bf6';
+String _$getProductsDetailsHash() =>
+    r'8fcc15ad12218a1440a7228ff40d94a05bbd0d27';
 
 @ProviderFor(productDetail)
 final productDetailProvider = ProductDetailFamily._();
@@ -209,7 +211,7 @@ final class ProductDetailProvider
   }
 }
 
-String _$productDetailHash() => r'29afd56f4875f05354722cd419e17269d9ca0e78';
+String _$productDetailHash() => r'17c36e0370b4b22f841bdbe1682383513b0d009e';
 
 final class ProductDetailFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<ProductDetail>, int> {

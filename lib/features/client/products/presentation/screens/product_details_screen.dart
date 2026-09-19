@@ -10,8 +10,8 @@ import 'package:qitai/features/client/products/presentation/widgets/product_slid
 import 'package:qitai/features/client/products/presentation/widgets/add_to_cart_section.dart';
 import 'package:qitai/features/client/products/presentation/widgets/similar_products_widget.dart';
 
-class ProductDetailScreen extends ConsumerWidget {
-  const ProductDetailScreen({super.key, required this.id});
+class ProductDetailsScreen extends ConsumerWidget {
+  const ProductDetailsScreen({super.key, required this.id});
   final int id;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +30,7 @@ class ProductDetailScreen extends ConsumerWidget {
         error: (error, stackTrace) => Center(child: Text(error.toString())),
         data: (data) => ListView(
           children: [
-            ProductViewWidget(),
+            ProductSlideWidget(),
             h16,
             ProductInfoWidget(product: data),
             h16,
