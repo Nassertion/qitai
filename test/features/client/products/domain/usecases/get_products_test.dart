@@ -1,40 +1,62 @@
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mocktail/mocktail.dart';
-// import 'package:qitai/features/client/products/domain/entities/product.dart';
-// import 'package:qitai/features/client/products/domain/repositories/product_repository.dart';
-// import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
-// class mockProductRepository extends Mock implements ProductRepository {}
+import 'package:qitai/features/client/products/domain/entities/product.dart';
+import 'package:qitai/features/client/products/domain/entities/product_pagination.dart';
+import 'package:qitai/features/client/products/domain/repositories/product_repository.dart';
+import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 
-// void main() {
-//   late mockProductRepository repo;
-//   late GetProducts getProducts;
+class MockProductRepository extends Mock implements ProductRepository {}
 
-//   setUp(() {
-//     repo = mockProductRepository();
-//     getProducts = GetProducts(repo);
-//   });
+void main() {
+  late MockProductRepository repo;
+  late GetProducts getProducts;
 
-//   final product = Product(
-//     id: 1,
-//     name: "test",
-//     sku: "test",
-//     partNumber: "1",
-//     condition: "new",
-//     quality: "oem",
-//     price: 1,
-//     stock: 1,
-//     inStock: true,
-//     images: [],
-//     category: null,
-//   );
+  setUp(() {
+    repo = MockProductRepository();
+    getProducts = GetProducts(repo);
+  });
 
-//   test("should return products from repo", () async{when(()=> repo.getProducts() ).thenAnswer((_) async => [product]);
-//   final result = await getProducts();
+  final product = Product(
+    id: 1,
+    name: "test",
+    sku: "test",
+    partNumber: "1",
+    condition: "new",
+    quality: "oem",
+    price: 1,
+    stock: 1,
+    inStock: true,
+    images: [],
+    category: null,
+  );
 
-//   expect(result, [product]);
+  test("should return products pagination from repo", () async {
+    // Arrange
+    final pagination = ProductPagination(
+      products: [product],
+      currentPage: 1,
+      lastPage: 1,
+      perPage: 20,
+      total: 1,
+    );
 
-//   verify(() => repo.getProducts()).called(1);
-  
-//   });
-// }
+    when(
+      () => repo.getProducts(),
+    ).thenAnswer((_) async => pagination);
+
+    // Act
+    final result = await getProducts();
+
+    // Assert
+    expect(result.products, [product]);
+    expect(result.currentPage, 1);
+    expect(result.lastPage, 1);
+    expect(result.perPage, 20);
+    expect(result.total, 1);
+
+    verify(
+      () => repo.getProducts(),
+    ).called(1);
+  });
+}

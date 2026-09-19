@@ -1,9 +1,9 @@
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
-import 'package:qitai/features/client/vehicles/domain/usecases/get_car_brand_use_case.dart';
-import 'package:qitai/features/client/vehicles/domain/usecases/get_car_model_use_case.dart';
-import 'package:qitai/features/client/vehicles/domain/usecases/get_car_year_use_case.dart';
+import 'package:qitai/features/client/vehicles/domain/usecases/get_car_brand.dart';
+import 'package:qitai/features/client/vehicles/domain/usecases/get_car_models.dart';
+import 'package:qitai/features/client/vehicles/domain/usecases/get_car_years.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

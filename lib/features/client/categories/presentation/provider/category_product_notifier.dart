@@ -48,30 +48,33 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
       lastPage: 1,
       clearErrorMessage: true,
     );
+try {
+  final result = await getProducts(
+    brandId: brandId,
+    modelId: modelId,
+    year: year,
+    categoryId: state.selectedCategoryId,
+    page: 1,
+  );
 
-    try {
-      final result = await getProducts(
-        brandId: brandId,
-        modelId: modelId,
-        year: year,
-        categoryId: state.selectedCategoryId,
-        page: 1,
-      );
+  if (!ref.mounted) return;
 
-      state = state.copyWith(
-        products: result.products,
-        currentPage: result.currentPage,
-        lastPage: result.lastPage,
-        isLoading: false,
-        isLoadingMore: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isLoadingMore: false,
-        errorMessage: e.toString(),
-      );
-    }
+  state = state.copyWith(
+    products: result.products,
+    currentPage: result.currentPage,
+    lastPage: result.lastPage,
+    isLoading: false,
+    isLoadingMore: false,
+  );
+} catch (e) {
+  if (!ref.mounted) return;
+
+  state = state.copyWith(
+    isLoading: false,
+    isLoadingMore: false,
+    errorMessage: e.toString(),
+  );
+}
   }
 
   Future<void> loadNextPage() async {
@@ -92,30 +95,34 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
       clearErrorMessage: true,
     );
 
-    try {
-      final result = await getProducts(
-        brandId: brandId,
-        modelId: modelId,
-        year: year,
-        categoryId: state.selectedCategoryId,
-        page: nextPage,
-      );
+try {
+  final result = await getProducts(
+    brandId: brandId,
+    modelId: modelId,
+    year: year,
+    categoryId: state.selectedCategoryId,
+    page: nextPage,
+  );
 
-      state = state.copyWith(
-        products: [
-          ...state.products,
-          ...result.products,
-        ],
-        currentPage: result.currentPage,
-        lastPage: result.lastPage,
-        isLoadingMore: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoadingMore: false,
-        errorMessage: e.toString(),
-      );
-    }
+  if (!ref.mounted) return;
+
+  state = state.copyWith(
+    products: [
+      ...state.products,
+      ...result.products,
+    ],
+    currentPage: result.currentPage,
+    lastPage: result.lastPage,
+    isLoadingMore: false,
+  );
+} catch (e) {
+  if (!ref.mounted) return;
+
+  state = state.copyWith(
+    isLoadingMore: false,
+    errorMessage: e.toString(),
+  );
+}
   }
 
   Future<void> selectSection(int categoryId) async {
