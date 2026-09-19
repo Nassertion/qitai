@@ -3,6 +3,7 @@ import 'package:qitai/features/client/products/presentation/provider/all_product
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
+import 'package:qitai/features/client/vehicles/presentation/utiles/vehicle_filter_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'all_product_notifier.g.dart';
@@ -15,25 +16,11 @@ class AllProductsNotifier extends _$AllProductsNotifier {
   AllProductsState build() {
     getProducts = ref.read(getProductsProvider);
 
-    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
-      final prevBrandId = previous?.selectedCarBrand?.id;
-      final nextBrandId = next.selectedCarBrand?.id;
+   ref.listen<VehicleState>(vehicleProvider, (previous, next) {
+  if (!hasVehicleFiltersChanged(previous, next)) return;
 
-      final prevModelId = previous?.selectedModel?.id;
-      final nextModelId = next.selectedModel?.id;
-
-      final prevYear = previous?.selectedCarYear?.year;
-      final nextYear = next.selectedCarYear?.year;
-
-      final filtersChanged =
-          prevBrandId != nextBrandId ||
-          prevModelId != nextModelId ||
-          prevYear != nextYear;
-
-      if (!filtersChanged) return;
-
-      loadProducts();
-    });
+  loadProducts();
+});
 
     Future.microtask(loadProducts);
 

@@ -7,6 +7,7 @@ import 'package:qitai/features/client/search/presentation/provider/search_state.
 import 'package:qitai/features/client/search/presentation/provider/search_suggestions_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicles_state.dart';
+import 'package:qitai/features/client/vehicles/presentation/utiles/vehicle_filter_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_notifier.g.dart';
@@ -28,25 +29,11 @@ class SearchNotifier extends _$SearchNotifier {
       _debounce?.cancel();
     });
 
-    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
-      final prevBrandId = previous?.selectedCarBrand?.id;
-      final nextBrandId = next.selectedCarBrand?.id;
+ref.listen<VehicleState>(vehicleProvider, (previous, next) {
+  if (!hasVehicleFiltersChanged(previous, next)) return;
 
-      final prevModelId = previous?.selectedModel?.id;
-      final nextModelId = next.selectedModel?.id;
-
-      final prevYear = previous?.selectedCarYear?.year;
-      final nextYear = next.selectedCarYear?.year;
-
-      final filtersChanged =
-          prevBrandId != nextBrandId ||
-          prevModelId != nextModelId ||
-          prevYear != nextYear;
-
-      if (!filtersChanged) return;
-
-      submitSearch();
-    });
+  submitSearch();
+});
 
     return const SearchState();
   }
