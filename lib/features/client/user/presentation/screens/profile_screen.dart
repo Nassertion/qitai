@@ -6,7 +6,7 @@ import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
-import 'package:qitai/features/client/profile/presentation/widgets/profile_card_widget.dart';
+import 'package:qitai/features/client/user/presentation/widgets/profile_card_widget.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

@@ -8,9 +8,9 @@ import 'package:qitai/features/client/home/presentation/screens/client_home_scre
 import 'package:qitai/features/client/orders/presentation/screens/orders_screen.dart';
 import 'package:qitai/features/client/products/presentation/screens/all_products_screen.dart';
 import 'package:qitai/features/client/products/presentation/screens/product_details_screen.dart';
-import 'package:qitai/features/client/profile/presentation/screens/client_addresses_screen.dart';
-import 'package:qitai/features/client/profile/presentation/screens/client_cars_screen.dart';
-import 'package:qitai/features/client/profile/presentation/screens/profile_screen.dart';
+import 'package:qitai/features/client/user/presentation/screens/client_addresses_screen.dart';
+import 'package:qitai/features/client/user/presentation/screens/client_cars_screen.dart';
+import 'package:qitai/features/client/user/presentation/screens/profile_screen.dart';
 import 'package:qitai/features/client/notification/presentation/screens/notification_screen.dart';
 import 'package:qitai/features/client/search/presentation/screens/search_screen.dart';
 
