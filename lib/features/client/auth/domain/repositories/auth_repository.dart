@@ -9,4 +9,10 @@ abstract interface class AuthRepository {
   });
     Future<void> logout();
 
+
+    /// يتحقق من وجود access token محفوظ (presence check فقط).
+/// لا يتحقق من صلاحية أو انتهاء التوكن — هذا يعتمد حاليًا
+/// على أن الـ Backend لا يرسل expiry، والتوكن يُحذف فقط عند logout.
+Future<bool> isAuthenticated();
+
 }

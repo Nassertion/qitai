@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitai/core/network/auth_interceptor.dart';
+import 'package:qitai/core/storage/token_storage_provider.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
@@ -13,5 +15,12 @@ final dioProvider = Provider<Dio>((ref) {
       },
     ),
   );
+
+  final tokenStorage = ref.watch(tokenStorageProvider);
+
+  dio.interceptors.add(
+    AuthInterceptor(tokenStorage),
+  );
+
   return dio;
 });

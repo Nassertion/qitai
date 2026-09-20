@@ -51,8 +51,9 @@ String _getDioErrorMessage(DioException e) {
 
     case DioExceptionType.unknown:
       return 'تعذر الاتصال بالخادم';
+
     case DioExceptionType.transformTimeout:
-      throw UnimplementedError();
+      return 'تعذر معالجة استجابة الخادم';
   }
 }
 

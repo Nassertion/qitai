@@ -4,8 +4,7 @@ class User {
   final String role;
   final bool isActive;
   final String name;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+
   final String? email;
 
   const User({
@@ -14,8 +13,7 @@ class User {
     required this.role,
     required this.isActive,
     required this.name,
-    required this.createdAt,
-    required this.updatedAt,
+
     this.email,
   });
 }
