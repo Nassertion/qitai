@@ -5,6 +5,8 @@ import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
+import 'package:qitai/features/client/auth/presentation/widgets/auth_bottom_sheet.dart';
+import 'package:qitai/features/client/auth/presentation/widgets/phone_auth_content.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
@@ -55,7 +57,11 @@ class ClientHomeScreen extends ConsumerWidget {
                   h16,
                   SectionHeader(
                     title: "سياراتي",
-                    onTap: () => context.push("/profile/car"),
+                    // onTap: () => context.push("/profile/car"),
+                    onTap: () => AuthBottomSheet.show(
+                      context: context,
+                      child: const PhoneAuthContent(),
+                    ),
                   ),
                   h12,
                   Row(
@@ -81,6 +87,7 @@ class ClientHomeScreen extends ConsumerWidget {
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 95,
+                width: 80,
                 child: categoriesAsync.when(
                   loading: () => const CustomLoading(),
                   error: (error, stack) => Center(
@@ -209,7 +216,7 @@ String getCategoryIcon(String name) {
   }
 }
 
-// 
+//
 
 // String test(String name) {
 //   switch (name) {
