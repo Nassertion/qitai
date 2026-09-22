@@ -4,9 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/constants/spaces.dart';
+import 'package:qitai/core/helpers/auth_required.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
-import 'package:qitai/features/client/auth/presentation/widgets/auth_bottom_sheet.dart';
-import 'package:qitai/features/client/auth/presentation/widgets/phone_auth_content.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
@@ -58,10 +57,15 @@ class ClientHomeScreen extends ConsumerWidget {
                   SectionHeader(
                     title: "سياراتي",
                     // onTap: () => context.push("/profile/car"),
-                    onTap: () => AuthBottomSheet.show(
-                      context: context,
-                      child: const PhoneAuthContent(),
-                    ),
+                    onTap: () {
+                      requireAuth(
+                        context: context,
+                        ref: ref,
+                        onAuthenticated: () {
+                          context.push('/profile/car');
+                        },
+                      );
+                    },
                   ),
                   h12,
                   Row(

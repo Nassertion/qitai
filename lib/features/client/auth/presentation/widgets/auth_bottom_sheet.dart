@@ -35,7 +35,7 @@ class AuthBottomSheet extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

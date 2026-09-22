@@ -1,22 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
+import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
 
-class PhoneAuthContent extends StatefulWidget {
-  const PhoneAuthContent({super.key});
+class PhoneAuthContent extends ConsumerStatefulWidget {
+  final void Function(String phone) onOtpSent;
+
+  const PhoneAuthContent({
+    super.key,
+    required this.onOtpSent,
+  });
 
   @override
-  State<PhoneAuthContent> createState() => _PhoneAuthContentState();
+  ConsumerState<PhoneAuthContent> createState() => _PhoneAuthContentState();
 }
 
-class _PhoneAuthContentState extends State<PhoneAuthContent> {
+class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
   final TextEditingController _phoneController = TextEditingController();
+
+  bool _isLoading = false;
 
   bool get _isValidPhone {
     final phone = _phoneController.text.trim();
+
     return phone.length == 9 && phone.startsWith('5');
+  }
+
+  Future<void> _sendOtp() async {
+    if (!_isValidPhone || _isLoading) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final phone = '0${_phoneController.text.trim()}';
+
+    try {
+      await ref.read(authProvider.notifier).sendOtp(phone);
+
+      if (!mounted) {
+        return;
+      }
+
+      widget.onOtpSent(phone);
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -28,7 +76,6 @@ class _PhoneAuthContentState extends State<PhoneAuthContent> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      // mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const Text(
@@ -55,51 +102,59 @@ class _PhoneAuthContentState extends State<PhoneAuthContent> {
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   textDirection: TextDirection.ltr,
-                  maxLength: 9,
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 14),
+                  textAlignVertical: TextAlignVertical.center,
+                  maxLength: 9,
                   onChanged: (_) {
                     setState(() {});
                   },
-                  textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
                     hintText: '*******50',
                     counterText: '',
                     filled: true,
-
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
-                      // vertical: 8,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.onPrimary),
+                      borderSide: const BorderSide(
+                        color: AppColors.onPrimary,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
+
             w8,
+
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.border),
+                border: Border.all(
+                  color: AppColors.border,
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('966+', style: AppTextStyles.regularOverline),
+                  const Text(
+                    '966+',
+                    style: AppTextStyles.regularOverline,
+                  ),
                   w8,
                   SvgPicture.asset(
-                    "assets/images/SA/Flags.svg",
+                    'assets/images/SA/Flags.svg',
                     width: 22,
                     height: 16,
                   ),
@@ -113,12 +168,16 @@ class _PhoneAuthContentState extends State<PhoneAuthContent> {
 
         const Row(
           children: [
-            Expanded(child: Divider()),
+            Expanded(
+              child: Divider(),
+            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text('أو'),
             ),
-            Expanded(child: Divider()),
+            Expanded(
+              child: Divider(),
+            ),
           ],
         ),
 
@@ -127,20 +186,25 @@ class _PhoneAuthContentState extends State<PhoneAuthContent> {
         SizedBox(
           height: 40,
           child: OutlinedButton(
-            onPressed: () {
-              // Google later
-            },
+            onPressed: _isLoading
+                ? null
+                : () {
+                    // Google later
+                  },
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: AppColors.border),
+              side: BorderSide(
+                color: AppColors.border,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                // side: BorderSide(width: 20, color: AppColors.border),
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset("assets/icons/google.svg"),
+                SvgPicture.asset(
+                  'assets/icons/google.svg',
+                ),
                 w12,
                 Text(
                   'قم بالتسجيل عن طريق قوقل',
@@ -158,32 +222,35 @@ class _PhoneAuthContentState extends State<PhoneAuthContent> {
         SizedBox(
           height: 55,
           child: ElevatedButton(
-            onPressed: _isValidPhone
-                ? () {
-                    // Send OTP later
-                  }
+            onPressed: _isValidPhone && !_isLoading
+                ? _sendOtp
                 : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: _isValidPhone
+              backgroundColor: _isValidPhone && !_isLoading
                   ? AppColors.primaryButton
                   : AppColors.disabledButton,
-              // backgroundColor: AppColors.disabledButton,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Text(
-              'التالي',
-              style: AppTextStyles.boldBody.copyWith(
-                color: _isValidPhone
-                    ? AppColors.surface
-                    : AppColors.disabledText,
-              ),
-            ),
+            child: _isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Text(
+                    'التالي',
+                    style: AppTextStyles.boldBody.copyWith(
+                      color: _isValidPhone
+                          ? Colors.white
+                          : AppColors.disabledText,
+                    ),
+                  ),
           ),
         ),
-
-        SizedBox(height: MediaQuery.of(context).viewPadding.bottom + 4),
       ],
     );
   }
