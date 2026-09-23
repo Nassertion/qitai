@@ -11,7 +11,7 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // height: 70,
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 24),
       child: Column(
         children: [
           Row(

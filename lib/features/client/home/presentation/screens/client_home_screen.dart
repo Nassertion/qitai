@@ -58,21 +58,37 @@ class ClientHomeScreen extends ConsumerWidget {
                     title: "سياراتي",
                     // onTap: () => context.push("/profile/car"),
                     onTap: () {
-                      requireAuth(
-                        context: context,
-                        ref: ref,
-                        onAuthenticated: () {
-                          context.push('/profile/car');
-                        },
-                      );
+                      // requireAuth(
+                      //   context: context,
+                      //   ref: ref,
+                      //   onAuthenticated: () {
+                      context.push('/profile/car');
+                      // },
+                      // );
                     },
                   ),
                   h12,
                   Row(
                     children: [
-                      AddCar(
-                        img: "assets/icons/addCar.svg",
-                        carName: "اضف سيارتك",
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        overlayColor: const WidgetStatePropertyAll(
+                          Colors.transparent,
+                        ),
+                        onTap: () {
+                          requireAuth(
+                            context: context,
+                            ref: ref,
+                            onAuthenticated: () {
+                              context.push("/profile/car");
+                            },
+                          );
+                        },
+                        child: AddCar(
+                          img: "assets/icons/addCar.svg",
+                          carName: "اضف سيارتك",
+                        ),
                       ),
                     ],
                   ),

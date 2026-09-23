@@ -10,16 +10,18 @@ class EmptyDataWidget extends StatelessWidget {
     required this.img,
     required this.text,
     this.buttonText,
+    this.onButtonPressed,
   });
   final String img;
   final String text;
   final String? buttonText;
+  final VoidCallback? onButtonPressed;
   //ontab
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Transform.translate(
-        offset: Offset(10, -50),
+        offset: Offset(0, -50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,7 +33,7 @@ class EmptyDataWidget extends StatelessWidget {
             Text(text, style: AppTextStyles.boldSubtitle),
             if (buttonText != null) ...[
               SizedBox(height: 48),
-              ButtonWidget(text: buttonText!),
+              ButtonWidget(text: buttonText!, onPressed: onButtonPressed),
             ],
           ],
         ),

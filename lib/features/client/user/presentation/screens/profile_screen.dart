@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
+import 'package:qitai/core/helpers/auth_required.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/features/client/user/presentation/widgets/profile_card_widget.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: CustomAppbar(title: "حسابي"),
       body: AppPagePadding(
@@ -27,7 +29,15 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             h16,
-            ButtonWidget(text: "تسجيل الدخول", height: 45.0),
+            ButtonWidget(
+              text: "تسجيل الدخول",
+              height: 45.0,
+              onPressed: () => requireAuth(
+                context: context,
+                ref: ref,
+                onAuthenticated: () {},
+              ),
+            ),
             SizedBox(height: 24),
             Container(
               decoration: BoxDecoration(
@@ -38,7 +48,8 @@ class ProfileScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    InkWell(onTap:() =>  context.push("/profile/car"),
+                    InkWell(
+                      onTap: () => context.push("/profile/car"),
                       child: ProfileCard(
                         icon: 'assets/icons/profile_icons/car.svg',
                         title: 'سياراتي',
@@ -46,7 +57,8 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     Divider(color: AppColors.border),
 
-                    InkWell(onTap: () => context.push("/profile/adress"),
+                    InkWell(
+                      onTap: () => context.push("/profile/adress"),
                       child: ProfileCard(
                         icon: 'assets/icons/profile_icons/location.svg',
                         title: 'عناويني',
