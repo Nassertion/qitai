@@ -3,15 +3,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({super.key, required this.icon, required this.title});
-  final String icon;
+  const ProfileCard({super.key, this.icon, required this.title, this.img});
+  final String? icon;
   final String title;
+  final String? img;
   //notificaon car and place
   @override
   Widget build(BuildContext context) {
     return Container(
       // height: 70,
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+      padding: EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: img != null ? 12 : 24,
+      ),
       child: Column(
         children: [
           Row(
@@ -21,7 +25,9 @@ class ProfileCard extends StatelessWidget {
               Row(
                 spacing: 8,
                 children: [
-                  SvgPicture.asset(icon),
+                  if (icon != null) SvgPicture.asset(icon!),
+                  if (img != null)
+                    SvgPicture.asset(img!, height: 48, width: 48),
                   Text(title, style: AppTextStyles.mediumCaption),
                 ],
               ),

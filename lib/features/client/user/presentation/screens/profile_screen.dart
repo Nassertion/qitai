@@ -8,13 +8,14 @@ import 'package:qitai/core/helpers/auth_required.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
+import 'package:qitai/features/client/user/presentation/providers/current_user_notifier.dart';
 import 'package:qitai/features/client/user/presentation/widgets/profile_card_widget.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
     return Scaffold(
       appBar: CustomAppbar(title: "حسابي"),
       body: AppPagePadding(
@@ -22,23 +23,58 @@ class ProfileScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             h8,
-            Text(
-              "قم بتسجيل الدخول\nاو انشاء حساب جديد",
-              style: AppTextStyles.semiBoldCaption.copyWith(
-                color: AppColors.primaryText,
+            if (currentUser == null) ...[
+              Text(
+                'قم بتسجيل الدخول\nاو انشاء حساب جديد',
+                style: AppTextStyles.semiBoldCaption.copyWith(
+                  color: AppColors.primaryText,
+                ),
               ),
-            ),
-            h16,
-            ButtonWidget(
-              text: "تسجيل الدخول",
-              height: 45.0,
-              onPressed: () => requireAuth(
-                context: context,
-                ref: ref,
-                onAuthenticated: () {},
+              h16,
+              ButtonWidget(
+                text: 'تسجيل الدخول',
+                height: 45,
+                onPressed: () => requireAuth(
+                  context: context,
+                  ref: ref,
+                  onAuthenticated: () {},
+                ),
               ),
-            ),
-            SizedBox(height: 24),
+            ] else ...[
+              InkWell(
+                onTap: () => context.push("/profile/edit"),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.inputFieldAndCards,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: ProfileCard(
+                    img:
+                        'assets/icons/user.svg', //should be avatar user as defualt when logged in and must support svg png etc.. NOT ONLY SVG
+                    title:
+                        'Username', // should be user name as default when logged in username
+                  ),
+                ),
+              ),
+              h16,
+
+              // Text(
+              //   'مرحبًا ${currentUser.name}',
+              //   style: AppTextStyles.semiBoldCaption.copyWith(
+              //     color: AppColors.primaryText,
+              //   ),
+              // ),
+              // h16,
+              // ButtonWidget(
+              //   text: 'حسابي',
+              //   height: 45,
+              //   onPressed: () {
+              //     context.push('/profile');
+              //   },
+              // ),
+            ],
+            // SizedBox(height: 24),
             Container(
               decoration: BoxDecoration(
                 color: AppColors.inputFieldAndCards,
