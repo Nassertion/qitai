@@ -37,7 +37,7 @@ class ClientAddressesScreen extends ConsumerWidget {
             _requireAuth(context, ref);
           },
           icon: SvgPicture.asset(
-            'assets/icons/profile/add-circle.svg',
+            'assets/icons/profile_screens/add-circle.svg',
             width: 28,
             height: 28,
           ),
@@ -45,7 +45,7 @@ class ClientAddressesScreen extends ConsumerWidget {
       ),
       body: AppPagePadding(
         child: EmptyDataWidget(
-          img: 'assets/icons/profile/adress.svg',
+          img: 'assets/icons/profile_screens/adress.svg',
           text: 'ليس لديك عناوين حاليًا!',
           buttonText: 'إضافة عنوان',
           onButtonPressed: () {

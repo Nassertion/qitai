@@ -33,7 +33,7 @@ class ClientCarsScreen extends ConsumerWidget {
             _requireAuth(context, ref);
           },
           icon: SvgPicture.asset(
-            'assets/icons/profile/add-circle.svg',
+            'assets/icons/profile_screens/add-circle.svg',
             width: 28,
             height: 28,
           ),
@@ -41,7 +41,7 @@ class ClientCarsScreen extends ConsumerWidget {
       ),
       body: AppPagePadding(
         child: EmptyDataWidget(
-          img: 'assets/icons/profile/noCar.svg',
+          img: 'assets/icons/profile_screens/noCar.svg',
           text: 'ليس لديك سيارات حاليًا!',
           buttonText: 'إضافة سيارة',
           onButtonPressed: () {
