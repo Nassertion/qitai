@@ -8,6 +8,7 @@ import 'package:qitai/features/client/home/presentation/screens/client_home_scre
 import 'package:qitai/features/client/orders/presentation/screens/orders_screen.dart';
 import 'package:qitai/features/client/products/presentation/screens/all_products_screen.dart';
 import 'package:qitai/features/client/products/presentation/screens/product_details_screen.dart';
+import 'package:qitai/features/client/user/presentation/screens/add_car_screen.dart';
 import 'package:qitai/features/client/user/presentation/screens/client_addresses_screen.dart';
 import 'package:qitai/features/client/user/presentation/screens/client_cars_screen.dart';
 import 'package:qitai/features/client/user/presentation/screens/edit_profile_screen.dart';
@@ -52,8 +53,12 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const ClientAddressesScreen(),
     ),
     GoRoute(
-      path: '/profile/car',
+      path: '/profile/cars',
       builder: (context, state) => const ClientCarsScreen(),
+    ),
+    GoRoute(
+      path: '/profile/addCar',
+      builder: (context, state) => const AddCarScreen(),
     ),
     GoRoute(
       path: '/notifications',

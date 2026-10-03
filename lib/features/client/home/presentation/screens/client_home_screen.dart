@@ -62,7 +62,7 @@ class ClientHomeScreen extends ConsumerWidget {
                       //   context: context,
                       //   ref: ref,
                       //   onAuthenticated: () {
-                      context.push('/profile/car');
+                      context.push('/profile/cars');
                       // },
                       // );
                     },
@@ -81,7 +81,7 @@ class ClientHomeScreen extends ConsumerWidget {
                             context: context,
                             ref: ref,
                             onAuthenticated: () {
-                              context.push("/profile/car");
+                              context.push("/profile/addCar");
                             },
                           );
                         },

@@ -90,7 +90,7 @@ class ProfileScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     InkWell(
-                      onTap: () => context.push("/profile/car"),
+                      onTap: () => context.push("/profile/cars"),
                       child: ProfileCard(
                         icon: 'assets/icons/profile_icons/car.svg',
                         title: 'سياراتي',
