@@ -8,6 +8,7 @@ class VehicleFilterField extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isSelectedStyle;
   final VoidCallback? onDelete;
+  final bool? isValueSelected;
 
   const VehicleFilterField({
     super.key,
@@ -15,6 +16,7 @@ class VehicleFilterField extends StatelessWidget {
     this.onTap,
     this.isSelectedStyle = false,
     this.onDelete,
+    this.isValueSelected,
   });
 
   @override
@@ -37,9 +39,11 @@ class VehicleFilterField extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: isSelectedStyle
-                    ? AppTextStyles.mediumCaption.copyWith(
-                        color: AppColors.actionText,
+                style: isSelectedStyle || isValueSelected!
+                    ? AppTextStyles.mediumOverline.copyWith(
+                        color: isSelectedStyle
+                            ? AppColors.actionText
+                            : AppColors.primaryText,
                         height: 1,
                       )
                     : AppTextStyles.regularOverline.copyWith(
@@ -49,9 +53,7 @@ class VehicleFilterField extends StatelessWidget {
               isSelectedStyle
                   ? GestureDetector(
                       onTap: onDelete,
-                      child: SvgPicture.asset(
-                        "assets/icons/close-circle.svg",
-                      ),
+                      child: SvgPicture.asset("assets/icons/close-circle.svg"),
                     )
                   : SvgPicture.asset(
                       "assets/icons/arrow-down.svg",

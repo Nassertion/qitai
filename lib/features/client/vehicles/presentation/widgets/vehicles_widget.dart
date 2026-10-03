@@ -4,7 +4,9 @@ import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_not
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_selector_section.dart';
 
 class VehiclesWidget extends ConsumerStatefulWidget {
-  const VehiclesWidget({super.key});
+  final bool? inlineSelection;
+
+  const VehiclesWidget({super.key,  this.inlineSelection});
 
   @override
   ConsumerState<VehiclesWidget> createState() => _VehiclesWidgetState();
@@ -27,7 +29,9 @@ class _VehiclesWidgetState extends ConsumerState<VehiclesWidget> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: [
-        const VehicleSelectorSection(),
+        VehicleSelectorSection(
+          inlineSelection: widget.inlineSelection ?? false,
+        ),
 
         // if (state.errorMessage != null) ...[
         //   const SizedBox(height: 12),
