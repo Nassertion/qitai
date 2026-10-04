@@ -68,7 +68,7 @@ class VehicleSelectorSection extends ConsumerWidget {
 
     return Column(
       children: [
-        h16,
+        if (!inlineSelection) h16,
 
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
