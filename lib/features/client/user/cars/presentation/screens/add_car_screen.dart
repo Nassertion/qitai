@@ -8,7 +8,10 @@ import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
+import 'package:qitai/features/client/user/cars/domain/entities/user_car_attribute.dart';
+import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_attribute_bottom_sheet.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
@@ -18,6 +21,8 @@ class AddCarScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<AddCarScreen> createState() => _AddCarScreenState();
 }
+
+bool _isLoading = false;
 
 class _AddCarScreenState extends ConsumerState<AddCarScreen> {
   final _vinController = TextEditingController();
@@ -46,6 +51,78 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       iconAsset: 'assets/icons/solar_transmission-linear.svg',
     ),
   ];
+  Future<void> _addCar() async {
+    if (!_isFormValid() || _isLoading) {
+      return;
+    }
+
+    final vehicleState = ref.read(vehicleProvider);
+
+    final brand = vehicleState.selectedCarBrand!;
+    final model = vehicleState.selectedModel!;
+    final year = vehicleState.selectedCarYear!;
+
+    final attributes = <UserCarAttributeInput>[
+      if (_selectedEngine != null)
+        UserCarAttributeInput(
+          key: 'engine_capacity',
+          value: _selectedEngine!.split('L').first,
+        ),
+      if (_selectedGear != null)
+        UserCarAttributeInput(key: 'transmission', value: _selectedGear!),
+    ];
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await ref.read(addUserCarProvider)(
+        brandId: brand.id,
+        modelId: model.id,
+        yearId: year.id,
+        vin: _vinController.text,
+        nickname: _nicknameController.text.trim().isEmpty
+            ? null
+            : _nicknameController.text.trim(),
+        isDefault: _isDefault,
+        attributes: attributes,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('تمت إضافة السيارة بنجاح')));
+
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('حدث خطأ أثناء إضافة السيارة')),
+      );
+    } finally {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  bool _isFormValid() {
+    final vehicleState = ref.read(vehicleProvider);
+
+    final hasVehicleSelection =
+        vehicleState.selectedCarBrand != null &&
+        vehicleState.selectedModel != null &&
+        vehicleState.selectedCarYear != null;
+
+    final hasValidVin = _vinController.text.length == 17;
+
+    return hasVehicleSelection && hasValidVin;
+  }
 
   @override
   void dispose() {
@@ -189,9 +266,11 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
                       TextField(
                         controller: _vinController,
+                        textDirection: TextDirection.ltr,
                         textCapitalization: TextCapitalization.characters,
                         autocorrect: false,
                         enableSuggestions: false,
+                        onChanged: (_) => setState(() {}),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                             RegExp(r'[A-HJ-NPR-Z0-9]'),
@@ -199,7 +278,6 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           LengthLimitingTextInputFormatter(17),
                         ],
                         style: AppTextStyles.mediumCaption,
-
                         decoration: _buildInputDecoration('رقم الشاصي (VIN)'),
                       ),
 
@@ -316,11 +394,11 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ButtonWidget(
-                  text: 'إضافة السيارة',
+                  text: _isLoading ? 'جاري الإضافة...' : 'إضافة السيارة',
                   width: double.infinity,
                   height: 52,
-                  enabled: false,
-                  onPressed: null,
+                  enabled: _isFormValid() && !_isLoading,
+                  onPressed: _addCar,
                 ),
               ),
             ],
