@@ -7,16 +7,19 @@ class UserCarRemoteDataSource {
 
   const UserCarRemoteDataSource(this.dio);
 
-  Future<UserCarModel> addUserCar(
-    UserCarRequestModel request,
-  ) async {
-    final response = await dio.post(
-      '/my-cars',
-      data: request.toJson(),
-    );
+  Future<UserCarModel> addUserCar(UserCarRequestModel request) async {
+    final response = await dio.post('/my-cars', data: request.toJson());
 
-    return UserCarModel.fromJson(
-      response.data as Map<String, dynamic>,
-    );
+    return UserCarModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<List<UserCarModel>> getUserCars() async {
+    final response = await dio.get('/my-cars');
+
+    final data = response.data as List<dynamic>;
+
+    return data
+        .map((item) => UserCarModel.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 }
