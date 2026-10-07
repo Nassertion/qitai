@@ -31,3 +31,12 @@ class UserCarAttributeInfo {
     required this.updatedAt,
   });
 }
+class UserCarAttributeInput {
+  final String key;
+  final String value;
+
+  const UserCarAttributeInput({
+    required this.key,
+    required this.value,
+  });
+}

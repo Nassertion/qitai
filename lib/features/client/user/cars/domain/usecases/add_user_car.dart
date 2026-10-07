@@ -1,4 +1,5 @@
 import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
+import 'package:qitai/features/client/user/cars/domain/entities/user_car_attribute.dart';
 import 'package:qitai/features/client/user/cars/domain/repositories/user_car_repository.dart';
 
 class AddUserCar {
@@ -13,7 +14,7 @@ class AddUserCar {
     required String vin,
     String? nickname,
     required bool isDefault,
-    required List<Map<String, String>> attributes,
+    required List<UserCarAttributeInput> attributes,
   }) {
     return repository.addUserCar(
       brandId: brandId,

@@ -1,4 +1,5 @@
 import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
+import 'package:qitai/features/client/user/cars/domain/entities/user_car_attribute.dart';
 
 abstract interface class UserCarRepository {
   Future<UserCar> addUserCar({
@@ -8,7 +9,7 @@ abstract interface class UserCarRepository {
     required String vin,
     String? nickname,
     required bool isDefault,
-    required List<Map<String, String>> attributes,
+    required List<UserCarAttributeInput> attributes,
   });
 
   Future<List<UserCar>> getUserCars();
