@@ -1,5 +1,5 @@
 import 'package:qitai/features/client/user/cars/data/models/user_car_vehicle_model.dart';
-import 'package:qitai/features/client/user/cars/domain/entites/user_car.dart';
+import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
 
 class UserCarModel {
   final int id;
