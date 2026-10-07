@@ -8,7 +8,7 @@ import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
-import 'package:qitai/features/client/user/presentation/widgets/car_attribute_bottom_sheet.dart';
+import 'package:qitai/features/client/user/cars/presentation/widgets/car_attribute_bottom_sheet.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
@@ -273,8 +273,8 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                             children: [
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 150),
-                                width: 24,
-                                height: 24,
+                                width: 26,
+                                height: 26,
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     width: 1.2,
@@ -289,7 +289,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                                     ? const Icon(
                                         Icons.check,
                                         color: Colors.white,
-                                        size: 20,
+                                        size: 16,
                                       )
                                     : null,
                               ),

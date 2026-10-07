@@ -10,9 +10,9 @@ import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
-import 'package:qitai/features/client/user/presentation/providers/current_user_notifier.dart';
-import 'package:qitai/features/client/user/presentation/widgets/logout_dialog.dart';
-import 'package:qitai/features/client/user/presentation/widgets/profile_card_widget.dart';
+import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
+import 'package:qitai/features/client/user/account/presentation/widgets/logout_dialog.dart';
+import 'package:qitai/features/client/user/account/presentation/widgets/profile_card_widget.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});

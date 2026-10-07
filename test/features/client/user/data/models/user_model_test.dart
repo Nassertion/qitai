@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:qitai/features/client/user/data/models/user_model.dart';
+import 'package:qitai/features/client/user/account/data/models/user_model.dart';
 
 void main() {
   group('UserModel.fromJson', () {

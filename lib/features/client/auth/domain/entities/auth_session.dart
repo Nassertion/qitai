@@ -1,4 +1,4 @@
-import 'package:qitai/features/client/user/domain/entities/user.dart';
+import 'package:qitai/features/client/user/account/domain/entities/user.dart';
 
 class AuthSession {
   final String accessToken;

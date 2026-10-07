@@ -5,8 +5,8 @@ import 'package:qitai/features/client/auth/domain/repositories/auth_repository.d
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_provider.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
-import 'package:qitai/features/client/user/domain/entities/user.dart';
-import 'package:qitai/features/client/user/presentation/providers/current_user_notifier.dart';
+import 'package:qitai/features/client/user/account/domain/entities/user.dart';
+import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
 
 class FakeAuthRepository implements AuthRepository {
   final AuthSession session;

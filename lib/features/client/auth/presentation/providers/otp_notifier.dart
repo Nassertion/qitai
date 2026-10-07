@@ -1,7 +1,7 @@
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_provider.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
-import 'package:qitai/features/client/user/presentation/providers/current_user_notifier.dart';
+import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'otp_notifier.g.dart';

@@ -3,7 +3,7 @@ import 'package:qitai/features/client/auth/data/datasources/auth_remote_data_sou
 import 'package:qitai/features/client/auth/data/models/auth_session_model.dart';
 import 'package:qitai/features/client/auth/data/repositories/auth_repository_impl.dart';
 import 'package:qitai/core/storage/token_storage.dart';
-import 'package:qitai/features/client/user/data/models/user_model.dart';
+import 'package:qitai/features/client/user/account/data/models/user_model.dart';
 
 class FakeAuthRemoteDataSource implements AuthRemoteDataSource {
   AuthSessionModel? session;

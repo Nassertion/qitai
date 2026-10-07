@@ -1,4 +1,4 @@
-import 'package:qitai/features/client/user/presentation/providers/current_user_notifier.dart';
+import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'auth_provider.dart';
