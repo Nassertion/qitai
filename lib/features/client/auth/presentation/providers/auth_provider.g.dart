@@ -219,3 +219,44 @@ final class LogoutProvider extends $FunctionalProvider<Logout, Logout, Logout>
 }
 
 String _$logoutHash() => r'cbcd2b52a07afaac9349343df36c4518410024ad';
+
+@ProviderFor(getCurrentUser)
+final getCurrentUserProvider = GetCurrentUserProvider._();
+
+final class GetCurrentUserProvider
+    extends $FunctionalProvider<GetCurrentUser, GetCurrentUser, GetCurrentUser>
+    with $Provider<GetCurrentUser> {
+  GetCurrentUserProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getCurrentUserProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getCurrentUserHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetCurrentUser> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  GetCurrentUser create(Ref ref) {
+    return getCurrentUser(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetCurrentUser value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetCurrentUser>(value),
+    );
+  }
+}
+
+String _$getCurrentUserHash() => r'cde8ae3a88db0baa03830297256eecbd719bd2d1';

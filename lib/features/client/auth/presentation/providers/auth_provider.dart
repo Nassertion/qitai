@@ -3,6 +3,7 @@ import 'package:qitai/features/client/auth/data/datasources/auth_remote_data_sou
 import 'package:qitai/features/client/auth/data/datasources/auth_remote_data_source_impl.dart';
 import 'package:qitai/features/client/auth/data/repositories/auth_repository_impl.dart';
 import 'package:qitai/features/client/auth/domain/repositories/auth_repository.dart';
+import 'package:qitai/features/client/auth/domain/usecases/get_current_user.dart';
 import 'package:qitai/features/client/auth/domain/usecases/logout.dart';
 import 'package:qitai/features/client/auth/domain/usecases/send_otp.dart';
 import 'package:qitai/features/client/auth/domain/usecases/verify_otp.dart';
@@ -49,4 +50,10 @@ Logout logout(Ref ref) {
   final repository = ref.watch(authRepositoryProvider);
 
   return Logout(repository);
+}
+@riverpod
+GetCurrentUser getCurrentUser(Ref ref) {
+  final repository = ref.watch(authRepositoryProvider);
+
+  return GetCurrentUser(repository);
 }

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:qitai/core/network/handle_helper_dio.dart';
 import 'package:qitai/features/client/auth/data/models/auth_session_model.dart';
+import 'package:qitai/features/client/user/account/data/models/user_model.dart';
 
 import 'auth_remote_data_source.dart';
 
@@ -28,6 +29,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       return AuthSessionModel.fromJson(response.data as Map<String, dynamic>);
+    });
+  }
+
+  @override
+  Future<UserModel> getCurrentUser() async {
+    return handleDioRequest(() async {
+      final response = await dio.get('/auth/me');
+
+      final data = response.data as Map<String, dynamic>;
+
+      return UserModel.fromJson(data['user'] as Map<String, dynamic>);
     });
   }
 

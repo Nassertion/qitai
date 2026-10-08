@@ -16,6 +16,8 @@ Future<T> handleDioRequest<T>(
 
     throw AppException(
       _getDioErrorMessage(e),
+        statusCode: e.response?.statusCode,
+
     );
   } catch (e) {
     if (e is AppException) {

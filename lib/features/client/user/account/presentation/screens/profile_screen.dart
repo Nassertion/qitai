@@ -10,6 +10,7 @@ import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
+import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
 import 'package:qitai/features/client/user/account/presentation/widgets/logout_dialog.dart';
 import 'package:qitai/features/client/user/account/presentation/widgets/profile_card_widget.dart';
@@ -19,7 +20,10 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authProvider);
     final currentUser = ref.watch(currentUserProvider);
+
+    final isAuthenticated = authState is Authenticated;
     return Scaffold(
       appBar: CustomAppbar(title: "حسابي"),
       body: AppPagePadding(
@@ -28,7 +32,12 @@ class ProfileScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               h8,
-              if (currentUser == null) ...[
+              if (authState is AuthInitial) ...[
+                const SizedBox(
+                  height: 100,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ] else if (!isAuthenticated) ...[
                 Text(
                   'قم بتسجيل الدخول\nاو انشاء حساب جديد',
                   style: AppTextStyles.semiBoldCaption.copyWith(
@@ -45,7 +54,12 @@ class ProfileScreen extends ConsumerWidget {
                     onAuthenticated: () {},
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
+              ] else if (currentUser == null) ...[
+                const SizedBox(
+                  height: 100,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
               ] else ...[
                 InkWell(
                   onTap: () => context.push("/profile/edit"),
@@ -56,29 +70,14 @@ class ProfileScreen extends ConsumerWidget {
                       border: Border.all(color: AppColors.border),
                     ),
                     child: ProfileCard(
-                      img:
-                          'assets/icons/user.svg', //should be avatar user as defualt when logged in and must support svg png etc.. NOT ONLY SVG
-                      title:
-                          'Username', // should be user name as default when logged in username
+                      img: 'assets/icons/user.svg',
+                      title: currentUser.name.trim().isNotEmpty
+                          ? currentUser.name
+                          : 'المستخدم',
                     ),
                   ),
                 ),
                 h16,
-
-                // Text(
-                //   'مرحبًا ${currentUser.name}',
-                //   style: AppTextStyles.semiBoldCaption.copyWith(
-                //     color: AppColors.primaryText,
-                //   ),
-                // ),
-                // h16,
-                // ButtonWidget(
-                //   text: 'حسابي',
-                //   height: 45,
-                //   onPressed: () {
-                //     context.push('/profile');
-                //   },
-                // ),
               ],
               // SizedBox(height: 24),
               Container(
@@ -138,8 +137,7 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-
-              if (currentUser != null) ...[
+              if (isAuthenticated && currentUser != null) ...[
                 h16,
                 InkWell(
                   splashColor: Colors.transparent,

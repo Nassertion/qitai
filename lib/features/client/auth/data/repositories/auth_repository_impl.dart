@@ -2,6 +2,7 @@ import 'package:qitai/core/storage/token_storage.dart';
 import 'package:qitai/features/client/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:qitai/features/client/auth/domain/entities/auth_session.dart';
 import 'package:qitai/features/client/auth/domain/repositories/auth_repository.dart';
+import 'package:qitai/features/client/user/account/domain/entities/user.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -49,7 +50,17 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+@override
+Future<User> getCurrentUser() async {
+  final userModel = await remoteDataSource.getCurrentUser();
 
+  return userModel.toEntity();
+}
+
+@override
+Future<void> clearSession() {
+  return tokenStorage.deleteAccessToken();
+}
 
 @override
 Future<bool> isAuthenticated() async {
