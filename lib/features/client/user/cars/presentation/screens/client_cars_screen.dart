@@ -8,11 +8,13 @@ import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/helpers/auth_required.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
+import 'package:qitai/core/widgets/confirmation_dialog.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
+import 'package:qitai/features/client/user/cars/presentation/widgets/car_status_dialog.dart';
 
 class ClientCarsScreen extends ConsumerWidget {
   const ClientCarsScreen({super.key});
@@ -90,8 +92,47 @@ class ClientCarsScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 return _UserCarItem(
                   car: cars[index],
-                  onDelete: () {
-                    // DELETE
+                  onDelete: () async {
+                    final confirmed = await ConfirmationDialog.show(
+                      context: context,
+                      title: 'حذف السيارة',
+                      message:
+                          'سوف يتم حذف السيارة من مجموعة سياراتك هل أنت متأكد؟',
+                      confirmText: 'حذف',
+                    );
+
+                    if (confirmed != true || !context.mounted) {
+                      return;
+                    }
+
+                    try {
+                      await ref.read(deleteUserCarProvider)(cars[index].id);
+
+                      if (!context.mounted) {
+                        return;
+                      }
+
+                      ref.invalidate(userCarsProvider);
+
+                      await CarStatusDialog.show(
+                        context: context,
+                        type: CarDialogType.success,
+                        title: 'تم حذف السيارة بنجاح',
+                        message: 'تم حذف السيارة من مجموعة سياراتك.',
+                      );
+                    } catch (e) {
+                      if (!context.mounted) {
+                        return;
+                      }
+
+                      await CarStatusDialog.show(
+                        context: context,
+                        type: CarDialogType.error,
+                        title: 'فشلت عملية حذف السيارة',
+                        message:
+                            'حدثت مشكلة ما في حذف السيارة، الرجاء المحاولة مرة أخرى.',
+                      );
+                    }
                   },
                   onEdit: () {
                     // edit
@@ -153,10 +194,17 @@ class _UserCarItem extends StatelessWidget {
               ),
             ),
 
-            SvgPicture.asset("assets/icons/edit-2.svg"),
+            GestureDetector(
+              onTap: onEdit,
+              child: SvgPicture.asset('assets/icons/edit-2.svg'),
+            ),
+
             w16,
 
-            SvgPicture.asset("assets/icons/trash.svg"),
+            GestureDetector(
+              onTap: onDelete,
+              child: SvgPicture.asset('assets/icons/trash.svg'),
+            ),
           ],
         ),
       ),
