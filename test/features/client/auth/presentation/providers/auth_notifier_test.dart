@@ -12,9 +12,7 @@ class FakeAuthRepository implements AuthRepository {
   final AuthSession session;
   bool logoutCalled = false;
 
-  FakeAuthRepository({
-    required this.session,
-  });
+  FakeAuthRepository({required this.session});
 
   @override
   Future<void> sendOtp(String phone) async {}
@@ -28,9 +26,17 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<User> getCurrentUser() async {
+    return session.user;
+  }
+
+  @override
   Future<void> logout() async {
     logoutCalled = true;
   }
+
+  @override
+  Future<void> clearSession() async {}
 
   @override
   Future<bool> isAuthenticated() async {
@@ -48,69 +54,78 @@ void main() {
     email: null,
   );
 
-  final session = AuthSession(
-    accessToken: 'test_token',
-    user: user,
-  );
+  final session = AuthSession(accessToken: 'test_token', user: user);
 
+  test('verifyOtp should set current user and authenticate', () async {
+    final repository = FakeAuthRepository(session: session);
+
+    final container = ProviderContainer(
+      overrides: [authRepositoryProvider.overrideWithValue(repository)],
+    );
+
+    addTearDown(container.dispose);
+
+    final notifier = container.read(authProvider.notifier);
+
+    await notifier.verifyOtp(phone: '0552222222', code: '532275');
+
+    expect(notifier.state, isA<Authenticated>());
+
+    final currentUser = container.read(currentUserProvider);
+
+    expect(currentUser, isNotNull);
+    expect(currentUser?.id, 2);
+    expect(currentUser?.phone, '0552222222');
+    expect(currentUser?.name, 'User 8MGJ');
+  });
+
+  test('logout should clear current user and unauthenticate', () async {
+    final repository = FakeAuthRepository(session: session);
+
+    final container = ProviderContainer(
+      overrides: [authRepositoryProvider.overrideWithValue(repository)],
+    );
+
+    addTearDown(container.dispose);
+
+    final notifier = container.read(authProvider.notifier);
+
+    container.read(currentUserProvider.notifier).setUser(user);
+    notifier.state = const Authenticated();
+
+    await notifier.logout();
+
+    expect(repository.logoutCalled, isTrue);
+    expect(notifier.state, isA<Unauthenticated>());
+    expect(container.read(currentUserProvider), isNull);
+  });
   test(
-    'verifyOtp should set current user and authenticate',
-    () async {
-      final repository = FakeAuthRepository(
-        session: session,
-      );
+  'initialize should load current user when authenticated',
+  () async {
+    final repository = FakeAuthRepository(
+      session: session,
+    );
 
-      final container = ProviderContainer(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(repository),
-        ],
-      );
+    final container = ProviderContainer(
+      overrides: [
+        authRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
 
-      addTearDown(container.dispose);
+    addTearDown(container.dispose);
 
-      final notifier = container.read(authProvider.notifier);
+    final notifier = container.read(authProvider.notifier);
 
-      await notifier.verifyOtp(
-        phone: '0552222222',
-        code: '532275',
-      );
+    await notifier.initialize();
 
-      expect(notifier.state, isA<Authenticated>());
+    expect(notifier.state, isA<Authenticated>());
 
-      final currentUser = container.read(currentUserProvider);
+    final currentUser = container.read(currentUserProvider);
 
-      expect(currentUser, isNotNull);
-      expect(currentUser?.id, 2);
-      expect(currentUser?.phone, '0552222222');
-      expect(currentUser?.name, 'User 8MGJ');
-    },
-  );
-
-  test(
-    'logout should clear current user and unauthenticate',
-    () async {
-      final repository = FakeAuthRepository(
-        session: session,
-      );
-
-      final container = ProviderContainer(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(repository),
-        ],
-      );
-
-      addTearDown(container.dispose);
-
-      final notifier = container.read(authProvider.notifier);
-
-      container.read(currentUserProvider.notifier).setUser(user);
-      notifier.state = const Authenticated();
-
-      await notifier.logout();
-
-      expect(repository.logoutCalled, isTrue);
-      expect(notifier.state, isA<Unauthenticated>());
-      expect(container.read(currentUserProvider), isNull);
-    },
-  );
+    expect(currentUser, isNotNull);
+    expect(currentUser?.id, 2);
+    expect(currentUser?.phone, '0552222222');
+    expect(currentUser?.name, 'User 8MGJ');
+  },
+);
 }

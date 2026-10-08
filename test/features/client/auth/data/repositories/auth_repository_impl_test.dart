@@ -35,6 +35,11 @@ class FakeAuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
+  Future<UserModel> getCurrentUser() async {
+    return session!.user;
+  }
+
+  @override
   Future<void> logout() async {
     logoutCalled = true;
 
