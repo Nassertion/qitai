@@ -11,6 +11,7 @@ import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car_attribute.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_attribute_bottom_sheet.dart';
+import 'package:qitai/features/client/user/cars/presentation/widgets/car_status_dialog.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
@@ -91,16 +92,27 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('تمت إضافة السيارة بنجاح')));
+      await CarStatusDialog.show(
+        context: context,
+        type: CarDialogType.success,
+        title: 'تمت إضافة سيارتك بنجاح',
+        message:
+            'ستجد سيارتك الآن في الصفحة الرئيسية لتتمكن من البحث عن القطع الخاصة بها بكل سهولة.',
+      );
+
+      if (!mounted) return;
+
+      Navigator.pop(context, true);
 
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('حدث خطأ أثناء إضافة السيارة')),
+      await CarStatusDialog.show(
+        context: context,
+        type: CarDialogType.error,
+        title: 'فشلت عملية إضافة السيارة',
+        message: 'حدثت مشكلة ما في إضافة السيارة، الرجاء المحاولة مرة أخرى.',
       );
     } finally {
       if (!mounted) return;

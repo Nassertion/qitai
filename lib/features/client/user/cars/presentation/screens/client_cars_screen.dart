@@ -138,7 +138,11 @@ class _UserCarItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    car.nickname ?? 'سيارتي',
+                    car.nickname?.trim().isNotEmpty == true
+                        ? car.nickname!.trim()
+                        : '${car.vehicle.brandId} - '
+                              '${car.vehicle.modelId} - '
+                              '${car.vehicle.yearId}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.mediumBody.copyWith(
