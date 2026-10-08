@@ -265,3 +265,50 @@ final class DeleteUserCarProvider
 }
 
 String _$deleteUserCarHash() => r'e78e4ac5bdafe04a83569b3d00b841231869fb94';
+
+@ProviderFor(setDefaultUserCar)
+final setDefaultUserCarProvider = SetDefaultUserCarProvider._();
+
+final class SetDefaultUserCarProvider
+    extends
+        $FunctionalProvider<
+          SetDefaultUserCar,
+          SetDefaultUserCar,
+          SetDefaultUserCar
+        >
+    with $Provider<SetDefaultUserCar> {
+  SetDefaultUserCarProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'setDefaultUserCarProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$setDefaultUserCarHash();
+
+  @$internal
+  @override
+  $ProviderElement<SetDefaultUserCar> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SetDefaultUserCar create(Ref ref) {
+    return setDefaultUserCar(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SetDefaultUserCar value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SetDefaultUserCar>(value),
+    );
+  }
+}
+
+String _$setDefaultUserCarHash() => r'ee21ff71e26901d77cc83c2714e85966af3e231b';

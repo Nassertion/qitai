@@ -38,6 +38,17 @@ Future<List<UserCarModel>> getUserCars() async {
         .toList();
   });
 }
+Future<UserCarModel> setDefaultUserCar(int id) async {
+  return handleDioRequest(() async {
+    final response = await dio.patch(
+      '/my-cars/$id/set-default',
+    );
+
+    return UserCarModel.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+  });
+}
   Future<void> deleteUserCar(int id) async {
   await handleDioRequest(() async {
     await dio.delete('/my-cars/$id');

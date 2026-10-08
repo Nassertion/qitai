@@ -41,22 +41,22 @@ class UserCarRepositoryImpl implements UserCarRepository {
     return model.toEntity();
   }
 
-@override
-Future<List<UserCar>> getUserCars() async {
-  final models = await dataSource.getUserCars();
+  @override
+  Future<List<UserCar>> getUserCars() async {
+    final models = await dataSource.getUserCars();
 
-  return models
-      .map((model) => model.toEntity())
-      .toList();
-}
+    return models.map((model) => model.toEntity()).toList();
+  }
 
   @override
   Future<UserCar> setDefaultUserCar(int id) async {
-    throw UnimplementedError();
+    final model = await dataSource.setDefaultUserCar(id);
+
+    return model.toEntity();
   }
 
-@override
-Future<void> deleteUserCar(int id) {
-  return dataSource.deleteUserCar(id);
-}
+  @override
+  Future<void> deleteUserCar(int id) {
+    return dataSource.deleteUserCar(id);
+  }
 }

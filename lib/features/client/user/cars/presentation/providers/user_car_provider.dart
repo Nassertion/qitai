@@ -6,6 +6,7 @@ import 'package:qitai/features/client/user/cars/domain/repositories/user_car_rep
 import 'package:qitai/features/client/user/cars/domain/usecases/add_user_car.dart';
 import 'package:qitai/features/client/user/cars/domain/usecases/delete_user_car.dart';
 import 'package:qitai/features/client/user/cars/domain/usecases/get_user_cars.dart';
+import 'package:qitai/features/client/user/cars/domain/usecases/set_default_user_car.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_car_provider.g.dart';
@@ -44,4 +45,8 @@ Future<List<UserCar>> userCars(Ref ref) {
 DeleteUserCar deleteUserCar(Ref ref) {
   final repository = ref.watch(userCarRepositoryProvider);
   return DeleteUserCar(repository);
+}@riverpod
+SetDefaultUserCar setDefaultUserCar(Ref ref) {
+  final repository = ref.watch(userCarRepositoryProvider);
+  return SetDefaultUserCar(repository);
 }

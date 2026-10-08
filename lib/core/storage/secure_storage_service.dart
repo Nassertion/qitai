@@ -26,6 +26,6 @@ class SecureTokenStorage implements TokenStorage {
   @override
   Future<void> deleteAccessToken() async {
     await storage.delete(key: _accessTokenKey);
-    print('🗑️ Token Deleted');
+    developer.log('🗑️ Token Deleted');
   }
 }
