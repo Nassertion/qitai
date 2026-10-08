@@ -78,7 +78,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
     });
 
     try {
-      await ref.read(addUserCarProvider)(
+      final addedCar = await ref.read(addUserCarProvider)(
         brandId: brand.id,
         modelId: model.id,
         yearId: year.id,
@@ -89,6 +89,10 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
         isDefault: _isDefault,
         attributes: attributes,
       );
+
+      if (_isDefault) {
+        await ref.read(setDefaultUserCarProvider)(addedCar.id);
+      }
 
       if (!mounted) return;
 
@@ -101,8 +105,6 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       );
 
       if (!mounted) return;
-
-      Navigator.pop(context, true);
 
       Navigator.pop(context, true);
     } catch (e) {
