@@ -55,8 +55,8 @@ Future<List<UserCar>> getUserCars() async {
     throw UnimplementedError();
   }
 
-  @override
-  Future<void> deleteUserCar(int id) async {
-    throw UnimplementedError();
-  }
+@override
+Future<void> deleteUserCar(int id) {
+  return dataSource.deleteUserCar(id);
+}
 }
