@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +22,7 @@ import 'package:qitai/features/client/home/presentation/widgets/slider_widget.da
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 
 class ClientHomeScreen extends ConsumerWidget {
   const ClientHomeScreen({super.key});
@@ -110,9 +113,57 @@ class ClientHomeScreen extends ConsumerWidget {
     final productsState = ref.watch(allProductsProvider);
 
     final userCarsAsync = isAuthenticated ? ref.watch(userCarsProvider) : null;
-
+    final cars = userCarsAsync?.asData?.value ?? [];
+    final hasDefaultCar = cars.any((car) => car.isDefault);
     final homeProducts = productsState.products.take(8).toList();
 
+    ref.listen(authProvider, (previous, next) {
+      if (next is Unauthenticated) {
+        ref.read(vehicleProvider.notifier).clearAll();
+      }
+    });
+
+    if (isAuthenticated) {
+      ref.listen(userCarsProvider, (previous, next) {
+        next.whenData((cars) {
+          final defaultCars = cars.where((car) => car.isDefault);
+          final vehicleNotifier = ref.read(vehicleProvider.notifier);
+          final vehicleState = ref.read(vehicleProvider);
+
+          // إذا ما فيه سيارة افتراضية، نرجع للمنتجات العامة.
+          if (defaultCars.isEmpty) {
+            final hasSelectedVehicle =
+                vehicleState.selectedCarBrand != null ||
+                vehicleState.selectedModel != null ||
+                vehicleState.selectedCarYear != null;
+
+            if (hasSelectedVehicle) {
+              vehicleNotifier.clearAll();
+            }
+
+            return;
+          }
+
+          final defaultCar = defaultCars.first;
+
+          // تجنب إعادة تحميل المنتجات إذا كانت السيارة نفسها محددة بالفعل.
+          final isSameVehicle =
+              vehicleState.selectedCarBrand?.id == defaultCar.vehicle.brandId &&
+              vehicleState.selectedModel?.id == defaultCar.vehicle.modelId &&
+              vehicleState.selectedCarYear?.id == defaultCar.vehicle.yearId;
+
+          if (isSameVehicle) return;
+
+          unawaited(
+            vehicleNotifier.selectVehicleByIds(
+              brandId: defaultCar.vehicle.brandId,
+              modelId: defaultCar.vehicle.modelId,
+              yearId: defaultCar.vehicle.yearId,
+            ),
+          );
+        });
+      });
+    }
     return Scaffold(
       appBar: HomeAppBarWidget(),
       body: RefreshIndicator(
@@ -253,7 +304,7 @@ class ClientHomeScreen extends ConsumerWidget {
                   h16,
 
                   SectionHeader(
-                    title: 'اقتراحات',
+                    title: hasDefaultCar ? 'مناسب لسيارتي' : 'اقتراحات',
                     onTap: () => context.push('/products'),
                   ),
 
