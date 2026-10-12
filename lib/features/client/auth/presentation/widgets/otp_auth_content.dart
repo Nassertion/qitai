@@ -326,7 +326,7 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
                 'أعد الإرسال',
                 style: AppTextStyles.boldBody.copyWith(
                   color: _canResend
-                      ? AppColors.primaryButton
+                      ? AppColors.onPrimary
                       : AppColors.disabledText,
                 ),
               ),

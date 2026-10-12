@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
@@ -14,6 +15,7 @@ class CategoriesScreen extends ConsumerWidget {
     final categoriesAsync = ref.watch(categoriesProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: CustomAppbar(title: "الفئات"),
       body: categoriesAsync.when(
         loading: () => const CustomLoading(),
@@ -28,21 +30,18 @@ class CategoriesScreen extends ConsumerWidget {
             return const Center(child: Text("لا توجد فئات"));
           }
 
-          return Padding(
+          return GridView.builder(
             padding: const EdgeInsets.all(16),
-            child: GridView.builder(
-              itemCount: categories.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.2,
-              ),
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                return CategoryCardWidget(category: category);
-              },
+            itemCount: categories.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.73,
             ),
+            itemBuilder: (context, index) {
+              return CategoryCardWidget(category: categories[index]);
+            },
           );
         },
       ),
