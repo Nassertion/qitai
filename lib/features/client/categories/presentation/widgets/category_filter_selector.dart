@@ -1,11 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
+import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
+import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/categories/domain/entities/category.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_product_notifier.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
+import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
+import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
@@ -22,6 +28,7 @@ class CategoryFilterSelector extends ConsumerStatefulWidget {
   ConsumerState<CategoryFilterSelector> createState() =>
       _CategoryFilterSelectorState();
 }
+int? _selectedSavedCarId;
 
 class _CategoryFilterSelectorState
     extends ConsumerState<CategoryFilterSelector> {
@@ -34,23 +41,46 @@ class _CategoryFilterSelectorState
     });
   }
 
-  void _showBrandFilter(
-    BuildContext context,
-    VehicleState state,
-    VehicleNotifier notifier,
-  ) {
-    if (state.carBrands.isEmpty) return;
+Future<void> _showBrandFilter(
+  BuildContext context,
+  VehicleState state,
+  VehicleNotifier notifier,
+) async {
+  if (state.carBrands.isEmpty) return;
 
-    VehicleFilterBottomSheet.show<CarBrand>(
-      context: context,
-      items: state.carBrands,
-      title: 'اختر نوع البراند',
-      getLabel: (item) => item.name,
-      onSelected: (value) async {
-        await notifier.selectBrand(value);
-      },
-    );
-  }
+  final savedCars = await _loadSavedCars();
+
+  if (!mounted) return;
+
+  await VehicleFilterBottomSheet.show<CarBrand>(
+    context: context,
+    items: state.carBrands,
+    title: 'اختر نوع البراند',
+    getLabel: (item) => item.name,
+    savedCars: savedCars,
+    selectedCarId: _selectedSavedCarId,
+    onUserCarSelected: (car) {
+      setState(() {
+        _selectedSavedCarId = car.id;
+      });
+
+      unawaited(
+        notifier.selectVehicleByIds(
+          brandId: car.vehicle.brandId,
+          modelId: car.vehicle.modelId,
+          yearId: car.vehicle.yearId,
+        ),
+      );
+    },
+    onSelected: (value) {
+      setState(() {
+        _selectedSavedCarId = null;
+      });
+
+      unawaited(notifier.selectBrand(value));
+    },
+  );
+}
 
   void _showModelFilter(
     BuildContext context,
@@ -68,9 +98,13 @@ class _CategoryFilterSelectorState
       onRetry: () async {
         await notifier.selectBrand(state.selectedCarBrand!);
       },
-      onSelected: (value) async {
-        await notifier.selectModel(value);
-      },
+    onSelected: (value) {
+  setState(() {
+    _selectedSavedCarId = null;
+  });
+
+  unawaited(notifier.selectModel(value));
+},
     );
   }
 
@@ -90,9 +124,13 @@ class _CategoryFilterSelectorState
       onRetry: () async {
         await notifier.selectModel(state.selectedModel!);
       },
-      onSelected: (value) {
-        notifier.selectCarYear(value);
-      },
+ onSelected: (value) {
+  setState(() {
+    _selectedSavedCarId = null;
+  });
+
+  notifier.selectCarYear(value);
+},
     );
   }
 
@@ -113,6 +151,29 @@ class _CategoryFilterSelectorState
       },
     );
   }
+  Future<List<UserCar>> _loadSavedCars() async {
+  if (ref.read(authProvider) is! Authenticated) {
+    return const [];
+  }
+
+  try {
+    final cachedCars = ref.read(userCarsProvider).asData?.value;
+
+    final cars = cachedCars ??
+        await ref.read(userCarsProvider.future);
+
+    final sortedCars = [...cars!]
+      ..sort(
+        (a, b) => (b.isDefault ? 1 : 0).compareTo(
+          a.isDefault ? 1 : 0,
+        ),
+      );
+
+    return sortedCars;
+  } catch (_) {
+    return const [];
+  }
+}
 
   @override
   Widget build(BuildContext context) {
