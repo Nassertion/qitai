@@ -1,3 +1,4 @@
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -7,20 +8,24 @@ import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
+import 'package:qitai/features/client/user/cars/presentation/providers/add_car_vehicle_notifier.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_bottom_sheet.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 
 class VehicleSelectorSection extends ConsumerStatefulWidget {
   final bool inlineSelection;
+  final bool useAddCarProvider;
 
   const VehicleSelectorSection({
     super.key,
     this.inlineSelection = false,
+    this.useAddCarProvider = false,
   });
 
   @override
@@ -32,7 +37,69 @@ class _VehicleSelectorSectionState
     extends ConsumerState<VehicleSelectorSection> {
   int? _selectedSavedCarId;
 
+  VehicleState _readVehicleState() {
+    if (widget.useAddCarProvider) {
+      return ref.read(addCarVehicleProvider);
+    }
+
+    return ref.read(vehicleProvider);
+  }
+
+  Future<void> _selectBrand(CarBrand brand) {
+    if (widget.useAddCarProvider) {
+      return ref
+          .read(addCarVehicleProvider.notifier)
+          .selectBrand(brand);
+    }
+
+    return ref.read(vehicleProvider.notifier).selectBrand(brand);
+  }
+
+  Future<void> _selectModel(CarModel model) {
+    if (widget.useAddCarProvider) {
+      return ref
+          .read(addCarVehicleProvider.notifier)
+          .selectModel(model);
+    }
+
+    return ref.read(vehicleProvider.notifier).selectModel(model);
+  }
+
+  void _selectYear(CarYear year) {
+    if (widget.useAddCarProvider) {
+      ref.read(addCarVehicleProvider.notifier).selectCarYear(year);
+    } else {
+      ref.read(vehicleProvider.notifier).selectCarYear(year);
+    }
+  }
+
+  void _clearBrand() {
+    if (widget.useAddCarProvider) {
+      ref.read(addCarVehicleProvider.notifier).clearBrand();
+    } else {
+      ref.read(vehicleProvider.notifier).clearBrand();
+    }
+  }
+
+  void _clearModel() {
+    if (widget.useAddCarProvider) {
+      ref.read(addCarVehicleProvider.notifier).clearModel();
+    } else {
+      ref.read(vehicleProvider.notifier).clearModel();
+    }
+  }
+
+  void _clearYear() {
+    if (widget.useAddCarProvider) {
+      ref.read(addCarVehicleProvider.notifier).clearYear();
+    } else {
+      ref.read(vehicleProvider.notifier).clearYear();
+    }
+  }
+
   void _clearSavedCarSelection() {
+    if (_selectedSavedCarId == null) return;
+
     setState(() {
       _selectedSavedCarId = null;
     });
@@ -50,6 +117,10 @@ class _VehicleSelectorSectionState
   }
 
   Future<List<UserCar>> _loadSavedCars() async {
+    if (widget.useAddCarProvider) {
+      return const [];
+    }
+
     if (ref.read(authProvider) is! Authenticated) {
       return const [];
     }
@@ -62,6 +133,9 @@ class _VehicleSelectorSectionState
 
     try {
       final cars = await ref.read(userCarsProvider.future);
+
+      if (!mounted) return const [];
+
       return _sortCars(cars);
     } catch (_) {
       return const [];
@@ -69,6 +143,8 @@ class _VehicleSelectorSectionState
   }
 
   void _selectSavedCar(UserCar car) {
+    if (!mounted || widget.useAddCarProvider) return;
+
     setState(() {
       _selectedSavedCarId = car.id;
     });
@@ -82,15 +158,13 @@ class _VehicleSelectorSectionState
     );
   }
 
-  Future<void> _showBrandFilter(
-    BuildContext context,
-  ) async {
-    final state = ref.read(vehicleProvider);
-    final notifier = ref.read(vehicleProvider.notifier);
-
+  Future<void> _showBrandFilter(BuildContext context) async {
     final savedCars = await _loadSavedCars();
 
     if (!mounted || !context.mounted) return;
+
+    // Read the latest state after awaiting saved cars.
+    final state = _readVehicleState();
 
     await VehicleFilterBottomSheet.show<CarBrand>(
       context: context,
@@ -98,18 +172,19 @@ class _VehicleSelectorSectionState
       title: 'اختر نوع البراند',
       getLabel: (item) => item.name,
       savedCars: savedCars,
-      selectedCarId: _selectedSavedCarId,
-      onUserCarSelected: _selectSavedCar,
+      selectedCarId:
+          widget.useAddCarProvider ? null : _selectedSavedCarId,
+      onUserCarSelected:
+          widget.useAddCarProvider ? null : _selectSavedCar,
       onSelected: (value) {
         _clearSavedCarSelection();
-        unawaited(notifier.selectBrand(value));
+        unawaited(_selectBrand(value));
       },
     );
   }
 
   void _showModelFilter(BuildContext context) {
-    final state = ref.read(vehicleProvider);
-    final notifier = ref.read(vehicleProvider.notifier);
+    final state = _readVehicleState();
 
     if (state.selectedCarBrand == null) return;
     if (state.isModelsLoading) return;
@@ -120,18 +195,17 @@ class _VehicleSelectorSectionState
       title: 'اختر الموديل',
       getLabel: (item) => item.name,
       onRetry: () async {
-        await notifier.selectBrand(state.selectedCarBrand!);
+        await _selectBrand(state.selectedCarBrand!);
       },
       onSelected: (value) {
         _clearSavedCarSelection();
-        unawaited(notifier.selectModel(value));
+        unawaited(_selectModel(value));
       },
     );
   }
 
   void _showYearFilter(BuildContext context) {
-    final state = ref.read(vehicleProvider);
-    final notifier = ref.read(vehicleProvider.notifier);
+    final state = _readVehicleState();
 
     if (state.selectedModel == null) return;
     if (state.isYearsLoading) return;
@@ -142,25 +216,26 @@ class _VehicleSelectorSectionState
       title: 'اختر السنة',
       getLabel: (item) => item.year.toString(),
       onRetry: () async {
-        await notifier.selectModel(state.selectedModel!);
+        await _selectModel(state.selectedModel!);
       },
       onSelected: (value) {
         _clearSavedCarSelection();
-        notifier.selectCarYear(value);
+        _selectYear(value);
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(vehicleProvider);
-    final notifier = ref.read(vehicleProvider.notifier);
+    final state = widget.useAddCarProvider
+        ? ref.watch(addCarVehicleProvider)
+        : ref.watch(vehicleProvider);
+
     final inlineSelection = widget.inlineSelection;
 
     return Column(
       children: [
         if (!inlineSelection) h16,
-
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: 16,
@@ -177,7 +252,6 @@ class _VehicleSelectorSectionState
                         inlineSelection && state.selectedCarBrand != null,
                     onTap: () => _showBrandFilter(context),
                   ),
-
                   if (!inlineSelection &&
                       state.selectedCarBrand != null) ...[
                     const SizedBox(height: 8),
@@ -186,14 +260,13 @@ class _VehicleSelectorSectionState
                       isSelectedStyle: true,
                       onDelete: () {
                         _clearSavedCarSelection();
-                        notifier.clearBrand();
+                        _clearBrand();
                       },
                     ),
                   ],
                 ],
               ),
             ),
-
             Expanded(
               child: Column(
                 children: [
@@ -205,7 +278,6 @@ class _VehicleSelectorSectionState
                         inlineSelection && state.selectedModel != null,
                     onTap: () => _showModelFilter(context),
                   ),
-
                   if (!inlineSelection && state.selectedModel != null) ...[
                     const SizedBox(height: 8),
                     VehicleFilterField(
@@ -213,14 +285,13 @@ class _VehicleSelectorSectionState
                       isSelectedStyle: true,
                       onDelete: () {
                         _clearSavedCarSelection();
-                        notifier.clearModel();
+                        _clearModel();
                       },
                     ),
                   ],
                 ],
               ),
             ),
-
             Expanded(
               child: Column(
                 children: [
@@ -232,7 +303,6 @@ class _VehicleSelectorSectionState
                         inlineSelection && state.selectedCarYear != null,
                     onTap: () => _showYearFilter(context),
                   ),
-
                   if (!inlineSelection &&
                       state.selectedCarYear != null) ...[
                     const SizedBox(height: 8),
@@ -241,7 +311,7 @@ class _VehicleSelectorSectionState
                       isSelectedStyle: true,
                       onDelete: () {
                         _clearSavedCarSelection();
-                        notifier.clearYear();
+                        _clearYear();
                       },
                     ),
                   ],

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,10 +10,11 @@ import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car_attribute.dart';
+import 'package:qitai/features/client/user/cars/presentation/providers/add_car_vehicle_notifier.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_attribute_bottom_sheet.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_status_dialog.dart';
-import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
@@ -23,9 +25,9 @@ class AddCarScreen extends ConsumerStatefulWidget {
   ConsumerState<AddCarScreen> createState() => _AddCarScreenState();
 }
 
-bool _isLoading = false;
-
 class _AddCarScreenState extends ConsumerState<AddCarScreen> {
+  bool _isLoading = false;
+
   final _vinController = TextEditingController();
   final _nicknameController = TextEditingController();
 
@@ -35,7 +37,10 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
   String? _selectedGear;
 
   static const List<CarAttributeOption> _engineOptions = [
-    CarAttributeOption(title: '1.5L', iconAsset: 'assets/icons/Vector.svg'),
+    CarAttributeOption(
+      title: '1.5L',
+      iconAsset: 'assets/icons/Vector.svg',
+    ),
     CarAttributeOption(
       title: '2.0L Turbo',
       iconAsset: 'assets/icons/Vector.svg',
@@ -52,12 +57,13 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       iconAsset: 'assets/icons/solar_transmission-linear.svg',
     ),
   ];
+
   Future<void> _addCar() async {
-    if (!_isFormValid() || _isLoading) {
+    final vehicleState = ref.read(addCarVehicleProvider);
+
+    if (!_isFormValid(vehicleState) || _isLoading) {
       return;
     }
-
-    final vehicleState = ref.read(vehicleProvider);
 
     final brand = vehicleState.selectedCarBrand!;
     final model = vehicleState.selectedModel!;
@@ -70,7 +76,10 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
           value: _selectedEngine!.split('L').first,
         ),
       if (_selectedGear != null)
-        UserCarAttributeInput(key: 'transmission', value: _selectedGear!),
+        UserCarAttributeInput(
+          key: 'transmission',
+          value: _selectedGear!,
+        ),
     ];
 
     setState(() {
@@ -114,7 +123,8 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
         context: context,
         type: CarDialogType.error,
         title: 'فشلت عملية إضافة السيارة',
-        message: 'حدثت مشكلة ما في إضافة السيارة، الرجاء المحاولة مرة أخرى.',
+        message:
+            'حدثت مشكلة ما في إضافة السيارة، الرجاء المحاولة مرة أخرى.',
       );
     } finally {
       if (!mounted) return;
@@ -125,9 +135,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
     }
   }
 
-  bool _isFormValid() {
-    final vehicleState = ref.read(vehicleProvider);
-
+  bool _isFormValid(VehicleState vehicleState) {
     final hasVehicleSelection =
         vehicleState.selectedCarBrand != null &&
         vehicleState.selectedModel != null &&
@@ -154,14 +162,20 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       ),
       filled: true,
       fillColor: AppColors.inputFieldAndCards,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 12,
+      ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: Colors.grey.shade300),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.actionText, width: 1.2),
+        borderSide: const BorderSide(
+          color: AppColors.actionText,
+          width: 1.2,
+        ),
       ),
     );
   }
@@ -200,7 +214,10 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
           ),
           const TextSpan(
             text: ' (اختياري)',
-            style: TextStyle(color: AppColors.actionText, fontSize: 13),
+            style: TextStyle(
+              color: AppColors.actionText,
+              fontSize: 13,
+            ),
           ),
         ],
       ),
@@ -214,7 +231,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       options: _engineOptions,
     );
 
-    if (value == null) {
+    if (!mounted || value == null) {
       return;
     }
 
@@ -230,7 +247,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       options: _gearOptions,
     );
 
-    if (value == null) {
+    if (!mounted || value == null) {
       return;
     }
 
@@ -241,6 +258,9 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // الاستماع لحالة نموذج الإضافة المستقلة لتحديث الحقول والزر.
+    final vehicleState = ref.watch(addCarVehicleProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppbar(title: 'إضافة سيارة'),
@@ -255,22 +275,34 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                     children: [
                       h16,
 
-                      Text('بيانات سيارتي', style: AppTextStyles.boldBody),
+                      Text(
+                        'بيانات سيارتي',
+                        style: AppTextStyles.boldBody,
+                      ),
 
                       h16,
 
                       Row(
                         spacing: 16,
                         children: [
-                          Expanded(child: _buildTitleWithStar('البراند')),
-                          Expanded(child: _buildTitleWithStar('الموديل')),
-                          Expanded(child: _buildTitleWithStar('السنة')),
+                          Expanded(
+                            child: _buildTitleWithStar('البراند'),
+                          ),
+                          Expanded(
+                            child: _buildTitleWithStar('الموديل'),
+                          ),
+                          Expanded(
+                            child: _buildTitleWithStar('السنة'),
+                          ),
                         ],
                       ),
 
                       h8,
 
-                      const VehiclesWidget(inlineSelection: true),
+                      const VehiclesWidget(
+                        inlineSelection: true,
+                        useAddCarProvider: true,
+                      ),
 
                       h16,
 
@@ -292,7 +324,9 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           LengthLimitingTextInputFormatter(17),
                         ],
                         style: AppTextStyles.mediumCaption,
-                        decoration: _buildInputDecoration('رقم الشاصي (VIN)'),
+                        decoration: _buildInputDecoration(
+                          'رقم الشاصي (VIN)',
+                        ),
                       ),
 
                       h16,
@@ -305,9 +339,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _buildOptionalTitle('المكينة'),
-
                                 h8,
-
                                 VehicleFilterField(
                                   title: _selectedEngine ?? 'المكينة',
                                   isValueSelected: _selectedEngine != null,
@@ -316,15 +348,12 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                               ],
                             ),
                           ),
-
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _buildOptionalTitle('القير'),
-
                                 h8,
-
                                 VehicleFilterField(
                                   title: _selectedGear ?? 'القير',
                                   isValueSelected: _selectedGear != null,
@@ -364,7 +393,9 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               AnimatedContainer(
-                                duration: const Duration(milliseconds: 150),
+                                duration: const Duration(
+                                  milliseconds: 150,
+                                ),
                                 width: 26,
                                 height: 26,
                                 decoration: BoxDecoration(
@@ -408,10 +439,12 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ButtonWidget(
-                  text: _isLoading ? 'جاري الإضافة...' : 'إضافة السيارة',
+                  text: _isLoading
+                      ? 'جاري الإضافة...'
+                      : 'إضافة السيارة',
                   width: double.infinity,
                   height: 52,
-                  enabled: _isFormValid() && !_isLoading,
+                  enabled: _isFormValid(vehicleState) && !_isLoading,
                   onPressed: _addCar,
                 ),
               ),
