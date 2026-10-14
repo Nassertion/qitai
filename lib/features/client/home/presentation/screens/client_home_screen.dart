@@ -209,7 +209,13 @@ class ClientHomeScreen extends ConsumerWidget {
                   SectionHeader(
                     title: 'سياراتي',
                     onTap: () {
-                      context.push('/profile/cars');
+                      requireAuth(
+                        context: context,
+                        ref: ref,
+                        onAuthenticated: () {
+                          context.push('/profile/cars');
+                        },
+                      );
                     },
                   ),
 

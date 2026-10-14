@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +14,8 @@ import 'package:qitai/core/widgets/confirmation_dialog.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
+import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
+import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_status_dialog.dart';
@@ -20,12 +24,52 @@ class ClientCarsScreen extends ConsumerStatefulWidget {
   const ClientCarsScreen({super.key});
 
   @override
-  ConsumerState<ClientCarsScreen> createState() => _ClientCarsScreenState();
+  ConsumerState<ClientCarsScreen> createState() =>
+      _ClientCarsScreenState();
 }
 
 class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
   final Set<int> _deletingCarIds = {};
   final Set<int> _settingDefaultCarIds = {};
+
+  bool _hasAccess = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_ensureAuthenticated());
+    });
+  }
+
+  Future<void> _ensureAuthenticated() async {
+    await requireAuth(
+      context: context,
+      ref: ref,
+      onAuthenticated: () {
+        if (!mounted) return;
+
+        setState(() {
+          _hasAccess = true;
+        });
+      },
+    );
+
+    if (!mounted) return;
+
+    if (ref.read(authProvider) is Authenticated) {
+      return;
+    }
+
+    // إذا أغلق المستخدم نافذة المصادقة دون تسجيل الدخول،
+    // نمنعه من البقاء في صفحة السيارات.
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/');
+    }
+  }
 
   void _openAddCar(BuildContext context) {
     requireAuth(
@@ -33,6 +77,8 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
       ref: ref,
       onAuthenticated: () async {
         final result = await context.push('/profile/addCar');
+
+        if (!mounted) return;
 
         if (result == true) {
           ref.invalidate(userCarsProvider);
@@ -55,15 +101,11 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
     try {
       await ref.read(setDefaultUserCarProvider)(car.id);
 
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       ref.invalidate(userCarsProvider);
     } catch (e) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       await CarStatusDialog.show(
         context: context,
@@ -103,9 +145,7 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
     try {
       await ref.read(deleteUserCarProvider)(car.id);
 
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       ref.invalidate(userCarsProvider);
 
@@ -116,9 +156,7 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
         message: 'تم حذف السيارة من مجموعة سياراتك.',
       );
     } catch (e) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       await CarStatusDialog.show(
         context: context,
@@ -137,6 +175,19 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // لا نحمّل سيارات المستخدم قبل التأكد من تسجيل دخوله.
+    if (!_hasAccess) {
+      return Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        appBar: const CustomAppbar(
+          title: 'سياراتي',
+        ),
+        body: const Center(
+          child: CustomLoading(),
+        ),
+      );
+    }
+
     final userCarsAsync = ref.watch(userCarsProvider);
 
     return Scaffold(
@@ -145,12 +196,16 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
         title: 'سياراتي',
         action: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _AddCarButton(onTap: () => _openAddCar(context)),
+          child: _AddCarButton(
+            onTap: () => _openAddCar(context),
+          ),
         ),
       ),
       body: AppPagePadding(
         child: userCarsAsync.when(
-          loading: () => const Center(child: CustomLoading()),
+          loading: () => const Center(
+            child: CustomLoading(),
+          ),
           error: (error, stack) => Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -163,7 +218,9 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
                 ),
                 h12,
                 TextButton(
-                  onPressed: () => ref.invalidate(userCarsProvider),
+                  onPressed: () {
+                    ref.invalidate(userCarsProvider);
+                  },
                   child: const Text('إعادة المحاولة'),
                 ),
               ],
@@ -186,7 +243,10 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
               });
 
             return ListView.separated(
-              padding: const EdgeInsets.only(top: 16, bottom: 24),
+              padding: const EdgeInsets.only(
+                top: 16,
+                bottom: 24,
+              ),
               itemCount: sortedCars.length,
               separatorBuilder: (_, _) => h16,
               itemBuilder: (context, index) {
@@ -195,7 +255,8 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
                 return _UserCarCard(
                   car: car,
                   isDeleting: _deletingCarIds.contains(car.id),
-                  isSettingDefault: _settingDefaultCarIds.contains(car.id),
+                  isSettingDefault:
+                      _settingDefaultCarIds.contains(car.id),
                   onSetDefault: () => _setDefaultCar(car),
                   onDelete: () => _deleteCar(car),
                   onEdit: () {},
@@ -210,7 +271,9 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
 }
 
 class _AddCarButton extends StatelessWidget {
-  const _AddCarButton({required this.onTap});
+  const _AddCarButton({
+    required this.onTap,
+  });
 
   final VoidCallback onTap;
 
@@ -226,7 +289,11 @@ class _AddCarButton extends StatelessWidget {
           shape: BoxShape.circle,
           color: AppColors.actionText.withValues(alpha: 0.12),
         ),
-        child: const Icon(Icons.add, size: 18, color: AppColors.actionText),
+        child: const Icon(
+          Icons.add,
+          size: 18,
+          color: AppColors.actionText,
+        ),
       ),
     );
   }
@@ -255,11 +322,13 @@ class _UserCarCard extends StatelessWidget {
         return item.value;
       }
     }
+
     return null;
   }
 
   String get _title {
     final nickname = car.nickname?.trim();
+
     if (nickname != null && nickname.isNotEmpty) {
       return nickname;
     }
@@ -281,7 +350,9 @@ class _UserCarCard extends StatelessWidget {
         color: AppColors.inputFieldAndCards,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isDefault ? AppColors.actionText : AppColors.border,
+          color: isDefault
+              ? AppColors.actionText
+              : AppColors.border,
           width: 1,
         ),
       ),
@@ -303,9 +374,7 @@ class _UserCarCard extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-
               w16,
-
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,9 +387,7 @@ class _UserCarCard extends StatelessWidget {
                         color: AppColors.primaryText,
                       ),
                     ),
-
                     h8,
-
                     Text(
                       'الشاصي (VIN): ${car.vehicle.vin}',
                       maxLines: 1,
@@ -329,9 +396,7 @@ class _UserCarCard extends StatelessWidget {
                         color: AppColors.secondaryText,
                       ),
                     ),
-
                     h8,
-
                     Wrap(
                       spacing: 16,
                       runSpacing: 4,
@@ -339,7 +404,8 @@ class _UserCarCard extends StatelessWidget {
                       children: [
                         if (transmission != null)
                           _AttributeChip(
-                            icon: 'assets/icons/solar_transmission-linear.svg',
+                            icon:
+                                'assets/icons/solar_transmission-linear.svg',
                             text: transmission,
                           ),
                         if (engine != null)
@@ -354,17 +420,20 @@ class _UserCarCard extends StatelessWidget {
               ),
             ],
           ),
-
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: const Divider(height: 1, color: AppColors.border),
+            child: const Divider(
+              height: 1,
+              color: AppColors.border,
+            ),
           ),
-
           Row(
             children: [
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: (isDefault || isSettingDefault || isDeleting)
+                onTap: (isDefault ||
+                        isSettingDefault ||
+                        isDeleting)
                     ? null
                     : onSetDefault,
                 child: Row(
@@ -386,9 +455,7 @@ class _UserCarCard extends StatelessWidget {
                   ],
                 ),
               ),
-
               const Spacer(),
-
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: GestureDetector(
@@ -401,7 +468,6 @@ class _UserCarCard extends StatelessWidget {
                   ),
                 ),
               ),
-
               isDeleting
                   ? const CustomLoading()
                   : Padding(
@@ -429,7 +495,10 @@ class _UserCarCard extends StatelessWidget {
 }
 
 class _AttributeChip extends StatelessWidget {
-  const _AttributeChip({required this.icon, required this.text});
+  const _AttributeChip({
+    required this.icon,
+    required this.text,
+  });
 
   final String icon;
   final String text;
@@ -439,7 +508,11 @@ class _AttributeChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SvgPicture.asset(icon, width: 19, height: 19),
+        SvgPicture.asset(
+          icon,
+          width: 19,
+          height: 19,
+        ),
         w4,
         Text(
           text,
@@ -453,7 +526,10 @@ class _AttributeChip extends StatelessWidget {
 }
 
 class _DefaultRadio extends StatelessWidget {
-  const _DefaultRadio({required this.isSelected, required this.isLoading});
+  const _DefaultRadio({
+    required this.isSelected,
+    required this.isLoading,
+  });
 
   final bool isSelected;
   final bool isLoading;
@@ -466,10 +542,15 @@ class _DefaultRadio extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isSelected ? AppColors.actionText : AppColors.inputFieldAndCards,
+        color: isSelected
+            ? AppColors.actionText
+            : AppColors.inputFieldAndCards,
         border: isSelected
             ? null
-            : Border.all(color: AppColors.border, width: 1),
+            : Border.all(
+                color: AppColors.border,
+                width: 1,
+              ),
       ),
       child: isLoading
           ? const SizedBox(
@@ -481,8 +562,12 @@ class _DefaultRadio extends StatelessWidget {
               ),
             )
           : isSelected
-          ? const Icon(Icons.check, size: 18, color: AppColors.whiteText)
-          : null,
+              ? const Icon(
+                  Icons.check,
+                  size: 18,
+                  color: AppColors.whiteText,
+                )
+              : null,
     );
   }
 }
