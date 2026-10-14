@@ -28,10 +28,10 @@ class CategoryFilterSelector extends ConsumerStatefulWidget {
   ConsumerState<CategoryFilterSelector> createState() =>
       _CategoryFilterSelectorState();
 }
-int? _selectedSavedCarId;
 
 class _CategoryFilterSelectorState
     extends ConsumerState<CategoryFilterSelector> {
+int? _selectedSavedCarId;
   @override
   void initState() {
     super.initState();
@@ -323,16 +323,26 @@ Future<void> _showBrandFilter(
                         _buildSelectedField(
                           baseWidth: baseItemWidth,
                           selectedTitle: vehicleState.selectedCarBrand?.name,
-                          onDelete: vehicleNotifier.clearBrand,
-                        ),
+onDelete: () {
+  setState(() {
+    _selectedSavedCarId = null;
+  });
+
+  vehicleNotifier.clearBrand();
+},                        ),
 
                         const SizedBox(width: spacing),
 
                         _buildSelectedField(
                           baseWidth: baseItemWidth,
                           selectedTitle: vehicleState.selectedModel?.name,
-                          onDelete: vehicleNotifier.clearModel,
-                        ),
+onDelete: () {
+  setState(() {
+    _selectedSavedCarId = null;
+  });
+
+  vehicleNotifier.clearModel();
+},                        ),
 
                         const SizedBox(width: spacing),
 
@@ -340,8 +350,13 @@ Future<void> _showBrandFilter(
                           baseWidth: baseItemWidth,
                           selectedTitle: vehicleState.selectedCarYear?.year
                               .toString(),
-                          onDelete: vehicleNotifier.clearYear,
-                        ),
+onDelete: () {
+  setState(() {
+    _selectedSavedCarId = null;
+  });
+
+  vehicleNotifier.clearYear();
+},                        ),
 
                         const SizedBox(width: spacing),
 

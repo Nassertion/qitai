@@ -60,7 +60,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
-
+ Future(() {
+    _vehicleNotifier.clearAll();
+  });
     super.dispose();
   }
 

@@ -8,6 +8,7 @@ import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_product_notifier.dart';
 import 'package:qitai/features/client/categories/presentation/widgets/category_product_card_widget.dart';
 import 'package:qitai/features/client/categories/presentation/widgets/category_filter_selector.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 
 class CategoryProductsScreen extends ConsumerStatefulWidget {
   const CategoryProductsScreen({
@@ -27,10 +28,11 @@ class CategoryProductsScreen extends ConsumerStatefulWidget {
 class _CategoryProductsScreenState
     extends ConsumerState<CategoryProductsScreen> {
   late final ScrollController _scrollController;
-
+late final VehicleNotifier _vehicleNotifier;
   @override
   void initState() {
     super.initState();
+  _vehicleNotifier = ref.read(vehicleProvider.notifier);
 
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
@@ -50,6 +52,10 @@ class _CategoryProductsScreenState
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+      Future.microtask(() {
+    _vehicleNotifier.clearAll();
+  });
+
     super.dispose();
   }
 
