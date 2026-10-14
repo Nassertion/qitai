@@ -107,10 +107,23 @@ if (!ref.mounted) return;
     final hasText = value.isNotEmpty;
     final hasVehicleFilter = brandId != null || modelId != null || year != null;
     // final hasCategoryFilter = finalCategoryId != null;
+if (!hasText && !hasVehicleFilter) {
+  _searchRequestId++;
 
-    if (!hasText && !hasVehicleFilter) {
-      return;
-    }
+  state = state.copyWith(
+    suggestions: [],
+    products: [],
+    hasSearched: false,
+    isSuggestionsLoading: false,
+    isProductsLoading: false,
+    isLoadingMore: false,
+    currentPage: 1,
+    lastPage: 1,
+    clearErrorMessage: true,
+  );
+
+  return;
+}
 
     final requestId = ++_searchRequestId;
 
