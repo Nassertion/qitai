@@ -31,7 +31,7 @@ class CategoryFilterSelector extends ConsumerStatefulWidget {
 
 class _CategoryFilterSelectorState
     extends ConsumerState<CategoryFilterSelector> {
-int? _selectedSavedCarId;
+  int? _selectedSavedCarId;
   @override
   void initState() {
     super.initState();
@@ -41,46 +41,46 @@ int? _selectedSavedCarId;
     });
   }
 
-Future<void> _showBrandFilter(
-  BuildContext context,
-  VehicleState state,
-  VehicleNotifier notifier,
-) async {
-  if (state.carBrands.isEmpty) return;
+  Future<void> _showBrandFilter(
+    BuildContext context,
+    VehicleState state,
+    VehicleNotifier notifier,
+  ) async {
+    if (state.carBrands.isEmpty) return;
 
-  final savedCars = await _loadSavedCars();
+    final savedCars = await _loadSavedCars();
 
-  if (!mounted) return;
+    if (!mounted) return;
 
-  await VehicleFilterBottomSheet.show<CarBrand>(
-    context: context,
-    items: state.carBrands,
-    title: 'اختر نوع البراند',
-    getLabel: (item) => item.name,
-    savedCars: savedCars,
-    selectedCarId: _selectedSavedCarId,
-    onUserCarSelected: (car) {
-      setState(() {
-        _selectedSavedCarId = car.id;
-      });
+    await VehicleFilterBottomSheet.show<CarBrand>(
+      context: context,
+      items: state.carBrands,
+      title: 'اختر نوع البراند',
+      getLabel: (item) => item.name,
+      savedCars: savedCars,
+      selectedCarId: _selectedSavedCarId,
+      onUserCarSelected: (car) {
+        setState(() {
+          _selectedSavedCarId = car.id;
+        });
 
-      unawaited(
-        notifier.selectVehicleByIds(
-          brandId: car.vehicle.brandId,
-          modelId: car.vehicle.modelId,
-          yearId: car.vehicle.yearId,
-        ),
-      );
-    },
-    onSelected: (value) {
-      setState(() {
-        _selectedSavedCarId = null;
-      });
+        unawaited(
+          notifier.selectVehicleByIds(
+            brandId: car.vehicle.brandId,
+            modelId: car.vehicle.modelId,
+            yearId: car.vehicle.yearId,
+          ),
+        );
+      },
+      onSelected: (value) {
+        setState(() {
+          _selectedSavedCarId = null;
+        });
 
-      unawaited(notifier.selectBrand(value));
-    },
-  );
-}
+        unawaited(notifier.selectBrand(value));
+      },
+    );
+  }
 
   void _showModelFilter(
     BuildContext context,
@@ -98,13 +98,13 @@ Future<void> _showBrandFilter(
       onRetry: () async {
         await notifier.selectBrand(state.selectedCarBrand!);
       },
-    onSelected: (value) {
-  setState(() {
-    _selectedSavedCarId = null;
-  });
+      onSelected: (value) {
+        setState(() {
+          _selectedSavedCarId = null;
+        });
 
-  unawaited(notifier.selectModel(value));
-},
+        unawaited(notifier.selectModel(value));
+      },
     );
   }
 
@@ -124,13 +124,13 @@ Future<void> _showBrandFilter(
       onRetry: () async {
         await notifier.selectModel(state.selectedModel!);
       },
- onSelected: (value) {
-  setState(() {
-    _selectedSavedCarId = null;
-  });
+      onSelected: (value) {
+        setState(() {
+          _selectedSavedCarId = null;
+        });
 
-  notifier.selectCarYear(value);
-},
+        notifier.selectCarYear(value);
+      },
     );
   }
 
@@ -151,29 +151,25 @@ Future<void> _showBrandFilter(
       },
     );
   }
+
   Future<List<UserCar>> _loadSavedCars() async {
-  if (ref.read(authProvider) is! Authenticated) {
-    return const [];
+    if (ref.read(authProvider) is! Authenticated) {
+      return const [];
+    }
+
+    try {
+      final cachedCars = ref.read(userCarsProvider).asData?.value;
+
+      final cars = cachedCars ?? await ref.read(userCarsProvider.future);
+
+      final sortedCars = [...cars!]
+        ..sort((a, b) => (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0));
+
+      return sortedCars;
+    } catch (_) {
+      return const [];
+    }
   }
-
-  try {
-    final cachedCars = ref.read(userCarsProvider).asData?.value;
-
-    final cars = cachedCars ??
-        await ref.read(userCarsProvider.future);
-
-    final sortedCars = [...cars!]
-      ..sort(
-        (a, b) => (b.isDefault ? 1 : 0).compareTo(
-          a.isDefault ? 1 : 0,
-        ),
-      );
-
-    return sortedCars;
-  } catch (_) {
-    return const [];
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -323,26 +319,28 @@ Future<void> _showBrandFilter(
                         _buildSelectedField(
                           baseWidth: baseItemWidth,
                           selectedTitle: vehicleState.selectedCarBrand?.name,
-onDelete: () {
-  setState(() {
-    _selectedSavedCarId = null;
-  });
+                          onDelete: () {
+                            setState(() {
+                              _selectedSavedCarId = null;
+                            });
 
-  vehicleNotifier.clearBrand();
-},                        ),
+                            vehicleNotifier.clearBrand();
+                          },
+                        ),
 
                         const SizedBox(width: spacing),
 
                         _buildSelectedField(
                           baseWidth: baseItemWidth,
                           selectedTitle: vehicleState.selectedModel?.name,
-onDelete: () {
-  setState(() {
-    _selectedSavedCarId = null;
-  });
+                          onDelete: () {
+                            setState(() {
+                              _selectedSavedCarId = null;
+                            });
 
-  vehicleNotifier.clearModel();
-},                        ),
+                            vehicleNotifier.clearModel();
+                          },
+                        ),
 
                         const SizedBox(width: spacing),
 
@@ -350,13 +348,14 @@ onDelete: () {
                           baseWidth: baseItemWidth,
                           selectedTitle: vehicleState.selectedCarYear?.year
                               .toString(),
-onDelete: () {
-  setState(() {
-    _selectedSavedCarId = null;
-  });
+                          onDelete: () {
+                            setState(() {
+                              _selectedSavedCarId = null;
+                            });
 
-  vehicleNotifier.clearYear();
-},                        ),
+                            vehicleNotifier.clearYear();
+                          },
+                        ),
 
                         const SizedBox(width: spacing),
 
@@ -463,21 +462,24 @@ class _CategoryFilterField extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  title,
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: isSelectedStyle
-                      ? TextOverflow.visible
-                      : TextOverflow.ellipsis,
-                  style: isSelectedStyle
-                      ? AppTextStyles.mediumCaption.copyWith(
-                          color: AppColors.actionText,
-                          height: 1.2,
-                        )
-                      : AppTextStyles.regularOverline.copyWith(
-                          color: AppColors.secondaryText,
-                        ),
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: isSelectedStyle
+                        ? TextOverflow.visible
+                        : TextOverflow.ellipsis,
+                    style: isSelectedStyle
+                        ? AppTextStyles.mediumCaption.copyWith(
+                            color: AppColors.actionText,
+                            height: 1.2,
+                          )
+                        : AppTextStyles.regularOverline.copyWith(
+                            color: AppColors.secondaryText,
+                          ),
+                  ),
                 ),
               ),
 
@@ -487,13 +489,10 @@ class _CategoryFilterField extends StatelessWidget {
                 InkWell(
                   onTap: onDelete,
                   customBorder: const CircleBorder(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: SvgPicture.asset(
-                      "assets/icons/close-circle.svg",
-                      height: 14,
-                      width: 14,
-                    ),
+                  child: SvgPicture.asset(
+                    "assets/icons/close-circle.svg",
+                    height: 14,
+                    width: 14,
                   ),
                 )
               else
