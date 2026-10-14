@@ -57,7 +57,7 @@ class HomeCarItem extends StatelessWidget {
       highlightColor: Colors.transparent,
       overlayColor: const WidgetStatePropertyAll(Colors.transparent),
       child: SizedBox(
-        // width: 72,
+        width: 70,
         child: Column(
           children: [
             Container(

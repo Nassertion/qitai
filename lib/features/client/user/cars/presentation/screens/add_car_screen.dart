@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,10 +36,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
   String? _selectedGear;
 
   static const List<CarAttributeOption> _engineOptions = [
-    CarAttributeOption(
-      title: '1.5L',
-      iconAsset: 'assets/icons/Vector.svg',
-    ),
+    CarAttributeOption(title: '1.5L', iconAsset: 'assets/icons/Vector.svg'),
     CarAttributeOption(
       title: '2.0L Turbo',
       iconAsset: 'assets/icons/Vector.svg',
@@ -76,10 +72,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
           value: _selectedEngine!.split('L').first,
         ),
       if (_selectedGear != null)
-        UserCarAttributeInput(
-          key: 'transmission',
-          value: _selectedGear!,
-        ),
+        UserCarAttributeInput(key: 'transmission', value: _selectedGear!),
     ];
 
     setState(() {
@@ -123,8 +116,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
         context: context,
         type: CarDialogType.error,
         title: 'فشلت عملية إضافة السيارة',
-        message:
-            'حدثت مشكلة ما في إضافة السيارة، الرجاء المحاولة مرة أخرى.',
+        message: 'حدثت مشكلة ما في إضافة السيارة، الرجاء المحاولة مرة أخرى.',
       );
     } finally {
       if (!mounted) return;
@@ -162,20 +154,14 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       ),
       filled: true,
       fillColor: AppColors.inputFieldAndCards,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 12,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: Colors.grey.shade300),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: AppColors.actionText,
-          width: 1.2,
-        ),
+        borderSide: const BorderSide(color: AppColors.actionText, width: 1.2),
       ),
     );
   }
@@ -214,10 +200,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
           ),
           const TextSpan(
             text: ' (اختياري)',
-            style: TextStyle(
-              color: AppColors.actionText,
-              fontSize: 13,
-            ),
+            style: TextStyle(color: AppColors.actionText, fontSize: 13),
           ),
         ],
       ),
@@ -275,25 +258,16 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                     children: [
                       h16,
 
-                      Text(
-                        'بيانات سيارتي',
-                        style: AppTextStyles.boldBody,
-                      ),
+                      Text('بيانات سيارتي', style: AppTextStyles.boldBody),
 
                       h16,
 
                       Row(
                         spacing: 16,
                         children: [
-                          Expanded(
-                            child: _buildTitleWithStar('البراند'),
-                          ),
-                          Expanded(
-                            child: _buildTitleWithStar('الموديل'),
-                          ),
-                          Expanded(
-                            child: _buildTitleWithStar('السنة'),
-                          ),
+                          Expanded(child: _buildTitleWithStar('البراند')),
+                          Expanded(child: _buildTitleWithStar('الموديل')),
+                          Expanded(child: _buildTitleWithStar('السنة')),
                         ],
                       ),
 
@@ -324,9 +298,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           LengthLimitingTextInputFormatter(17),
                         ],
                         style: AppTextStyles.mediumCaption,
-                        decoration: _buildInputDecoration(
-                          'رقم الشاصي (VIN)',
-                        ),
+                        decoration: _buildInputDecoration('رقم الشاصي (VIN)'),
                       ),
 
                       h16,
@@ -373,6 +345,8 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
                       TextField(
                         controller: _nicknameController,
+                        maxLength: 25,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         style: AppTextStyles.mediumCaption,
                         decoration: _buildInputDecoration(
                           'مثلاً: "سيارتي، سيارة الوالد"',
@@ -393,9 +367,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               AnimatedContainer(
-                                duration: const Duration(
-                                  milliseconds: 150,
-                                ),
+                                duration: const Duration(milliseconds: 150),
                                 width: 26,
                                 height: 26,
                                 decoration: BoxDecoration(
@@ -439,9 +411,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ButtonWidget(
-                  text: _isLoading
-                      ? 'جاري الإضافة...'
-                      : 'إضافة السيارة',
+                  text: _isLoading ? 'جاري الإضافة...' : 'إضافة السيارة',
                   width: double.infinity,
                   height: 52,
                   enabled: _isFormValid(vehicleState) && !_isLoading,

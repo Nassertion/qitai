@@ -19,19 +19,20 @@ Future<T> handleDioRequest<T>(
         statusCode: e.response?.statusCode,
 
     );
-  } catch (e) {
-    if (e is AppException) {
-      rethrow;
-    }
-
-    if (kDebugMode) {
-      debugPrint('Unexpected error: $e');
-    }
-
-    throw const AppException(
-      'حدث خطأ غير متوقع',
-    );
+  } catch (e, stackTrace) {
+  if (e is AppException) {
+    rethrow;
   }
+
+  if (kDebugMode) {
+    debugPrint('Unexpected error: $e');
+    debugPrintStack(stackTrace: stackTrace);
+  }
+
+  throw const AppException(
+    'حدث خطأ غير متوقع',
+  );
+}
 }
 
 String _getDioErrorMessage(DioException e) {
