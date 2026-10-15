@@ -22,6 +22,11 @@ final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/',
+  errorBuilder: (context, state) {
+    return const _RouteFallbackScreen(
+      message: 'الصفحة المطلوبة غير متاحة.',
+    );
+  },
   routes: <RouteBase>[
     ShellRoute(
       navigatorKey: shellNavigatorKey,
@@ -37,7 +42,10 @@ final GoRouter appRouter = GoRouter(
           path: '/orders',
           builder: (context, state) => const OrdersScreen(),
         ),
-        GoRoute(path: '/cart', builder: (context, state) => const CartScreen()),
+        GoRoute(
+          path: '/cart',
+          builder: (context, state) => const CartScreen(),
+        ),
         GoRoute(
           path: '/profile',
           builder: (context, state) => const ProfileScreen(),
@@ -68,7 +76,10 @@ final GoRouter appRouter = GoRouter(
       path: '/categories',
       builder: (context, state) => const CategoriesScreen(),
     ),
-    GoRoute(path: '/search', builder: (context, state) => const SearchScreen()),
+    GoRoute(
+      path: '/search',
+      builder: (context, state) => const SearchScreen(),
+    ),
     GoRoute(
       path: '/products',
       builder: (context, state) => const AllProductsScreen(),
@@ -76,18 +87,85 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/product/:id',
       builder: (context, state) {
-        final productId = state.pathParameters['id']!;
+        final productId = int.tryParse(
+          state.pathParameters['id'] ?? '',
+        );
 
-        return ProductDetailsScreen(id: int.parse(productId));
+        if (productId == null) {
+          return const _RouteFallbackScreen(
+            message: 'رابط المنتج غير صالح.',
+          );
+        }
+
+        return ProductDetailsScreen(id: productId);
       },
     ),
     GoRoute(
       path: '/categories/:id',
       builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        final name = state.extra as String;
-        return CategoryProductsScreen(id: int.parse(id), name: name);
+        final categoryId = int.tryParse(
+          state.pathParameters['id'] ?? '',
+        );
+
+        if (categoryId == null) {
+          return const _RouteFallbackScreen(
+            message: 'رابط التصنيف غير صالح.',
+          );
+        }
+
+        final queryName = state.uri.queryParameters['name'];
+        final extra = state.extra;
+
+        final name = queryName != null && queryName.trim().isNotEmpty
+            ? queryName
+            : extra is String && extra.trim().isNotEmpty
+                ? extra
+                : 'التصنيف';
+
+        return CategoryProductsScreen(
+          id: categoryId,
+          name: name,
+        );
       },
     ),
   ],
 );
+class _RouteFallbackScreen extends StatelessWidget {
+  const _RouteFallbackScreen({
+    this.message = 'حدث خطأ أثناء فتح الصفحة.',
+  });
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: () => context.go('/'),
+                  child: const Text('العودة للرئيسية'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
