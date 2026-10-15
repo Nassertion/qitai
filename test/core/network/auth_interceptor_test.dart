@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -28,8 +30,91 @@ class FakeTokenStorage implements TokenStorage {
 class MockRequestInterceptorHandler extends Mock
     implements RequestInterceptorHandler {}
 
+class MockErrorInterceptorHandler extends Mock
+    implements ErrorInterceptorHandler {}
+
 void main() {
   group('AuthInterceptor', () {
+    test(
+      'should invoke unauthorized callback when a protected request returns 401',
+      () async {
+        final callbackCompleted = Completer<void>();
+        var callbackCalled = false;
+
+        final interceptor = AuthInterceptor(
+          FakeTokenStorage(accessToken: 'expired_token'),
+          onUnauthorized: () async {
+            callbackCalled = true;
+
+            if (!callbackCompleted.isCompleted) {
+              callbackCompleted.complete();
+            }
+          },
+        );
+
+        final handler = MockErrorInterceptorHandler();
+        final requestOptions = RequestOptions(
+          path: '/products/1',
+        );
+
+        final error = DioException(
+          requestOptions: requestOptions,
+          response: Response<dynamic>(
+            requestOptions: requestOptions,
+            statusCode: 401,
+          ),
+          type: DioExceptionType.badResponse,
+        );
+
+        interceptor.onError(error, handler);
+
+        await callbackCompleted.future.timeout(
+          const Duration(seconds: 2),
+        );
+
+        // ننتظر اكتمال معالجة الخطأ داخل الـ interceptor.
+        await Future<void>.delayed(Duration.zero);
+
+        expect(callbackCalled, isTrue);
+        verify(() => handler.next(error)).called(1);
+      },
+    );
+
+    test(
+      'should not invoke unauthorized callback for public OTP requests',
+      () async {
+        var callbackCalled = false;
+
+        final interceptor = AuthInterceptor(
+          FakeTokenStorage(accessToken: 'expired_token'),
+          onUnauthorized: () async {
+            callbackCalled = true;
+          },
+        );
+
+        final handler = MockErrorInterceptorHandler();
+        final requestOptions = RequestOptions(
+          path: '/auth/verify-otp',
+        );
+
+        final error = DioException(
+          requestOptions: requestOptions,
+          response: Response<dynamic>(
+            requestOptions: requestOptions,
+            statusCode: 401,
+          ),
+          type: DioExceptionType.badResponse,
+        );
+
+        interceptor.onError(error, handler);
+
+        await Future<void>.delayed(Duration.zero);
+
+        expect(callbackCalled, isFalse);
+        verify(() => handler.next(error)).called(1);
+      },
+    );
+
     test(
       'should add authorization header when access token exists',
       () async {

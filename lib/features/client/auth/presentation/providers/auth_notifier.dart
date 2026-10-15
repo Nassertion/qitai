@@ -1,4 +1,5 @@
 import 'package:qitai/core/errors/app_exception.dart';
+import 'package:qitai/core/network/auth_session_events.dart';
 import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,9 +11,20 @@ part 'auth_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
   @override
-  AuthState build() {
-    return const AuthInitial();
-  }
+@override
+AuthState build() {
+  final sessionEvents = ref.read(authSessionEventsProvider);
+
+  sessionEvents.registerSessionExpiredHandler(
+    _handleUnauthorized,
+  );
+
+  ref.onDispose(
+    sessionEvents.unregisterSessionExpiredHandler,
+  );
+
+  return const AuthInitial();
+}
 
   Future<void> initialize() async {
     final repository = ref.read(authRepositoryProvider);
@@ -40,15 +52,19 @@ class Auth extends _$Auth {
         state = const Unauthenticated();
         return;
       }
-
-      // المستخدم ما زال يملك جلسة،
-      // لكن تعذر تحميل بياناته مؤقتًا.
       state = const Authenticated();
     } catch (_) {
       state = const Authenticated();
     }
   }
-
+Future<void> _handleUnauthorized() async {
+  try {
+    await ref.read(authRepositoryProvider).clearSession();
+  } finally {
+    ref.read(currentUserProvider.notifier).clearUser();
+    state = const Unauthenticated();
+  }
+}
   Future<void> sendOtp(String phone) {
     final sendOtp = ref.read(sendOtpProvider);
 
