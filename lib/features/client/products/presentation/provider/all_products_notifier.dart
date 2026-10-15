@@ -1,3 +1,4 @@
+
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_products_state.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
@@ -12,15 +13,20 @@ part 'all_products_notifier.g.dart';
 class AllProductsNotifier extends _$AllProductsNotifier {
   late final GetProducts getProducts;
 
+  int _requestVersion = 0;
+
   @override
   AllProductsState build() {
     getProducts = ref.read(getProductsProvider);
 
-   ref.listen<VehicleState>(vehicleProvider, (previous, next) {
-  if (!hasVehicleFiltersChanged(previous, next)) return;
+    ref.listen<VehicleState>(
+      vehicleProvider,
+      (previous, next) {
+        if (!hasVehicleFiltersChanged(previous, next)) return;
 
-  loadProducts();
-});
+        loadProducts();
+      },
+    );
 
     Future.microtask(loadProducts);
 
@@ -28,11 +34,13 @@ class AllProductsNotifier extends _$AllProductsNotifier {
   }
 
   Future<void> loadProducts() async {
-    final classificationState = ref.read(vehicleProvider);
+    final requestVersion = ++_requestVersion;
 
-    final brandId = classificationState.selectedCarBrand?.id;
-    final modelId = classificationState.selectedModel?.id;
-    final year = classificationState.selectedCarYear?.year;
+    final vehicleState = ref.read(vehicleProvider);
+
+    final brandId = vehicleState.selectedCarBrand?.id;
+    final modelId = vehicleState.selectedModel?.id;
+    final year = vehicleState.selectedCarYear?.year;
 
     state = state.copyWith(
       isLoading: true,
@@ -50,6 +58,10 @@ class AllProductsNotifier extends _$AllProductsNotifier {
         page: 1,
       );
 
+      if (!ref.mounted || requestVersion != _requestVersion) {
+        return;
+      }
+
       state = state.copyWith(
         products: result.products,
         currentPage: result.currentPage,
@@ -58,6 +70,10 @@ class AllProductsNotifier extends _$AllProductsNotifier {
         isLoadingMore: false,
       );
     } catch (e) {
+      if (!ref.mounted || requestVersion != _requestVersion) {
+        return;
+      }
+
       state = state.copyWith(
         isLoading: false,
         isLoadingMore: false,
@@ -67,15 +83,16 @@ class AllProductsNotifier extends _$AllProductsNotifier {
   }
 
   Future<void> loadNextPage() async {
-    if (state.isLoading) return;
-    if (state.isLoadingMore) return;
+    if (state.isLoading || state.isLoadingMore) return;
     if (!state.hasNextPage) return;
 
-    final classificationState = ref.read(vehicleProvider);
+    final requestVersion = _requestVersion;
 
-    final brandId = classificationState.selectedCarBrand?.id;
-    final modelId = classificationState.selectedModel?.id;
-    final year = classificationState.selectedCarYear?.year;
+    final vehicleState = ref.read(vehicleProvider);
+
+    final brandId = vehicleState.selectedCarBrand?.id;
+    final modelId = vehicleState.selectedModel?.id;
+    final year = vehicleState.selectedCarYear?.year;
 
     final nextPage = state.currentPage + 1;
 
@@ -92,6 +109,10 @@ class AllProductsNotifier extends _$AllProductsNotifier {
         page: nextPage,
       );
 
+      if (!ref.mounted || requestVersion != _requestVersion) {
+        return;
+      }
+
       state = state.copyWith(
         products: [
           ...state.products,
@@ -102,6 +123,10 @@ class AllProductsNotifier extends _$AllProductsNotifier {
         isLoadingMore: false,
       );
     } catch (e) {
+      if (!ref.mounted || requestVersion != _requestVersion) {
+        return;
+      }
+
       state = state.copyWith(
         isLoadingMore: false,
         errorMessage: e.toString(),
