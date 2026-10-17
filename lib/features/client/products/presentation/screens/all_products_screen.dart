@@ -34,7 +34,6 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
 
     Future.microtask(() {
       _vehicleNotifier.clearAll();
-      ref.read(allProductsProvider.notifier).loadProducts();
     });
   }
 

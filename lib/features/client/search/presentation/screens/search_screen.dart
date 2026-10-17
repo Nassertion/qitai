@@ -14,17 +14,30 @@ import 'package:qitai/features/client/search/presentation/widgets/search_suggest
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
-class SearchScreen extends ConsumerStatefulWidget {
+class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
   @override
-  ConsumerState<SearchScreen> createState() => _SearchScreenState();
+  Widget build(BuildContext context) {
+    return ProviderScope(
+      overrides: [
+        vehicleProvider.overrideWith(VehicleNotifier.new),
+        searchProvider.overrideWith(SearchNotifier.new),
+      ],
+      child: const _SearchContent(),
+    );
+  }
 }
 
-class _SearchScreenState extends ConsumerState<SearchScreen> {
+class _SearchContent extends ConsumerStatefulWidget {
+  const _SearchContent();
+
+  @override
+  ConsumerState<_SearchContent> createState() => _SearchContentState();
+}
+
+class _SearchContentState extends ConsumerState<_SearchContent> {
   late final TextEditingController _controller;
-  late final VehicleNotifier _vehicleNotifier;
-  late final SearchNotifier _searchNotifier;
   late final ScrollController _scrollController;
 
   @override
@@ -32,16 +45,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     super.initState();
 
     _controller = TextEditingController();
-    _vehicleNotifier = ref.read(vehicleProvider.notifier);
-    _searchNotifier = ref.read(searchProvider.notifier);
 
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
 
-    Future.microtask(() {
-      _vehicleNotifier.clearAll();
-      _searchNotifier.clearSearch();
-    });
   }
 
   void _onScroll() {
@@ -60,9 +67,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
- Future(() {
-    _vehicleNotifier.clearAll();
-  });
     super.dispose();
   }
 
