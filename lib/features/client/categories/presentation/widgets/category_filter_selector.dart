@@ -50,8 +50,7 @@ class _CategoryFilterSelectorState
 
     final savedCars = await _loadSavedCars();
 
-    if (!mounted) return;
-
+    if (!context.mounted) return;
     await VehicleFilterBottomSheet.show<CarBrand>(
       context: context,
       items: state.carBrands,
