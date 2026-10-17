@@ -31,21 +31,26 @@ AddUserCar addUserCar(Ref ref) {
 
   return AddUserCar(repository);
 }
+
 @riverpod
 GetUserCars getUserCars(Ref ref) {
   final repository = ref.watch(userCarRepositoryProvider);
   return GetUserCars(repository);
 }
+
 @riverpod
 Future<List<UserCar>> userCars(Ref ref) {
   final getUserCars = ref.watch(getUserCarsProvider);
   return getUserCars();
 }
+
 @riverpod
 DeleteUserCar deleteUserCar(Ref ref) {
   final repository = ref.watch(userCarRepositoryProvider);
   return DeleteUserCar(repository);
-}@riverpod
+}
+
+@riverpod
 SetDefaultUserCar setDefaultUserCar(Ref ref) {
   final repository = ref.watch(userCarRepositoryProvider);
   return SetDefaultUserCar(repository);

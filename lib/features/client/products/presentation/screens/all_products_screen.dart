@@ -52,7 +52,6 @@ class AllProductsScreen extends ConsumerWidget {
       }
     }
 
-    // تتغير هوية النطاق عند تغير السيارة الافتراضية.
     final scopeKey =
         '${isAuthenticated}_${brandId}_${modelId}_$yearId';
 

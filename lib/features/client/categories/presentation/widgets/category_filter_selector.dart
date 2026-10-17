@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
@@ -10,6 +9,7 @@ import 'package:qitai/features/client/auth/presentation/providers/auth_state.dar
 import 'package:qitai/features/client/categories/domain/entities/category.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_product_notifier.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
+import 'package:qitai/features/client/categories/presentation/widgets/category_filter_field.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
@@ -236,7 +236,7 @@ class _CategoryFilterSelectorState
                   children: [
                     SizedBox(
                       width: baseItemWidth,
-                      child: _CategoryFilterField(
+                      child: CategoryFilterField(
                         title: 'البراند',
                         onTap: () {
                           _showBrandFilter(
@@ -253,7 +253,7 @@ class _CategoryFilterSelectorState
 
                     SizedBox(
                       width: baseItemWidth,
-                      child: _CategoryFilterField(
+                      child: CategoryFilterField(
                         title: 'الموديل',
                         onTap: () {
                           _showModelFilter(
@@ -270,7 +270,7 @@ class _CategoryFilterSelectorState
 
                     SizedBox(
                       width: baseItemWidth,
-                      child: _CategoryFilterField(
+                      child: CategoryFilterField(
                         title: 'السنة',
                         onTap: () {
                           _showYearFilter(
@@ -287,7 +287,7 @@ class _CategoryFilterSelectorState
 
                     SizedBox(
                       width: baseItemWidth,
-                      child: _CategoryFilterField(
+                      child: CategoryFilterField(
                         title: 'القسم',
                         onTap: () {
                           _showSectionFilter(
@@ -394,7 +394,7 @@ class _CategoryFilterSelectorState
 
     return SizedBox(
       width: selectedWidth,
-      child: _CategoryFilterField(
+      child: CategoryFilterField(
         title: selectedTitle,
         isSelectedStyle: true,
         onDelete: onDelete,
@@ -426,85 +426,5 @@ class _CategoryFilterSelectorState
         textPainter.width + horizontalPadding + iconWidth + spacing;
 
     return requiredWidth > baseWidth ? requiredWidth : baseWidth;
-  }
-}
-
-class _CategoryFilterField extends StatelessWidget {
-  const _CategoryFilterField({
-    required this.title,
-    this.onTap,
-    required this.isSelectedStyle,
-    this.onDelete,
-  });
-
-  final String title;
-  final VoidCallback? onTap;
-  final bool isSelectedStyle;
-  final VoidCallback? onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: isSelectedStyle ? null : onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          height: 35,
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: isSelectedStyle ? AppColors.actionText : AppColors.border,
-            ),
-            borderRadius: BorderRadius.circular(12),
-            color: AppColors.inputFieldAndCards,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Text(
-                    title,
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: isSelectedStyle
-                        ? TextOverflow.visible
-                        : TextOverflow.ellipsis,
-                    style: isSelectedStyle
-                        ? AppTextStyles.mediumCaption.copyWith(
-                            color: AppColors.actionText,
-                            height: 1.2,
-                          )
-                        : AppTextStyles.regularOverline.copyWith(
-                            color: AppColors.secondaryText,
-                          ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 2),
-
-              if (isSelectedStyle)
-                InkWell(
-                  onTap: onDelete,
-                  customBorder: const CircleBorder(),
-                  child: SvgPicture.asset(
-                    "assets/icons/close-circle.svg",
-                    height: 14,
-                    width: 14,
-                  ),
-                )
-              else
-                SvgPicture.asset(
-                  "assets/icons/arrow-down.svg",
-                  height: 14,
-                  width: 14,
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -10,7 +10,6 @@ import 'package:qitai/features/client/categories/presentation/widgets/category_p
 import 'package:qitai/features/client/categories/presentation/widgets/category_filter_selector.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 
-// Wrapper لعزل فلاتر القسم عن باقي التطبيق
 class CategoryProductsScreen extends StatelessWidget {
   const CategoryProductsScreen({
     super.key,
@@ -38,7 +37,6 @@ class CategoryProductsScreen extends StatelessWidget {
   }
 }
 
-// واجهة القسم الأصلية
 class _CategoryProductsContent extends ConsumerStatefulWidget {
   const _CategoryProductsContent({
     required this.id,

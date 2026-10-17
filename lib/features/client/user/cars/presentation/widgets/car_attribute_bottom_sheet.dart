@@ -9,10 +9,7 @@ class CarAttributeOption {
   final String title;
   final String iconAsset;
 
-  const CarAttributeOption({
-    required this.title,
-    required this.iconAsset,
-  });
+  const CarAttributeOption({required this.title, required this.iconAsset});
 }
 
 class CarAttributeBottomSheet extends StatelessWidget {
@@ -37,10 +34,7 @@ class CarAttributeBottomSheet extends StatelessWidget {
       isScrollControlled: true,
       elevation: 0,
       builder: (_) {
-        return CarAttributeBottomSheet(
-          title: title,
-          options: options,
-        );
+        return CarAttributeBottomSheet(title: title, options: options);
       },
     );
   }
@@ -53,9 +47,7 @@ class CarAttributeBottomSheet extends StatelessWidget {
         width: double.infinity,
         decoration: const BoxDecoration(
           color: AppColors.inputFieldAndCards,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(24),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -111,9 +103,7 @@ class CarAttributeBottomSheet extends StatelessWidget {
                       height: 44,
                       width: double.infinity,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Row(

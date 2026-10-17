@@ -39,20 +39,14 @@ class AddCarVehicleNotifier extends _$AddCarVehicleNotifier {
   Future<void> loadBrands() async {
     final requestId = ++_brandsRequestId;
 
-    state = state.copyWith(
-      isBrandsLoading: true,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(isBrandsLoading: true, clearErrorMessage: true);
 
     try {
       final brands = await getCarBrands();
 
       if (requestId != _brandsRequestId) return;
 
-      state = state.copyWith(
-        carBrands: brands,
-        isBrandsLoading: false,
-      );
+      state = state.copyWith(carBrands: brands, isBrandsLoading: false);
     } catch (e) {
       if (requestId != _brandsRequestId) return;
 
@@ -86,10 +80,7 @@ class AddCarVehicleNotifier extends _$AddCarVehicleNotifier {
       if (requestId != _modelsRequestId) return;
       if (state.selectedCarBrand?.id != carBrand.id) return;
 
-      state = state.copyWith(
-        models: models,
-        isModelsLoading: false,
-      );
+      state = state.copyWith(models: models, isModelsLoading: false);
     } catch (e) {
       if (requestId != _modelsRequestId) return;
       if (state.selectedCarBrand?.id != carBrand.id) return;
@@ -118,26 +109,17 @@ class AddCarVehicleNotifier extends _$AddCarVehicleNotifier {
       if (requestId != _yearsRequestId) return;
       if (state.selectedModel?.id != model.id) return;
 
-      state = state.copyWith(
-        carYears: years,
-        isYearsLoading: false,
-      );
+      state = state.copyWith(carYears: years, isYearsLoading: false);
     } catch (e) {
       if (requestId != _yearsRequestId) return;
       if (state.selectedModel?.id != model.id) return;
 
-      state = state.copyWith(
-        isYearsLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isYearsLoading: false, errorMessage: e.toString());
     }
   }
 
   void selectCarYear(CarYear carYear) {
-    state = state.copyWith(
-      selectedCarYear: carYear,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(selectedCarYear: carYear, clearErrorMessage: true);
   }
 
   void clearBrand() {
@@ -169,10 +151,7 @@ class AddCarVehicleNotifier extends _$AddCarVehicleNotifier {
   }
 
   void clearYear() {
-    state = state.copyWith(
-      clearSelectedCarYear: true,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(clearSelectedCarYear: true, clearErrorMessage: true);
   }
 
   void clearAll() {

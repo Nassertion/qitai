@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/core/helpers/quality_helper.dart';
+import 'package:qitai/features/client/products/presentation/utils/quality_helper.dart';
 import 'package:qitai/features/client/products/domain/entities/product.dart';
 
 class CategoryProductCardWidget extends StatelessWidget {

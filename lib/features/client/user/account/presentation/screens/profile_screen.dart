@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/core/helpers/auth_required.dart';
+import 'package:qitai/features/client/auth/presentation/helper/auth_required.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';

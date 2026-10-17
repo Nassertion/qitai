@@ -2,7 +2,6 @@ import 'package:qitai/core/errors/app_exception.dart';
 import 'package:qitai/core/network/auth_session_events.dart';
 import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'auth_provider.dart';
 import 'auth_state.dart';
 
@@ -10,7 +9,6 @@ part 'auth_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
-  @override
 @override
 AuthState build() {
   final sessionEvents = ref.read(authSessionEventsProvider);

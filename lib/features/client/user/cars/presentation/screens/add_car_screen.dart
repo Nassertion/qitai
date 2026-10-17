@@ -57,9 +57,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
   Future<void> _addCar() async {
     final vehicleState = ref.read(addCarVehicleProvider);
 
-    if (!_isFormValid(vehicleState) || _isLoading) {
-      return;
-    }
+    if (!_isFormValid(vehicleState) || _isLoading) return;
 
     final brand = vehicleState.selectedCarBrand!;
     final model = vehicleState.selectedModel!;
@@ -75,55 +73,84 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
         UserCarAttributeInput(key: 'transmission', value: _selectedGear!),
     ];
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      final addedCar = await ref.read(addUserCarProvider)(
-        brandId: brand.id,
-        modelId: model.id,
-        yearId: year.id,
-        vin: _vinController.text,
-        nickname: _nicknameController.text.trim().isEmpty
-            ? null
-            : _nicknameController.text.trim(),
-        isDefault: _isDefault,
-        attributes: attributes,
-      );
+      // أولًا: إضافة السيارة
+      int addedCarId;
 
-      if (_isDefault) {
-        await ref.read(setDefaultUserCarProvider)(addedCar.id);
+      try {
+        final addedCar = await ref.read(addUserCarProvider)(
+          brandId: brand.id,
+          modelId: model.id,
+          yearId: year.id,
+          vin: _vinController.text,
+          nickname: _nicknameController.text.trim().isEmpty
+              ? null
+              : _nicknameController.text.trim(),
+          isDefault: _isDefault,
+          attributes: attributes,
+        );
+
+        addedCarId = addedCar.id;
+      } catch (_) {
+        if (!mounted) return;
+
+        await CarStatusDialog.show(
+          context: context,
+          type: CarDialogType.error,
+          title: 'فشلت عملية إضافة السيارة',
+          message: 'تعذر إضافة السيارة، الرجاء المحاولة مرة أخرى.',
+        );
+
+        return;
       }
 
       if (!mounted) return;
 
-      await CarStatusDialog.show(
-        context: context,
-        type: CarDialogType.success,
-        title: 'تمت إضافة سيارتك بنجاح',
-        message:
-            'ستجد سيارتك الآن في الصفحة الرئيسية لتتمكن من البحث عن القطع الخاصة بها بكل سهولة.',
-      );
+      // السيارة أُضيفت بنجاح.
+      // نتحقق الآن من العملية الثانية بشكل مستقل.
+      bool defaultCarUpdated = true;
+
+      if (_isDefault) {
+        try {
+          await ref.read(setDefaultUserCarProvider)(addedCarId);
+        } catch (_) {
+          defaultCarUpdated = false;
+        }
+      }
+
+      if (!mounted) return;
+
+      ref.invalidate(userCarsProvider);
+
+      if (!defaultCarUpdated) {
+        await CarStatusDialog.show(
+          context: context,
+          type: CarDialogType.error,
+          title: 'تمت إضافة السيارة',
+          message:
+              'تمت إضافة سيارتك بنجاح، لكن تعذر تعيينها كسيارة افتراضية. '
+              'يمكنك تعيينها لاحقًا من صفحة سياراتي.',
+        );
+      } else {
+        await CarStatusDialog.show(
+          context: context,
+          type: CarDialogType.success,
+          title: 'تمت إضافة سيارتك بنجاح',
+          message:
+              'ستجد سيارتك الآن في الصفحة الرئيسية '
+              'لتتمكن من البحث عن القطع الخاصة بها بكل سهولة.',
+        );
+      }
 
       if (!mounted) return;
 
       Navigator.pop(context, true);
-    } catch (e) {
-      if (!mounted) return;
-
-      await CarStatusDialog.show(
-        context: context,
-        type: CarDialogType.error,
-        title: 'فشلت عملية إضافة السيارة',
-        message: 'حدثت مشكلة ما في إضافة السيارة، الرجاء المحاولة مرة أخرى.',
-      );
     } finally {
-      if (!mounted) return;
-
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
