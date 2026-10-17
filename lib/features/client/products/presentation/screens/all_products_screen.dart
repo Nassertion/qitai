@@ -1,44 +1,130 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/empty_data_widget.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
+
+import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
+import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
+import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
+
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
+
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
-class AllProductsScreen extends ConsumerStatefulWidget {
+class AllProductsScreen extends ConsumerWidget {
   const AllProductsScreen({super.key});
 
   @override
-  ConsumerState<AllProductsScreen> createState() => _AllProductsScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isAuthenticated = ref.watch(authProvider) is Authenticated;
+
+    int? brandId;
+    int? modelId;
+    int? yearId;
+
+    if (isAuthenticated) {
+      final carsAsync = ref.watch(userCarsProvider);
+
+      if (carsAsync.isLoading && !carsAsync.hasValue) {
+        return const Scaffold(
+          body: Center(child: CustomLoading()),
+        );
+      }
+
+      final cars = carsAsync.asData?.value ?? [];
+
+      for (final car in cars) {
+        if (car.isDefault) {
+          brandId = car.vehicle.brandId;
+          modelId = car.vehicle.modelId;
+          yearId = car.vehicle.yearId;
+          break;
+        }
+      }
+    }
+
+    // تتغير هوية النطاق عند تغير السيارة الافتراضية.
+    final scopeKey =
+        '${isAuthenticated}_${brandId}_${modelId}_$yearId';
+
+    return ProviderScope(
+      key: ValueKey(scopeKey),
+      overrides: [
+        vehicleProvider.overrideWith(VehicleNotifier.new),
+        allProductsProvider.overrideWith(AllProductsNotifier.new),
+      ],
+      child: _AllProductsContent(
+        brandId: brandId,
+        modelId: modelId,
+        yearId: yearId,
+      ),
+    );
+  }
 }
 
-class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
-  late final VehicleNotifier _vehicleNotifier;
+class _AllProductsContent extends ConsumerStatefulWidget {
+  const _AllProductsContent({
+    required this.brandId,
+    required this.modelId,
+    required this.yearId,
+  });
+
+  final int? brandId;
+  final int? modelId;
+  final int? yearId;
+
+  @override
+  ConsumerState<_AllProductsContent> createState() =>
+      _AllProductsContentState();
+}
+
+class _AllProductsContentState
+    extends ConsumerState<_AllProductsContent> {
   late final ScrollController _scrollController;
+
+  bool _isInitializing = true;
 
   @override
   void initState() {
     super.initState();
 
-    _vehicleNotifier = ref.read(vehicleProvider.notifier);
-
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
 
-    Future.microtask(() {
-      _vehicleNotifier.clearAll();
+    Future.microtask(_initializeFilter);
+  }
+
+  Future<void> _initializeFilter() async {
+    final brandId = widget.brandId;
+    final modelId = widget.modelId;
+    final yearId = widget.yearId;
+
+    if (brandId != null && modelId != null && yearId != null) {
+      await ref.read(vehicleProvider.notifier).selectVehicleByIds(
+            brandId: brandId,
+            modelId: modelId,
+            yearId: yearId,
+          );
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isInitializing = false;
     });
   }
 
   void _onScroll() {
-    if (!_scrollController.hasClients) return;
+    if (!_scrollController.hasClients || _isInitializing) return;
 
     final position = _scrollController.position;
 
@@ -52,15 +138,17 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
 
-    Future(() {
-      _vehicleNotifier.clearAll();
-    });
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isInitializing) {
+      return const Scaffold(
+        body: Center(child: CustomLoading()),
+      );
+    }
+
     final state = ref.watch(allProductsProvider);
 
     return Scaffold(
@@ -117,7 +205,6 @@ class _AllProductsScreenState extends ConsumerState<AllProductsScreen> {
                       mainAxisExtent: 265,
                     ),
                     itemBuilder: (context, index) {
-                      // آخر عنصر يظهر Loading أثناء تحميل الصفحة التالية.
                       if (index >= state.products.length) {
                         return const Center(
                           child: CustomLoading(),

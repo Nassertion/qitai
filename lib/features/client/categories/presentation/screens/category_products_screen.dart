@@ -10,7 +10,8 @@ import 'package:qitai/features/client/categories/presentation/widgets/category_p
 import 'package:qitai/features/client/categories/presentation/widgets/category_filter_selector.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 
-class CategoryProductsScreen extends ConsumerStatefulWidget {
+// Wrapper لعزل فلاتر القسم عن باقي التطبيق
+class CategoryProductsScreen extends StatelessWidget {
   const CategoryProductsScreen({
     super.key,
     required this.id,
@@ -21,18 +22,44 @@ class CategoryProductsScreen extends ConsumerStatefulWidget {
   final String name;
 
   @override
-  ConsumerState<CategoryProductsScreen> createState() =>
-      _CategoryProductsScreenState();
+  Widget build(BuildContext context) {
+    return ProviderScope(
+      overrides: [
+        vehicleProvider.overrideWith(VehicleNotifier.new),
+        categoryProductProvider(id).overrideWith(
+          CategoryProductNotifier.new,
+        ),
+      ],
+      child: _CategoryProductsContent(
+        id: id,
+        name: name,
+      ),
+    );
+  }
 }
 
-class _CategoryProductsScreenState
-    extends ConsumerState<CategoryProductsScreen> {
+// واجهة القسم الأصلية
+class _CategoryProductsContent extends ConsumerStatefulWidget {
+  const _CategoryProductsContent({
+    required this.id,
+    required this.name,
+  });
+
+  final int id;
+  final String name;
+
+  @override
+  ConsumerState<_CategoryProductsContent> createState() =>
+      _CategoryProductsContentState();
+}
+
+class _CategoryProductsContentState
+    extends ConsumerState<_CategoryProductsContent> {
   late final ScrollController _scrollController;
-late final VehicleNotifier _vehicleNotifier;
+
   @override
   void initState() {
     super.initState();
-  _vehicleNotifier = ref.read(vehicleProvider.notifier);
 
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
@@ -44,7 +71,9 @@ late final VehicleNotifier _vehicleNotifier;
     final position = _scrollController.position;
 
     if (position.pixels >= position.maxScrollExtent - 300) {
-      ref.read(categoryProductProvider(widget.id).notifier).loadNextPage();
+      ref
+          .read(categoryProductProvider(widget.id).notifier)
+          .loadNextPage();
     }
   }
 
@@ -52,16 +81,14 @@ late final VehicleNotifier _vehicleNotifier;
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
-      Future.microtask(() {
-    _vehicleNotifier.clearAll();
-  });
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsState = ref.watch(categoryProductProvider(widget.id));
+    final productsState =
+        ref.watch(categoryProductProvider(widget.id));
 
     return Scaffold(
       appBar: CustomAppbar(
@@ -94,7 +121,9 @@ late final VehicleNotifier _vehicleNotifier;
                     productsState.products.isEmpty)
                   SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(child: Text(productsState.errorMessage!)),
+                    child: Center(
+                      child: Text(productsState.errorMessage!),
+                    ),
                   )
                 else if (productsState.products.isEmpty)
                   const SliverFillRemaining(
@@ -106,35 +135,49 @@ late final VehicleNotifier _vehicleNotifier;
                   )
                 else ...[
                   SliverPadding(
-                    padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
                     sliver: SliverGrid(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final product = productsState.products[index];
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final product =
+                              productsState.products[index];
 
-                        return CategoryProductCardWidget(
-                          product: product,
-                          onTap: () {
-                            context.push("/product/${product.id}");
-                          },
-                        );
-                      }, childCount: productsState.products.length),
+                          return CategoryProductCardWidget(
+                            product: product,
+                            onTap: () {
+                              context.push(
+                                "/product/${product.id}",
+                              );
+                            },
+                          );
+                        },
+                        childCount: productsState.products.length,
+                      ),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            mainAxisExtent: 265,
-                          ),
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        mainAxisExtent: 265,
+                      ),
                     ),
                   ),
 
-                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 16),
+                  ),
 
                   if (productsState.isLoadingMore)
                     const SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(child: CustomLoading()),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 16,
+                        ),
+                        child: Center(
+                          child: CustomLoading(),
+                        ),
                       ),
                     ),
                 ],
