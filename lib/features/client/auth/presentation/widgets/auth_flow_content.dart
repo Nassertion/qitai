@@ -23,13 +23,9 @@ class _AuthFlowContentState extends State<AuthFlowContent> {
   @override
   Widget build(BuildContext context) {
     if (_showOtp) {
-      return OtpAuthContent(
-        phone: _phone!,
-      );
+      return OtpAuthContent(phone: _phone!);
     }
 
-    return PhoneAuthContent(
-      onOtpSent: _showOtpScreen,
-    );
+    return PhoneAuthContent(onOtpSent: _showOtpScreen);
   }
 }

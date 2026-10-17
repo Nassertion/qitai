@@ -4,10 +4,7 @@ import 'package:qitai/features/client/user/account/domain/entities/user.dart';
 abstract interface class AuthRepository {
   Future<void> sendOtp(String phone);
 
-  Future<AuthSession> verifyOtp({
-    required String phone,
-    required String code,
-  });
+  Future<AuthSession> verifyOtp({required String phone, required String code});
 
   Future<User> getCurrentUser();
 

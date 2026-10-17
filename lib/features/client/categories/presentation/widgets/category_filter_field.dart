@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qitai/core/constants/colors.dart';
@@ -30,9 +29,7 @@ class CategoryFilterField extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 6),
           decoration: BoxDecoration(
             border: Border.all(
-              color: isSelectedStyle
-                  ? AppColors.actionText
-                  : AppColors.border,
+              color: isSelectedStyle ? AppColors.actionText : AppColors.border,
             ),
             borderRadius: BorderRadius.circular(12),
             color: AppColors.inputFieldAndCards,

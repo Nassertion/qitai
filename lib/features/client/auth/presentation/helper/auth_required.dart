@@ -27,10 +27,7 @@ Future<void> requireAuth({
     return;
   }
 
-  await AuthBottomSheet.show(
-    context: context,
-    child: const AuthFlowContent(),
-  );
+  await AuthBottomSheet.show(context: context, child: const AuthFlowContent());
 
   if (ref.read(authProvider) is Authenticated) {
     onAuthenticated();

@@ -53,7 +53,7 @@ class ProductCompatibility {
   final int? yearFrom;
   final int? yearTo;
 
- const ProductCompatibility({
+  const ProductCompatibility({
     required this.id,
     required this.matchType,
     required this.modelId,
@@ -63,4 +63,3 @@ class ProductCompatibility {
     required this.yearTo,
   });
 }
-

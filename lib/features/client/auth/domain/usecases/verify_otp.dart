@@ -6,13 +6,7 @@ class VerifyOtp {
 
   const VerifyOtp(this.repository);
 
-  Future<AuthSession> call({
-    required String phone,
-    required String code,
-  }) {
-    return repository.verifyOtp(
-      phone: phone,
-      code: code,
-    );
+  Future<AuthSession> call({required String phone, required String code}) {
+    return repository.verifyOtp(phone: phone, code: code);
   }
 }

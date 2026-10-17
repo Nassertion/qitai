@@ -48,7 +48,6 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
 
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-
   }
 
   void _onScroll() {

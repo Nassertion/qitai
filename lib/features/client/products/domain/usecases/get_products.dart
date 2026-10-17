@@ -12,7 +12,7 @@ class GetProducts {
     int? modelId,
     int? year,
     int? categoryId,
-    int page = 1 
+    int page = 1,
   }) {
     return repo.getProducts(
       brandId: brandId,
@@ -21,7 +21,7 @@ class GetProducts {
       query: query,
       vin: vin,
       year: year,
-      page: page
+      page: page,
     );
   }
 }

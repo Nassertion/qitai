@@ -3,6 +3,5 @@ import 'package:qitai/features/client/categories/domain/entities/category_tree.d
 
 abstract interface class CategoryRepository {
   Future<List<Category>> getCategories();
-    Future<List<CategoryTree>> getCategoryTree();
-
+  Future<List<CategoryTree>> getCategoryTree();
 }

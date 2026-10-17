@@ -1,4 +1,3 @@
-
 import 'package:qitai/features/client/user/cars/domain/entities/user_car_attribute.dart';
 
 class UserCarAttributeModel {
@@ -16,9 +15,7 @@ class UserCarAttributeModel {
     required this.attribute,
   });
 
-  factory UserCarAttributeModel.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory UserCarAttributeModel.fromJson(Map<String, dynamic> json) {
     return UserCarAttributeModel(
       id: json['id'] as int,
       vehicleId: json['vehicle_id'] as int,
@@ -58,9 +55,7 @@ class UserCarAttributeInfoModel {
     required this.updatedAt,
   });
 
-  factory UserCarAttributeInfoModel.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory UserCarAttributeInfoModel.fromJson(Map<String, dynamic> json) {
     return UserCarAttributeInfoModel(
       id: json['id'] as int,
       key: json['key'] as String,

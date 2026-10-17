@@ -10,28 +10,31 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'vehicle_provider.g.dart';
 
 @riverpod
-VehicleRemoteDataSource vehicleRemoteDataSource(Ref ref){
+VehicleRemoteDataSource vehicleRemoteDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   return VehicleRemoteDataSource(dio);
 }
+
 @riverpod
-VehicleRepository vehicleRepository(Ref ref){
+VehicleRepository vehicleRepository(Ref ref) {
   final datasource = ref.watch(vehicleRemoteDataSourceProvider);
   return VehicleRepositoryImpl(datasource);
 }
 
 @riverpod
-GetCarBrands getCarBrands(Ref ref){
+GetCarBrands getCarBrands(Ref ref) {
   final repo = ref.watch(vehicleRepositoryProvider);
   return GetCarBrands(repo);
 }
+
 @riverpod
-GetCarModels getCarModels(Ref ref){
+GetCarModels getCarModels(Ref ref) {
   final repo = ref.watch(vehicleRepositoryProvider);
   return GetCarModels(repo);
 }
+
 @riverpod
-GetCarYears getCarYears(Ref ref){
+GetCarYears getCarYears(Ref ref) {
   final repo = ref.watch(vehicleRepositoryProvider);
   return GetCarYears(repo);
 }

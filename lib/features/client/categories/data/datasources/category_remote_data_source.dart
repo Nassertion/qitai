@@ -15,11 +15,7 @@ class CategoryRemoteDataSource {
       final List data = response.data;
 
       return data
-          .map(
-            (item) => CategoryModel.fromJson(
-              item as Map<String, dynamic>,
-            ),
-          )
+          .map((item) => CategoryModel.fromJson(item as Map<String, dynamic>))
           .toList();
     });
   }
@@ -32,9 +28,7 @@ class CategoryRemoteDataSource {
 
       return data
           .map(
-            (item) => CategoryTreeModel.fromJson(
-              item as Map<String, dynamic>,
-            ),
+            (item) => CategoryTreeModel.fromJson(item as Map<String, dynamic>),
           )
           .toList();
     });

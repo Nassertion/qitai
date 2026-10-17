@@ -9,10 +9,7 @@ import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.
 class PhoneAuthContent extends ConsumerStatefulWidget {
   final void Function(String phone) onOtpSent;
 
-  const PhoneAuthContent({
-    super.key,
-    required this.onOtpSent,
-  });
+  const PhoneAuthContent({super.key, required this.onOtpSent});
 
   @override
   ConsumerState<PhoneAuthContent> createState() => _PhoneAuthContentState();
@@ -53,11 +50,9 @@ class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
         return;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
     } finally {
       if (mounted) {
         setState(() {
@@ -112,23 +107,17 @@ class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
                     hintText: '*******50',
                     counterText: '',
                     filled: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.grey.shade300,
-                      ),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: AppColors.onPrimary,
-                      ),
+                      borderSide: const BorderSide(color: AppColors.onPrimary),
                     ),
                   ),
                 ),
@@ -140,18 +129,13 @@ class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: AppColors.border,
-                ),
+                border: Border.all(color: AppColors.border),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    '966+',
-                    style: AppTextStyles.regularOverline,
-                  ),
+                  const Text('966+', style: AppTextStyles.regularOverline),
                   w8,
                   SvgPicture.asset(
                     'assets/images/SA/Flags.svg',
@@ -168,16 +152,12 @@ class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
 
         const Row(
           children: [
-            Expanded(
-              child: Divider(),
-            ),
+            Expanded(child: Divider()),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text('أو'),
             ),
-            Expanded(
-              child: Divider(),
-            ),
+            Expanded(child: Divider()),
           ],
         ),
 
@@ -192,9 +172,7 @@ class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
                     // Google later
                   },
             style: OutlinedButton.styleFrom(
-              side: BorderSide(
-                color: AppColors.border,
-              ),
+              side: BorderSide(color: AppColors.border),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -202,9 +180,7 @@ class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  'assets/icons/google.svg',
-                ),
+                SvgPicture.asset('assets/icons/google.svg'),
                 w12,
                 Text(
                   'قم بالتسجيل عن طريق قوقل',
@@ -222,9 +198,7 @@ class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
         SizedBox(
           height: 55,
           child: ElevatedButton(
-            onPressed: _isValidPhone && !_isLoading
-                ? _sendOtp
-                : null,
+            onPressed: _isValidPhone && !_isLoading ? _sendOtp : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: _isValidPhone && !_isLoading
                   ? AppColors.primaryButton
@@ -237,9 +211,7 @@ class _PhoneAuthContentState extends ConsumerState<PhoneAuthContent> {
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : Text(
                     'التالي',

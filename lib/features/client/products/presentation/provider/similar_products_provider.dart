@@ -7,15 +7,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'similar_products_provider.g.dart';
 
 @riverpod
-Future<List<Product>> similarProducts(
-  Ref ref,
-  int currentProductId,
-) async {
+Future<List<Product>> similarProducts(Ref ref, int currentProductId) async {
   final getProducts = ref.read(getProductsProvider);
 
-  final result = await getProducts(
-    page: 1,
-  );
+  final result = await getProducts(page: 1);
 
   final products = result.products
       .where((product) => product.id != currentProductId)

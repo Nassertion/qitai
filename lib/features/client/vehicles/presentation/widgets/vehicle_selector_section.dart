@@ -1,15 +1,10 @@
-
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:qitai/core/constants/spaces.dart';
-import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
-import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
+import 'package:qitai/features/client/user/cars/presentation/helper/load_saved_user_cars.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/add_car_vehicle_notifier.dart';
-import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
@@ -47,9 +42,7 @@ class _VehicleSelectorSectionState
 
   Future<void> _selectBrand(CarBrand brand) {
     if (widget.useAddCarProvider) {
-      return ref
-          .read(addCarVehicleProvider.notifier)
-          .selectBrand(brand);
+      return ref.read(addCarVehicleProvider.notifier).selectBrand(brand);
     }
 
     return ref.read(vehicleProvider.notifier).selectBrand(brand);
@@ -57,9 +50,7 @@ class _VehicleSelectorSectionState
 
   Future<void> _selectModel(CarModel model) {
     if (widget.useAddCarProvider) {
-      return ref
-          .read(addCarVehicleProvider.notifier)
-          .selectModel(model);
+      return ref.read(addCarVehicleProvider.notifier).selectModel(model);
     }
 
     return ref.read(vehicleProvider.notifier).selectModel(model);
@@ -105,43 +96,6 @@ class _VehicleSelectorSectionState
     });
   }
 
-  List<UserCar> _sortCars(List<UserCar> cars) {
-    final sortedCars = [...cars]
-      ..sort(
-        (a, b) => (b.isDefault ? 1 : 0).compareTo(
-          a.isDefault ? 1 : 0,
-        ),
-      );
-
-    return sortedCars;
-  }
-
-  Future<List<UserCar>> _loadSavedCars() async {
-    if (widget.useAddCarProvider) {
-      return const [];
-    }
-
-    if (ref.read(authProvider) is! Authenticated) {
-      return const [];
-    }
-
-    final cachedCars = ref.read(userCarsProvider).asData?.value;
-
-    if (cachedCars != null) {
-      return _sortCars(cachedCars);
-    }
-
-    try {
-      final cars = await ref.read(userCarsProvider.future);
-
-      if (!mounted) return const [];
-
-      return _sortCars(cars);
-    } catch (_) {
-      return const [];
-    }
-  }
-
   void _selectSavedCar(UserCar car) {
     if (!mounted || widget.useAddCarProvider) return;
 
@@ -150,7 +104,9 @@ class _VehicleSelectorSectionState
     });
 
     unawaited(
-      ref.read(vehicleProvider.notifier).selectVehicleByIds(
+      ref
+          .read(vehicleProvider.notifier)
+          .selectVehicleByIds(
             brandId: car.vehicle.brandId,
             modelId: car.vehicle.modelId,
             yearId: car.vehicle.yearId,
@@ -159,8 +115,7 @@ class _VehicleSelectorSectionState
   }
 
   Future<void> _showBrandFilter(BuildContext context) async {
-    final savedCars = await _loadSavedCars();
-
+    final savedCars = await loadSavedUserCars(ref);
     if (!mounted || !context.mounted) return;
 
     // Read the latest state after awaiting saved cars.
@@ -172,10 +127,8 @@ class _VehicleSelectorSectionState
       title: 'اختر نوع البراند',
       getLabel: (item) => item.name,
       savedCars: savedCars,
-      selectedCarId:
-          widget.useAddCarProvider ? null : _selectedSavedCarId,
-      onUserCarSelected:
-          widget.useAddCarProvider ? null : _selectSavedCar,
+      selectedCarId: widget.useAddCarProvider ? null : _selectedSavedCarId,
+      onUserCarSelected: widget.useAddCarProvider ? null : _selectSavedCar,
       onSelected: (value) {
         _clearSavedCarSelection();
         unawaited(_selectBrand(value));
@@ -252,8 +205,7 @@ class _VehicleSelectorSectionState
                         inlineSelection && state.selectedCarBrand != null,
                     onTap: () => _showBrandFilter(context),
                   ),
-                  if (!inlineSelection &&
-                      state.selectedCarBrand != null) ...[
+                  if (!inlineSelection && state.selectedCarBrand != null) ...[
                     const SizedBox(height: 8),
                     VehicleFilterField(
                       title: state.selectedCarBrand!.name,
@@ -303,8 +255,7 @@ class _VehicleSelectorSectionState
                         inlineSelection && state.selectedCarYear != null,
                     onTap: () => _showYearFilter(context),
                   ),
-                  if (!inlineSelection &&
-                      state.selectedCarYear != null) ...[
+                  if (!inlineSelection && state.selectedCarYear != null) ...[
                     const SizedBox(height: 8),
                     VehicleFilterField(
                       title: state.selectedCarYear!.year.toString(),

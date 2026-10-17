@@ -12,17 +12,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<List<Category>> getCategories() async {
     final categoryModel = await dataSource.getCategories();
 
-    return categoryModel
-        .map((model) => model.toEntity())
-        .toList();
+    return categoryModel.map((model) => model.toEntity()).toList();
   }
 
   @override
   Future<List<CategoryTree>> getCategoryTree() async {
     final categoryTreeModel = await dataSource.getCategoryTree();
 
-    return categoryTreeModel
-        .map((model) => model.toEntity())
-        .toList();
+    return categoryTreeModel.map((model) => model.toEntity()).toList();
   }
 }

@@ -77,7 +77,7 @@ class ProductDetailModel {
       description: description,
       category: category?.toEntity(),
       images: images.map((image) => image.toEntity()).toList(),
-        compatibilities: compatibilities
+      compatibilities: compatibilities
           .map((compatibility) => compatibility.toEntity())
           .toList(),
     );

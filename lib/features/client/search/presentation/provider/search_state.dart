@@ -48,8 +48,7 @@ class SearchState {
       query: query ?? this.query,
       suggestions: suggestions ?? this.suggestions,
       products: products ?? this.products,
-      isSuggestionsLoading:
-          isSuggestionsLoading ?? this.isSuggestionsLoading,
+      isSuggestionsLoading: isSuggestionsLoading ?? this.isSuggestionsLoading,
       isProductsLoading: isProductsLoading ?? this.isProductsLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasSearched: hasSearched ?? this.hasSearched,

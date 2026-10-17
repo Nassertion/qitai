@@ -53,16 +53,18 @@ class VehicleState {
       selectedCarBrand: clearSelectedCarBrand
           ? null
           : (selectedCarBrand ?? this.selectedCarBrand),
-      selectedModel:
-          clearSelectedModel ? null : (selectedModel ?? this.selectedModel),
+      selectedModel: clearSelectedModel
+          ? null
+          : (selectedModel ?? this.selectedModel),
       selectedCarYear: clearSelectedCarYear
           ? null
           : (selectedCarYear ?? this.selectedCarYear),
       isBrandsLoading: isBrandsLoading ?? this.isBrandsLoading,
       isModelsLoading: isModelsLoading ?? this.isModelsLoading,
       isYearsLoading: isYearsLoading ?? this.isYearsLoading,
-      errorMessage:
-          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: clearErrorMessage
+          ? null
+          : (errorMessage ?? this.errorMessage),
     );
   }
 }

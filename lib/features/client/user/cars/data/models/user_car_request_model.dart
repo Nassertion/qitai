@@ -25,9 +25,7 @@ class UserCarRequestModel {
       'vin': vin,
       'nickname': nickname,
       'is_default': isDefault,
-      'attributes': attributes
-          .map((attribute) => attribute.toJson())
-          .toList(),
+      'attributes': attributes.map((attribute) => attribute.toJson()).toList(),
     };
   }
 }
@@ -36,15 +34,9 @@ class UserCarRequestAttributeModel {
   final String key;
   final String value;
 
-  const UserCarRequestAttributeModel({
-    required this.key,
-    required this.value,
-  });
+  const UserCarRequestAttributeModel({required this.key, required this.value});
 
   Map<String, dynamic> toJson() {
-    return {
-      'key': key,
-      'value': value,
-    };
+    return {'key': key, 'value': value};
   }
 }

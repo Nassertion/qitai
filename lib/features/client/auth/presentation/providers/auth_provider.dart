@@ -25,10 +25,7 @@ AuthRepository authRepository(Ref ref) {
   final dataSource = ref.watch(authRemoteDataSourceProvider);
   final tokenStorage = ref.watch(tokenStorageProvider);
 
-  return AuthRepositoryImpl(
-    dataSource,
-    tokenStorage,
-  );
+  return AuthRepositoryImpl(dataSource, tokenStorage);
 }
 
 @riverpod
@@ -51,6 +48,7 @@ Logout logout(Ref ref) {
 
   return Logout(repository);
 }
+
 @riverpod
 GetCurrentUser getCurrentUser(Ref ref) {
   final repository = ref.watch(authRepositoryProvider);

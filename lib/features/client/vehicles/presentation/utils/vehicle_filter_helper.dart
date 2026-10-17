@@ -1,9 +1,6 @@
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 
-bool hasVehicleFiltersChanged(
-  VehicleState? previous,
-  VehicleState next,
-) {
+bool hasVehicleFiltersChanged(VehicleState? previous, VehicleState next) {
   final prevBrandId = previous?.selectedCarBrand?.id;
   final nextBrandId = next.selectedCarBrand?.id;
 

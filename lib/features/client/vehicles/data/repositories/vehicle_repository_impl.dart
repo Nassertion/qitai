@@ -15,12 +15,14 @@ class VehicleRepositoryImpl implements VehicleRepository {
 
     return models.map((model) => model.toEntity()).toList();
   }
+
   @override
   Future<List<CarModel>> getCarModels({required int brandId}) async {
     final models = await dataSource.getCarModels(brandId);
 
     return models.map((model) => model.toEntity()).toList();
   }
+
   @override
   Future<List<CarYear>> getCarYears({required int modelId}) async {
     final models = await dataSource.getCarYears(modelId);

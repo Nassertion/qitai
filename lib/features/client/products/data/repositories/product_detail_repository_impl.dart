@@ -8,9 +8,7 @@ class ProductDetailRepositoryImpl implements ProductDetailRepository {
 
   @override
   Future<ProductDetail> getProductsDetails(int productId) async {
-    final productDetailModel = await dataSource
-        .getProductDetail(productId);
-   return productDetailModel.toEntity();
-
+    final productDetailModel = await dataSource.getProductDetail(productId);
+    return productDetailModel.toEntity();
   }
 }

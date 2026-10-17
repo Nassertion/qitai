@@ -20,7 +20,10 @@ class CartScreen extends StatelessWidget {
             "assets/icons/search-normal.svg",
             width: 24,
             height: 24,
-            colorFilter: ColorFilter.mode(AppColors.primaryText, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(
+              AppColors.primaryText,
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ),

@@ -24,10 +24,7 @@ class Otp extends _$Otp {
     }
   }
 
-  Future<void> verifyOtp({
-    required String phone,
-    required String code,
-  }) async {
+  Future<void> verifyOtp({required String phone, required String code}) async {
     state = const AsyncLoading();
 
     try {
@@ -36,12 +33,9 @@ class Otp extends _$Otp {
         code: code,
       );
 
-      ref
-          .read(currentUserProvider.notifier)
-          .setUser(session.user);
+      ref.read(currentUserProvider.notifier).setUser(session.user);
 
-      ref.read(authProvider.notifier).state =
-          const Authenticated();
+      ref.read(authProvider.notifier).state = const Authenticated();
 
       state = const AsyncData(null);
     } catch (error, stackTrace) {

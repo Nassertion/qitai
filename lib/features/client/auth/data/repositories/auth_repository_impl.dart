@@ -8,10 +8,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final TokenStorage tokenStorage;
 
-  AuthRepositoryImpl(
-    this.remoteDataSource,
-    this.tokenStorage,
-  );
+  AuthRepositoryImpl(this.remoteDataSource, this.tokenStorage);
 
   @override
   Future<void> sendOtp(String phone) {
@@ -28,9 +25,7 @@ class AuthRepositoryImpl implements AuthRepository {
       code: code,
     );
 
-    await tokenStorage.saveAccessToken(
-      sessionModel.accessToken,
-    );
+    await tokenStorage.saveAccessToken(sessionModel.accessToken);
 
     return sessionModel.toEntity();
   }
@@ -50,22 +45,22 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-@override
-Future<User> getCurrentUser() async {
-  final userModel = await remoteDataSource.getCurrentUser();
+  @override
+  Future<User> getCurrentUser() async {
+    final userModel = await remoteDataSource.getCurrentUser();
 
-  return userModel.toEntity();
-}
+    return userModel.toEntity();
+  }
 
-@override
-Future<void> clearSession() {
-  return tokenStorage.deleteAccessToken();
-}
+  @override
+  Future<void> clearSession() {
+    return tokenStorage.deleteAccessToken();
+  }
 
-@override
-Future<bool> isAuthenticated() async {
-  final accessToken = await tokenStorage.getAccessToken();
+  @override
+  Future<bool> isAuthenticated() async {
+    final accessToken = await tokenStorage.getAccessToken();
 
-  return accessToken != null;
-}
+    return accessToken != null;
+  }
 }

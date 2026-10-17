@@ -32,8 +32,9 @@ class AllProductsState {
       products: products ?? this.products,
       isLoading: isLoading ?? this.isLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      errorMessage:
-          clearErrorMessage ? null : errorMessage ?? this.errorMessage,
+      errorMessage: clearErrorMessage
+          ? null
+          : errorMessage ?? this.errorMessage,
       currentPage: currentPage ?? this.currentPage,
       lastPage: lastPage ?? this.lastPage,
     );

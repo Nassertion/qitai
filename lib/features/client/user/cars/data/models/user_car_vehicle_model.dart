@@ -22,9 +22,7 @@ class UserCarVehicleModel {
     required this.attributes,
   });
 
-  factory UserCarVehicleModel.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory UserCarVehicleModel.fromJson(Map<String, dynamic> json) {
     return UserCarVehicleModel(
       id: json['id'] as int,
       brandId: json['brand_id'] as int,
@@ -37,14 +35,12 @@ class UserCarVehicleModel {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
           : null,
-      attributes:
-          (json['attributes'] as List<dynamic>? ?? [])
-              .map(
-                (item) => UserCarAttributeModel.fromJson(
-                  item as Map<String, dynamic>,
-                ),
-              )
-              .toList(),
+      attributes: (json['attributes'] as List<dynamic>? ?? [])
+          .map(
+            (item) =>
+                UserCarAttributeModel.fromJson(item as Map<String, dynamic>),
+          )
+          .toList(),
     );
   }
 
@@ -57,8 +53,7 @@ class UserCarVehicleModel {
       vin: vin,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      attributes:
-          attributes.map((attribute) => attribute.toEntity()).toList(),
+      attributes: attributes.map((attribute) => attribute.toEntity()).toList(),
     );
   }
 }

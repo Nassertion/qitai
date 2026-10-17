@@ -5,8 +5,7 @@ class GetCarYears {
   final VehicleRepository repo;
   GetCarYears(this.repo);
 
-  Future<List<CarYear>> call(int modelId){
+  Future<List<CarYear>> call(int modelId) {
     return repo.getCarYears(modelId: modelId);
   }
-
 }

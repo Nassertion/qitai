@@ -7,7 +7,7 @@ class Category {
   final int sortOrder;
   final bool isActive;
 
-const Category({
+  const Category({
     required this.id,
     required this.name,
     this.iconPath,
@@ -15,4 +15,5 @@ const Category({
     this.parentId,
     required this.sortOrder,
     required this.isActive,
-  });}
+  });
+}

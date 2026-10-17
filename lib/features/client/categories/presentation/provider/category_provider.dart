@@ -36,12 +36,14 @@ Future<List<Category>> categories(Ref ref) {
 
   return getCategories();
 }
+
 @riverpod
 GetCategoryTree getCategoryTree(Ref ref) {
   final categoryRepo = ref.watch(categoryRepositoryProvider);
 
   return GetCategoryTree(categoryRepo);
 }
+
 @Riverpod(keepAlive: true)
 Future<List<CategoryTree>> categoryTree(Ref ref) {
   final getCategoryTree = ref.watch(getCategoryTreeProvider);

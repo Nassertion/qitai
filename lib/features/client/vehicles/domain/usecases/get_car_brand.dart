@@ -5,8 +5,7 @@ class GetCarBrands {
   final VehicleRepository repo;
   GetCarBrands(this.repo);
 
-  Future<List<CarBrand>> call(){
+  Future<List<CarBrand>> call() {
     return repo.getCarBrands();
   }
-
 }

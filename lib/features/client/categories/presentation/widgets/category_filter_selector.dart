@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
-import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/categories/domain/entities/category.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_product_notifier.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
 import 'package:qitai/features/client/categories/presentation/widgets/category_filter_field.dart';
-import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
-import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
+import 'package:qitai/features/client/user/cars/presentation/helper/load_saved_user_cars.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
@@ -48,7 +45,7 @@ class _CategoryFilterSelectorState
   ) async {
     if (state.carBrands.isEmpty) return;
 
-    final savedCars = await _loadSavedCars();
+    final savedCars = await loadSavedUserCars(ref);
 
     if (!context.mounted) return;
     await VehicleFilterBottomSheet.show<CarBrand>(
@@ -149,25 +146,6 @@ class _CategoryFilterSelectorState
         await notifier.selectSection(value.id);
       },
     );
-  }
-
-  Future<List<UserCar>> _loadSavedCars() async {
-    if (ref.read(authProvider) is! Authenticated) {
-      return const [];
-    }
-
-    try {
-      final cachedCars = ref.read(userCarsProvider).asData?.value;
-
-      final cars = cachedCars ?? await ref.read(userCarsProvider.future);
-
-      final sortedCars = [...cars!]
-        ..sort((a, b) => (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0));
-
-      return sortedCars;
-    } catch (_) {
-      return const [];
-    }
   }
 
   @override

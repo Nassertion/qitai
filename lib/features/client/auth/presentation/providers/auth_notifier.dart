@@ -9,20 +9,16 @@ part 'auth_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
-@override
-AuthState build() {
-  final sessionEvents = ref.read(authSessionEventsProvider);
+  @override
+  AuthState build() {
+    final sessionEvents = ref.read(authSessionEventsProvider);
 
-  sessionEvents.registerSessionExpiredHandler(
-    _handleUnauthorized,
-  );
+    sessionEvents.registerSessionExpiredHandler(_handleUnauthorized);
 
-  ref.onDispose(
-    sessionEvents.unregisterSessionExpiredHandler,
-  );
+    ref.onDispose(sessionEvents.unregisterSessionExpiredHandler);
 
-  return const AuthInitial();
-}
+    return const AuthInitial();
+  }
 
   Future<void> initialize() async {
     final repository = ref.read(authRepositoryProvider);
@@ -55,14 +51,16 @@ AuthState build() {
       state = const Authenticated();
     }
   }
-Future<void> _handleUnauthorized() async {
-  try {
-    await ref.read(authRepositoryProvider).clearSession();
-  } finally {
-    ref.read(currentUserProvider.notifier).clearUser();
-    state = const Unauthenticated();
+
+  Future<void> _handleUnauthorized() async {
+    try {
+      await ref.read(authRepositoryProvider).clearSession();
+    } finally {
+      ref.read(currentUserProvider.notifier).clearUser();
+      state = const Unauthenticated();
+    }
   }
-}
+
   Future<void> sendOtp(String phone) {
     final sendOtp = ref.read(sendOtpProvider);
 

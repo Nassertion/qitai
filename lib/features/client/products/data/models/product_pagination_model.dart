@@ -21,11 +21,7 @@ class ProductPaginationModel {
 
     return ProductPaginationModel(
       products: data
-          .map(
-            (item) => ProductModel.fromJson(
-              item as Map<String, dynamic>,
-            ),
-          )
+          .map((item) => ProductModel.fromJson(item as Map<String, dynamic>))
           .toList(),
       currentPage: meta['current_page'] as int,
       lastPage: meta['last_page'] as int,

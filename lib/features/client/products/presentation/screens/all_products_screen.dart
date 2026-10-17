@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -35,9 +34,7 @@ class AllProductsScreen extends ConsumerWidget {
       final carsAsync = ref.watch(userCarsProvider);
 
       if (carsAsync.isLoading && !carsAsync.hasValue) {
-        return const Scaffold(
-          body: Center(child: CustomLoading()),
-        );
+        return const Scaffold(body: Center(child: CustomLoading()));
       }
 
       final cars = carsAsync.asData?.value ?? [];
@@ -52,8 +49,7 @@ class AllProductsScreen extends ConsumerWidget {
       }
     }
 
-    final scopeKey =
-        '${isAuthenticated}_${brandId}_${modelId}_$yearId';
+    final scopeKey = '${isAuthenticated}_${brandId}_${modelId}_$yearId';
 
     return ProviderScope(
       key: ValueKey(scopeKey),
@@ -86,8 +82,7 @@ class _AllProductsContent extends ConsumerStatefulWidget {
       _AllProductsContentState();
 }
 
-class _AllProductsContentState
-    extends ConsumerState<_AllProductsContent> {
+class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
   late final ScrollController _scrollController;
 
   bool _isInitializing = true;
@@ -108,7 +103,9 @@ class _AllProductsContentState
     final yearId = widget.yearId;
 
     if (brandId != null && modelId != null && yearId != null) {
-      await ref.read(vehicleProvider.notifier).selectVehicleByIds(
+      await ref
+          .read(vehicleProvider.notifier)
+          .selectVehicleByIds(
             brandId: brandId,
             modelId: modelId,
             yearId: yearId,
@@ -143,9 +140,7 @@ class _AllProductsContentState
   @override
   Widget build(BuildContext context) {
     if (_isInitializing) {
-      return const Scaffold(
-        body: Center(child: CustomLoading()),
-      );
+      return const Scaffold(body: Center(child: CustomLoading()));
     }
 
     final state = ref.watch(allProductsProvider);
@@ -174,15 +169,11 @@ class _AllProductsContentState
               child: Builder(
                 builder: (context) {
                   if (state.isLoading) {
-                    return const Center(
-                      child: CustomLoading(),
-                    );
+                    return const Center(child: CustomLoading());
                   }
 
                   if (state.errorMessage != null) {
-                    return Center(
-                      child: Text(state.errorMessage!),
-                    );
+                    return Center(child: Text(state.errorMessage!));
                   }
 
                   if (state.products.isEmpty) {
@@ -194,20 +185,18 @@ class _AllProductsContentState
 
                   return GridView.builder(
                     controller: _scrollController,
-                    itemCount: state.products.length +
-                        (state.isLoadingMore ? 1 : 0),
+                    itemCount:
+                        state.products.length + (state.isLoadingMore ? 1 : 0),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      mainAxisExtent: 265,
-                    ),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          mainAxisExtent: 265,
+                        ),
                     itemBuilder: (context, index) {
                       if (index >= state.products.length) {
-                        return const Center(
-                          child: CustomLoading(),
-                        );
+                        return const Center(child: CustomLoading());
                       }
 
                       final product = state.products[index];

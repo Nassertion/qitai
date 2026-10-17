@@ -29,11 +29,11 @@ class SearchNotifier extends _$SearchNotifier {
       _debounce?.cancel();
     });
 
-ref.listen<VehicleState>(vehicleProvider, (previous, next) {
-  if (!hasVehicleFiltersChanged(previous, next)) return;
+    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
+      if (!hasVehicleFiltersChanged(previous, next)) return;
 
-  submitSearch();
-});
+      submitSearch();
+    });
 
     return const SearchState();
   }
@@ -75,7 +75,7 @@ ref.listen<VehicleState>(vehicleProvider, (previous, next) {
 
     try {
       final suggestions = await getSuggestions(query: query);
-if (!ref.mounted) return;
+      if (!ref.mounted) return;
       if (state.query.trim() != query) return;
 
       state = state.copyWith(
@@ -107,23 +107,23 @@ if (!ref.mounted) return;
     final hasText = value.isNotEmpty;
     final hasVehicleFilter = brandId != null || modelId != null || year != null;
     // final hasCategoryFilter = finalCategoryId != null;
-if (!hasText && !hasVehicleFilter) {
-  _searchRequestId++;
+    if (!hasText && !hasVehicleFilter) {
+      _searchRequestId++;
 
-  state = state.copyWith(
-    suggestions: [],
-    products: [],
-    hasSearched: false,
-    isSuggestionsLoading: false,
-    isProductsLoading: false,
-    isLoadingMore: false,
-    currentPage: 1,
-    lastPage: 1,
-    clearErrorMessage: true,
-  );
+      state = state.copyWith(
+        suggestions: [],
+        products: [],
+        hasSearched: false,
+        isSuggestionsLoading: false,
+        isProductsLoading: false,
+        isLoadingMore: false,
+        currentPage: 1,
+        lastPage: 1,
+        clearErrorMessage: true,
+      );
 
-  return;
-}
+      return;
+    }
 
     final requestId = ++_searchRequestId;
 

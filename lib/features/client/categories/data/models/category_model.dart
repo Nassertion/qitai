@@ -42,8 +42,6 @@ class CategoryModel {
     );
   }
 
-
-
   Category toEntity() {
     return Category(
       id: id,

@@ -12,5 +12,4 @@ class SearchSuggestion {
     required this.partNumber,
     required this.categoryId,
   });
-
 }

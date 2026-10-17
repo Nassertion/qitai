@@ -1,4 +1,3 @@
-
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_products_state.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
@@ -19,14 +18,11 @@ class AllProductsNotifier extends _$AllProductsNotifier {
   AllProductsState build() {
     getProducts = ref.read(getProductsProvider);
 
-    ref.listen<VehicleState>(
-      vehicleProvider,
-      (previous, next) {
-        if (!hasVehicleFiltersChanged(previous, next)) return;
+    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
+      if (!hasVehicleFiltersChanged(previous, next)) return;
 
-        loadProducts();
-      },
-    );
+      loadProducts();
+    });
 
     Future.microtask(loadProducts);
 
@@ -96,10 +92,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
 
     final nextPage = state.currentPage + 1;
 
-    state = state.copyWith(
-      isLoadingMore: true,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(isLoadingMore: true, clearErrorMessage: true);
 
     try {
       final result = await getProducts(
@@ -114,10 +107,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
       }
 
       state = state.copyWith(
-        products: [
-          ...state.products,
-          ...result.products,
-        ],
+        products: [...state.products, ...result.products],
         currentPage: result.currentPage,
         lastPage: result.lastPage,
         isLoadingMore: false,
@@ -127,10 +117,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
         return;
       }
 
-      state = state.copyWith(
-        isLoadingMore: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isLoadingMore: false, errorMessage: e.toString());
     }
   }
 }

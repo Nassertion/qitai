@@ -31,8 +31,9 @@ class ProductRemoteDataSource {
 
       // final data = response.data['data'] as List<dynamic>;
 
-         return ProductPaginationModel.fromJson(
+      return ProductPaginationModel.fromJson(
         response.data as Map<String, dynamic>,
       );
     });
-  }}
+  }
+}

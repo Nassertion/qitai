@@ -46,8 +46,7 @@ class CategoryProductState {
       currentPage: currentPage ?? this.currentPage,
       lastPage: lastPage ?? this.lastPage,
       parentCategoryId: parentCategoryId ?? this.parentCategoryId,
-      selectedCategoryId:
-          selectedCategoryId ?? this.selectedCategoryId,
+      selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
     );
   }
 }

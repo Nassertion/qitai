@@ -34,7 +34,7 @@ class ProductDetailsScreen extends ConsumerWidget {
             h16,
             ProductInfoWidget(product: data),
             h16,
-            SimilarProductsWidget(productId: data.id,),
+            SimilarProductsWidget(productId: data.id),
             h12,
           ],
         ),

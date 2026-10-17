@@ -5,24 +5,16 @@ class AuthSessionModel {
   final String accessToken;
   final UserModel user;
 
-  AuthSessionModel({
-    required this.accessToken,
-    required this.user,
-  });
+  AuthSessionModel({required this.accessToken, required this.user});
 
   factory AuthSessionModel.fromJson(Map<String, dynamic> json) {
     return AuthSessionModel(
       accessToken: json['token'] as String,
-      user: UserModel.fromJson(
-        json['user'] as Map<String, dynamic>,
-      ),
+      user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
 
   AuthSession toEntity() {
-    return AuthSession(
-      accessToken: accessToken,
-      user: user.toEntity(),
-    );
+    return AuthSession(accessToken: accessToken, user: user.toEntity());
   }
 }

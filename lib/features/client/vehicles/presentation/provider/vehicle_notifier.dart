@@ -36,18 +36,12 @@ class VehicleNotifier extends _$VehicleNotifier {
   }
 
   Future<void> loadBrands() async {
-    state = state.copyWith(
-      isBrandsLoading: true,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(isBrandsLoading: true, clearErrorMessage: true);
 
     try {
       final brands = await getCarBrands();
 
-      state = state.copyWith(
-        carBrands: brands,
-        isBrandsLoading: false,
-      );
+      state = state.copyWith(carBrands: brands, isBrandsLoading: false);
     } catch (e) {
       state = state.copyWith(
         isBrandsLoading: false,
@@ -83,10 +77,7 @@ class VehicleNotifier extends _$VehicleNotifier {
         return;
       }
 
-      state = state.copyWith(
-        models: models,
-        isModelsLoading: false,
-      );
+      state = state.copyWith(models: models, isModelsLoading: false);
     } catch (e) {
       if (requestId != _modelsRequestId ||
           state.selectedCarBrand?.id != carBrand.id) {
@@ -118,25 +109,17 @@ class VehicleNotifier extends _$VehicleNotifier {
     try {
       final years = await getCarYears(model.id);
 
-      if (requestId != _yearsRequestId ||
-          state.selectedModel?.id != model.id) {
+      if (requestId != _yearsRequestId || state.selectedModel?.id != model.id) {
         return;
       }
 
-      state = state.copyWith(
-        carYears: years,
-        isYearsLoading: false,
-      );
+      state = state.copyWith(carYears: years, isYearsLoading: false);
     } catch (e) {
-      if (requestId != _yearsRequestId ||
-          state.selectedModel?.id != model.id) {
+      if (requestId != _yearsRequestId || state.selectedModel?.id != model.id) {
         return;
       }
 
-      state = state.copyWith(
-        isYearsLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isYearsLoading: false, errorMessage: e.toString());
     }
   }
 

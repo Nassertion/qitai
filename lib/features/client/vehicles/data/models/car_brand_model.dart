@@ -14,8 +14,8 @@ class CarBrandModel {
 
   factory CarBrandModel.fromJson(Map<String, dynamic> json) {
     return CarBrandModel(
-id: json['id'] as int,
-name: json['name'] as String? ?? '',
+      id: json['id'] as int,
+      name: json['name'] as String? ?? '',
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
@@ -26,7 +26,6 @@ name: json['name'] as String? ?? '',
     );
   }
 
- 
   CarBrand toEntity() {
     return CarBrand(id: id, name: name);
   }

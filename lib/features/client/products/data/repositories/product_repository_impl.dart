@@ -2,10 +2,10 @@ import 'package:qitai/features/client/products/data/datasources/product_remote_d
 import 'package:qitai/features/client/products/domain/entities/product_pagination.dart';
 import 'package:qitai/features/client/products/domain/repositories/product_repository.dart';
 
-class ProductRepositoryImpl implements ProductRepository { 
+class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource dataSource;
   ProductRepositoryImpl(this.dataSource);
-@override
+  @override
   Future<ProductPagination> getProducts({
     int? brandId,
     int? categoryId,
@@ -13,7 +13,7 @@ class ProductRepositoryImpl implements ProductRepository {
     String? query,
     String? vin,
     int? year,
-    int page = 1
+    int page = 1,
   }) async {
     final productModel = await dataSource.getProducts(
       brandId: brandId,
@@ -21,14 +21,17 @@ class ProductRepositoryImpl implements ProductRepository {
       modelId: modelId,
       query: query,
       vin: vin,
-      year: year,page: page
+      year: year,
+      page: page,
     );
     return ProductPagination(
-      products: productModel.products.map((product) => product.toEntity()).toList(),
+      products: productModel.products
+          .map((product) => product.toEntity())
+          .toList(),
       currentPage: productModel.currentPage,
       lastPage: productModel.lastPage,
       perPage: productModel.perPage,
       total: productModel.total,
-    );    
+    );
   }
 }

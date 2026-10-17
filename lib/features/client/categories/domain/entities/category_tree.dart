@@ -4,8 +4,5 @@ class CategoryTree {
   final Category category;
   final List<Category> children;
 
-  const CategoryTree({
-    required this.category,
-    this.children = const [],
-  });
+  const CategoryTree({required this.category, this.children = const []});
 }

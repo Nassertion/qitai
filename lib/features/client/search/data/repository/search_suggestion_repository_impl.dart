@@ -7,11 +7,8 @@ class SearchSuggestionRepositoryImpl implements SearchSuggestionRepository {
   SearchSuggestionRepositoryImpl(this.dataSource);
 
   @override
-  Future<List<SearchSuggestion>> getSuggestions({
-    required String query,
-  }) async {
-    final suggestionsModel = await dataSource
-        .getSuggestions(query: query);
+  Future<List<SearchSuggestion>> getSuggestions({required String query}) async {
+    final suggestionsModel = await dataSource.getSuggestions(query: query);
     return suggestionsModel.map((model) => model.toEntity()).toList();
   }
 }

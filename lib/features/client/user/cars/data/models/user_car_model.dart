@@ -28,8 +28,7 @@ class UserCarModel {
       userId: json['user_id'] as int,
       vehicleId: json['vehicle_id'] as int,
       nickname: json['nickname'] as String?,
-      isDefault:
-          json['is_default'] == true || json['is_default'] == 1,
+      isDefault: json['is_default'] == true || json['is_default'] == 1,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
