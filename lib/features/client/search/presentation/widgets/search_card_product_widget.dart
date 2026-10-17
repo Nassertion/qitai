@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/features/client/products/presentation/utils/quality_helper.dart';
 import 'package:qitai/features/client/products/domain/entities/product.dart';
+import 'package:qitai/features/client/products/presentation/widgets/product_price.dart';
+import 'package:qitai/features/client/products/presentation/widgets/product_quality_badge.dart';
 
 class SearchCardProductWidget extends StatelessWidget {
   const SearchCardProductWidget({
@@ -39,25 +39,9 @@ class SearchCardProductWidget extends StatelessWidget {
                 Positioned(
                   top: 4,
                   right: 4,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isAftermarket(product.quality)
-                          ? AppColors.inputFieldAndCards
-                          : AppColors.actionText,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Text(
-                      qualityLabel(product.quality),
-                      style: AppTextStyles.semiBoldOverline.copyWith(
-                        color: isAftermarket(product.quality)
-                            ? AppColors.primaryText
-                            : AppColors.whiteText,
-                      ),
-                    ),
+                  child: ProductQualityBadge(
+                    quality: product.quality,
+                    compact: true,
                   ),
                 ),
               ],
@@ -84,18 +68,7 @@ class SearchCardProductWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            "${product.price}",
-                            style: AppTextStyles.semiBoldBody.copyWith(
-                              color: AppColors.primaryText,
-                            ),
-                          ),
-                          w2,
-                          SvgPicture.asset("assets/icons/SR.svg"),
-                        ],
-                      ),
+                      ProductPrice(price: product.price),
                       Container(
                         width: 32,
                         height: 32,

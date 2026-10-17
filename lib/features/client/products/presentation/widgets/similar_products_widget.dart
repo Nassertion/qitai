@@ -12,16 +12,11 @@ import 'package:qitai/features/client/products/presentation/widgets/all_product_
 class SimilarProductsWidget extends ConsumerWidget {
   final int productId;
 
-  const SimilarProductsWidget({
-    super.key,
-    required this.productId,
-  });
+  const SimilarProductsWidget({super.key, required this.productId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final similarProductsAsync = ref.watch(
-      similarProductsProvider(productId),
-    );
+    final similarProductsAsync = ref.watch(similarProductsProvider(productId));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,9 +33,7 @@ class SimilarProductsWidget extends ConsumerWidget {
         similarProductsAsync.when(
           loading: () => const SizedBox(
             height: 260,
-            child: Center(
-              child: CustomLoading(),
-            ),
+            child: Center(child: CustomLoading()),
           ),
           error: (error, stackTrace) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),

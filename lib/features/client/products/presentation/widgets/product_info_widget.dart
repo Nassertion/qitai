@@ -11,7 +11,6 @@ class ProductInfoWidget extends StatelessWidget {
   const ProductInfoWidget({super.key, required this.product});
   final ProductDetail product;
 
-
   @override
   Widget build(BuildContext context) {
     return AppPagePadding(
