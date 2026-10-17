@@ -47,13 +47,12 @@ class ConfirmationDialog extends StatelessWidget {
     return AlertDialog(
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       contentPadding: EdgeInsets.zero,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 20),
-
+          h12,
           Text(
             title,
             style: AppTextStyles.boldBody,
@@ -63,7 +62,7 @@ class ConfirmationDialog extends StatelessWidget {
           h4,
 
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
               message,
               textAlign: TextAlign.center,
@@ -71,12 +70,12 @@ class ConfirmationDialog extends StatelessWidget {
             ),
           ),
 
-          h16,
+          h12,
 
           Divider(height: 1, color: AppColors.border),
 
           SizedBox(
-            height: 50,
+            height: 45,
             child: Row(
               children: [
                 Expanded(

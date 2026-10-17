@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
@@ -12,11 +10,10 @@ import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
-
 import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
-import 'package:qitai/features/client/home/presentation/widgets/add_car_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
+import 'package:qitai/features/client/home/presentation/widgets/home_cars_section.dart';
 import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
@@ -35,71 +32,13 @@ class ClientHomeScreen extends ConsumerWidget {
     } catch (_) {}
   }
 
-  Widget _buildAddCarItem({
-    required BuildContext context,
-    required WidgetRef ref,
-  }) {
-    return InkWell(
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-      onTap: () {
-        requireAuth(
-          context: context,
-          ref: ref,
-          onAuthenticated: () {
-            context.push('/profile/addCar');
-          },
-        );
-      },
-      child: const AddCar(
-        img: 'assets/icons/addCar.svg',
-        carName: 'اضف سيارتك',
-      ),
-    );
-  }
-
-  Widget _buildCarsSection({
-    required BuildContext context,
-    required WidgetRef ref,
-    required AsyncValue<List<dynamic>> userCarsAsync,
-  }) {
-    return userCarsAsync.when(
-      loading: () =>
-          const SizedBox(height: 92, child: Center(child: CustomLoading())),
-      error: (error, stack) => Row(
-        textDirection: TextDirection.rtl,
-        children: [_buildAddCarItem(context: context, ref: ref)],
-      ),
-      data: (cars) {
-        final sortedCars = [
-          ...cars,
-        ]..sort((a, b) => (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0));
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            textDirection: TextDirection.rtl,
-            children: [
-              const SizedBox(width: 14),
-
-              ...sortedCars.map(
-                (car) => Padding(
-                  padding: const EdgeInsetsDirectional.only(end: 12),
-                  child: HomeCarItem(
-                    car: car,
-                    onTap: () => _setDefaultCar(ref, car.id),
-                  ),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsetsDirectional.only(end: 12),
-                child: _buildAddCarItem(context: context, ref: ref),
-              ),
-            ],
-          ),
-        );
+  void _openAddCar(BuildContext context, WidgetRef ref) {
+    requireAuth(
+      context: context,
+      ref: ref,
+      onAuthenticated: () {
+        if (!context.mounted) return;
+        context.push('/profile/addCar');
       },
     );
   }
@@ -114,9 +53,10 @@ class ClientHomeScreen extends ConsumerWidget {
 
     final userCarsAsync = isAuthenticated ? ref.watch(userCarsProvider) : null;
     final cars = userCarsAsync?.asData?.value ?? [];
+    debugPrint('HOME CARS COUNT: ${cars.length}');
+    debugPrint('AUTHENTICATED: $isAuthenticated');
     final hasDefaultCar = cars.any((car) => car.isDefault);
-    final homeProducts = productsState.products.take(8).toList();
-
+    final homeProducts = productsState.products.take(4).toList();
     ref.listen(authProvider, (previous, next) {
       if (next is Unauthenticated) {
         ref.read(vehicleProvider.notifier).clearAll();
@@ -130,7 +70,6 @@ class ClientHomeScreen extends ConsumerWidget {
           final vehicleNotifier = ref.read(vehicleProvider.notifier);
           final vehicleState = ref.read(vehicleProvider);
 
-          // إذا ما فيه سيارة افتراضية، نرجع للمنتجات العامة.
           if (defaultCars.isEmpty) {
             final hasSelectedVehicle =
                 vehicleState.selectedCarBrand != null ||
@@ -146,7 +85,6 @@ class ClientHomeScreen extends ConsumerWidget {
 
           final defaultCar = defaultCars.first;
 
-          // تجنب إعادة تحميل المنتجات إذا كانت السيارة نفسها محددة بالفعل.
           final isSameVehicle =
               vehicleState.selectedCarBrand?.id == defaultCar.vehicle.brandId &&
               vehicleState.selectedModel?.id == defaultCar.vehicle.modelId &&
@@ -221,22 +159,12 @@ class ClientHomeScreen extends ConsumerWidget {
 
                   h12,
 
-                  if (!isAuthenticated)
-                    AppPagePadding(
-                      child: Row(
-                        textDirection: TextDirection.rtl,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          _buildAddCarItem(context: context, ref: ref),
-                        ],
-                      ),
-                    )
-                  else
-                    _buildCarsSection(
-                      context: context,
-                      ref: ref,
-                      userCarsAsync: userCarsAsync!,
-                    ),
+                  HomeCarsSection(
+                    isAuthenticated: isAuthenticated,
+                    userCarsAsync: userCarsAsync,
+                    onAddCar: () => _openAddCar(context, ref),
+                    onSelectCar: (car) => _setDefaultCar(ref, car.id),
+                  ),
 
                   h16,
 
@@ -354,7 +282,7 @@ class ClientHomeScreen extends ConsumerWidget {
                         context.push('/product/${product.id}');
                       },
                     );
-                  }, childCount: 4),
+                  }, childCount: homeProducts.length),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
