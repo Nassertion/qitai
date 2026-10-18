@@ -4,9 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
-import 'package:qitai/core/constants/text_styles.dart';
 import 'package:qitai/features/client/auth/presentation/helper/auth_required.dart';
-import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
@@ -14,10 +12,11 @@ import 'package:qitai/features/client/auth/presentation/providers/auth_state.dar
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_cars_section.dart';
+import 'package:qitai/features/client/home/presentation/widgets/home_categories_section.dart';
+import 'package:qitai/features/client/home/presentation/widgets/home_products_sliver.dart';
 import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
-import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 
@@ -47,16 +46,11 @@ class ClientHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final isAuthenticated = authState is Authenticated;
-
-    final categoriesAsync = ref.watch(categoriesProvider);
-    final productsState = ref.watch(allProductsProvider);
-
     final userCarsAsync = isAuthenticated ? ref.watch(userCarsProvider) : null;
     final cars = userCarsAsync?.asData?.value ?? [];
     debugPrint('HOME CARS COUNT: ${cars.length}');
     debugPrint('AUTHENTICATED: $isAuthenticated');
     final hasDefaultCar = cars.any((car) => car.isDefault);
-    final homeProducts = productsState.products.take(4).toList();
     ref.listen(authProvider, (previous, next) {
       if (next is Unauthenticated) {
         ref.read(vehicleProvider.notifier).clearAll();
@@ -182,55 +176,7 @@ class ClientHomeScreen extends ConsumerWidget {
               ),
             ),
 
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 95,
-                width: 80,
-                child: categoriesAsync.when(
-                  loading: () => const CustomLoading(),
-                  error: (error, stack) => Center(
-                    child: Text(
-                      error.toString(),
-                      style: AppTextStyles.regularOverline.copyWith(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                  data: (categories) => ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: categories.length,
-                    separatorBuilder: (_, _) => w12,
-                    itemBuilder: (context, index) {
-                      final category = categories[index];
-
-                      return InkWell(
-                        onTap: () => context.push(
-                          '/categories/${category.id}',
-                          extra: category.name,
-                        ),
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              getCategoryIcon(category.name),
-                              width: 74,
-                              height: 56,
-                            ),
-                            h8,
-                            Text(
-                              category.name,
-                              style: AppTextStyles.mediumOverline.copyWith(
-                                color: AppColors.primaryText,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            SliverToBoxAdapter(child: HomeCategoriesSection()),
 
             SliverToBoxAdapter(
               child: Column(
@@ -247,71 +193,10 @@ class ClientHomeScreen extends ConsumerWidget {
               ),
             ),
 
-            if (productsState.isLoading)
-              const SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
-                    child: CustomLoading(),
-                  ),
-                ),
-              )
-            else if (productsState.errorMessage != null)
-              SliverToBoxAdapter(
-                child: Center(child: Text(productsState.errorMessage!)),
-              )
-            else if (homeProducts.isEmpty)
-              const SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
-                    child: Text('لا توجد منتجات'),
-                  ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final product = homeProducts[index];
-
-                    return AllProductCardWidget(
-                      product: product,
-                      onTap: () {
-                        context.push('/product/${product.id}');
-                      },
-                    );
-                  }, childCount: homeProducts.length),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    mainAxisExtent: 260,
-                  ),
-                ),
-              ),
+            const HomeProductsSliver(),
           ],
         ),
       ),
     );
-  }
-}
-
-// temp only
-String getCategoryIcon(String name) {
-  switch (name) {
-    case 'الفرامل':
-      return 'assets/images/breaks.png';
-    case 'المحرك':
-      return 'assets/images/engine.png';
-    case 'الكهرباء':
-      return 'assets/images/boaji.png';
-    case 'الزيوت والسوائل':
-      return 'assets/images/oils.png';
-    case 'التعليق':
-      return 'assets/images/t3le8.png';
-    default:
-      return 'assets/images/default.png';
   }
 }
