@@ -46,8 +46,6 @@ void main() {
     // Assert
     expect(result, productDetail);
 
-    verify(
-      () => repository.getProductsDetails(productId),
-    ).called(1);
+    verify(() => repository.getProductsDetails(productId)).called(1);
   });
 }

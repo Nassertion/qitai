@@ -19,9 +19,7 @@ void main() {
     // Arrange
     const brands = <CarBrand>[];
 
-    when(
-      () => repository.getCarBrands(),
-    ).thenAnswer((_) async => brands);
+    when(() => repository.getCarBrands()).thenAnswer((_) async => brands);
 
     // Act
     final result = await getCarBrands();
@@ -29,8 +27,6 @@ void main() {
     // Assert
     expect(result, brands);
 
-    verify(
-      () => repository.getCarBrands(),
-    ).called(1);
+    verify(() => repository.getCarBrands()).called(1);
   });
 }

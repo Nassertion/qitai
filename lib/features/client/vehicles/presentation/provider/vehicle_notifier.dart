@@ -8,25 +8,32 @@ import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_pro
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'vehicles_notifier.g.dart';
+part 'vehicle_notifier.g.dart';
+
+enum VehicleScope { browse, addCar }
 
 @riverpod
 class VehicleNotifier extends _$VehicleNotifier {
-  late final GetCarBrands getCarBrands;
-  late final GetCarModels getCarModels;
-  late final GetCarYears getCarYears;
+  GetCarBrands get getCarBrands => ref.read(getCarBrandsProvider);
 
+  GetCarModels get getCarModels => ref.read(getCarModelsProvider);
+
+  GetCarYears get getCarYears => ref.read(getCarYearsProvider);
+
+  int _brandsRequestId = 0;
   int _modelsRequestId = 0;
   int _yearsRequestId = 0;
   int _vehicleByIdsRequestId = 0;
 
+  bool _disposed = false;
+
   @override
-  VehicleState build() {
-    getCarBrands = ref.read(getCarBrandsProvider);
-    getCarModels = ref.read(getCarModelsProvider);
-    getCarYears = ref.read(getCarYearsProvider);
+  VehicleState build(VehicleScope scope) {
+    _disposed = false;
 
     ref.onDispose(() {
+      _disposed = true;
+      _brandsRequestId++;
       _modelsRequestId++;
       _yearsRequestId++;
       _vehicleByIdsRequestId++;
@@ -36,13 +43,21 @@ class VehicleNotifier extends _$VehicleNotifier {
   }
 
   Future<void> loadBrands() async {
+    final requestId = ++_brandsRequestId;
+
     state = state.copyWith(isBrandsLoading: true, clearErrorMessage: true);
+
+    bool isCurrent() => !_disposed && requestId == _brandsRequestId;
 
     try {
       final brands = await getCarBrands();
 
+      if (!isCurrent()) return;
+
       state = state.copyWith(carBrands: brands, isBrandsLoading: false);
     } catch (e) {
+      if (!isCurrent()) return;
+
       state = state.copyWith(
         isBrandsLoading: false,
         errorMessage: e.toString(),
@@ -52,9 +67,7 @@ class VehicleNotifier extends _$VehicleNotifier {
 
   Future<void> selectBrand(CarBrand carBrand) async {
     _vehicleByIdsRequestId++;
-
     final requestId = ++_modelsRequestId;
-
     _yearsRequestId++;
 
     state = state.copyWith(
@@ -69,20 +82,19 @@ class VehicleNotifier extends _$VehicleNotifier {
       clearErrorMessage: true,
     );
 
+    bool isCurrent() =>
+        !_disposed &&
+        requestId == _modelsRequestId &&
+        state.selectedCarBrand?.id == carBrand.id;
+
     try {
       final models = await getCarModels(carBrand.id);
 
-      if (requestId != _modelsRequestId ||
-          state.selectedCarBrand?.id != carBrand.id) {
-        return;
-      }
+      if (!isCurrent()) return;
 
       state = state.copyWith(models: models, isModelsLoading: false);
     } catch (e) {
-      if (requestId != _modelsRequestId ||
-          state.selectedCarBrand?.id != carBrand.id) {
-        return;
-      }
+      if (!isCurrent()) return;
 
       state = state.copyWith(
         isModelsLoading: false,
@@ -93,7 +105,6 @@ class VehicleNotifier extends _$VehicleNotifier {
 
   Future<void> selectModel(CarModel model) async {
     _vehicleByIdsRequestId++;
-
     final requestId = ++_yearsRequestId;
 
     state = state.copyWith(
@@ -106,18 +117,19 @@ class VehicleNotifier extends _$VehicleNotifier {
       clearErrorMessage: true,
     );
 
+    bool isCurrent() =>
+        !_disposed &&
+        requestId == _yearsRequestId &&
+        state.selectedModel?.id == model.id;
+
     try {
       final years = await getCarYears(model.id);
 
-      if (requestId != _yearsRequestId || state.selectedModel?.id != model.id) {
-        return;
-      }
+      if (!isCurrent()) return;
 
       state = state.copyWith(carYears: years, isYearsLoading: false);
     } catch (e) {
-      if (requestId != _yearsRequestId || state.selectedModel?.id != model.id) {
-        return;
-      }
+      if (!isCurrent()) return;
 
       state = state.copyWith(isYearsLoading: false, errorMessage: e.toString());
     }
@@ -137,6 +149,7 @@ class VehicleNotifier extends _$VehicleNotifier {
   }
 
   void clearBrand() {
+    _brandsRequestId++;
     _vehicleByIdsRequestId++;
     _modelsRequestId++;
     _yearsRequestId++;
@@ -156,6 +169,7 @@ class VehicleNotifier extends _$VehicleNotifier {
 
   void clearModel() {
     _vehicleByIdsRequestId++;
+    _modelsRequestId++;
     _yearsRequestId++;
 
     state = state.copyWith(
@@ -183,6 +197,7 @@ class VehicleNotifier extends _$VehicleNotifier {
   }
 
   void clearAll() {
+    _brandsRequestId++;
     _vehicleByIdsRequestId++;
     _modelsRequestId++;
     _yearsRequestId++;
@@ -207,6 +222,7 @@ class VehicleNotifier extends _$VehicleNotifier {
   }) async {
     final requestId = ++_vehicleByIdsRequestId;
 
+    _brandsRequestId++;
     _modelsRequestId++;
     _yearsRequestId++;
 
@@ -217,17 +233,13 @@ class VehicleNotifier extends _$VehicleNotifier {
       clearErrorMessage: true,
     );
 
-    bool isCurrentRequest() {
-      return requestId == _vehicleByIdsRequestId;
-    }
+    bool isCurrent() => !_disposed && requestId == _vehicleByIdsRequestId;
 
     try {
       final brands = await getCarBrands();
-
-      if (!isCurrentRequest()) return;
+      if (!isCurrent()) return;
 
       CarBrand? selectedBrand;
-
       for (final brand in brands) {
         if (brand.id == brandId) {
           selectedBrand = brand;
@@ -240,11 +252,9 @@ class VehicleNotifier extends _$VehicleNotifier {
       }
 
       final models = await getCarModels(brandId);
-
-      if (!isCurrentRequest()) return;
+      if (!isCurrent()) return;
 
       CarModel? selectedModel;
-
       for (final model in models) {
         if (model.id == modelId) {
           selectedModel = model;
@@ -257,11 +267,9 @@ class VehicleNotifier extends _$VehicleNotifier {
       }
 
       final years = await getCarYears(modelId);
-
-      if (!isCurrentRequest()) return;
+      if (!isCurrent()) return;
 
       CarYear? selectedYear;
-
       for (final year in years) {
         if (year.id == yearId) {
           selectedYear = year;
@@ -285,7 +293,7 @@ class VehicleNotifier extends _$VehicleNotifier {
         isYearsLoading: false,
       );
     } catch (e) {
-      if (!isCurrentRequest()) return;
+      if (!isCurrent()) return;
 
       state = state.copyWith(
         isBrandsLoading: false,

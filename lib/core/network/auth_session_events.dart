@@ -5,9 +5,7 @@ typedef AuthSessionExpiredHandler = Future<void> Function();
 class AuthSessionEvents {
   AuthSessionExpiredHandler? _onSessionExpired;
 
-  void registerSessionExpiredHandler(
-    AuthSessionExpiredHandler handler,
-  ) {
+  void registerSessionExpiredHandler(AuthSessionExpiredHandler handler) {
     _onSessionExpired = handler;
   }
 

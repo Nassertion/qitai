@@ -7,11 +7,7 @@ import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.
 import 'package:qitai/routes/app_router.dart';
 
 void main() {
-  runApp(
-    const ProviderScope(
-      child: Qitai(),
-    ),
-  );
+  runApp(const ProviderScope(child: Qitai()));
 }
 
 class Qitai extends ConsumerStatefulWidget {
@@ -34,10 +30,7 @@ class _QitaiState extends ConsumerState<Qitai> {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      supportedLocales: const [
-        Locale('ar'),
-        Locale('en'),
-      ],
+      supportedLocales: const [Locale('ar'), Locale('en')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

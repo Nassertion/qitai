@@ -58,7 +58,7 @@ class SearchWidget extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(vertical: 0),
             prefixIcon: GestureDetector(
               onTap: onSearchTap,
-    
+
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(

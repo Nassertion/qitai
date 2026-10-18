@@ -10,9 +10,7 @@ Stream<InternetStatus> internetStatus(Ref ref) {
   return Stream.multi((controller) async {
     controller.add(await connection.internetStatus);
 
-    final subscription = connection.onStatusChange.listen(
-      controller.add,
-    );
+    final subscription = connection.onStatusChange.listen(controller.add);
 
     ref.onDispose(() {
       subscription.cancel();

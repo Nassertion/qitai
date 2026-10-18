@@ -20,7 +20,10 @@ class CategoryCardWidget extends ConsumerWidget {
     final countText = countAsync.when(
       data: (count) => '$count منتج',
       loading: () => '...',
-      error: (_, _) => '',
+      error: (error, stackTrace) {
+        debugPrint('Category ${category.id} count error: $error');
+        return 'تعذر تحميل العدد';
+      },
     );
 
     return InkWell(

@@ -31,8 +31,6 @@ void main() {
     // Assert
     expect(result, years);
 
-    verify(
-      () => repository.getCarYears(modelId: modelId),
-    ).called(1);
+    verify(() => repository.getCarYears(modelId: modelId)).called(1);
   });
 }

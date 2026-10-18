@@ -20,7 +20,10 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
 
     // _parentCategoryId = categoryId;
 
-    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
+    ref.listen<VehicleState>(vehicleProvider(VehicleScope.browse), (
+      previous,
+      next,
+    ) {
       if (!hasVehicleFiltersChanged(previous, next)) return;
 
       loadProducts();
@@ -35,7 +38,7 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
   }
 
   Future<void> loadProducts() async {
-    final vehicleState = ref.read(vehicleProvider);
+    final vehicleState = ref.read(vehicleProvider(VehicleScope.browse));
 
     final brandId = vehicleState.selectedCarBrand?.id;
     final modelId = vehicleState.selectedModel?.id;
@@ -82,7 +85,7 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
     if (state.isLoadingMore) return;
     if (!state.hasNextPage) return;
 
-    final vehicleState = ref.read(vehicleProvider);
+    final vehicleState = ref.read(vehicleProvider(VehicleScope.browse));
 
     final brandId = vehicleState.selectedCarBrand?.id;
     final modelId = vehicleState.selectedModel?.id;

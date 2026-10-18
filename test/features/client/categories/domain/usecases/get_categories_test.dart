@@ -20,9 +20,7 @@ void main() {
     // Arrange
     const categories = <Category>[];
 
-    when(
-      () => repository.getCategories(),
-    ).thenAnswer((_) async => categories);
+    when(() => repository.getCategories()).thenAnswer((_) async => categories);
 
     // Act
     final result = await getCategories();
@@ -30,8 +28,6 @@ void main() {
     // Assert
     expect(result, categories);
 
-    verify(
-      () => repository.getCategories(),
-    ).called(1);
+    verify(() => repository.getCategories()).called(1);
   });
 }

@@ -54,7 +54,7 @@ class AllProductsScreen extends ConsumerWidget {
     return ProviderScope(
       key: ValueKey(scopeKey),
       overrides: [
-        vehicleProvider.overrideWith(VehicleNotifier.new),
+        vehicleProvider(VehicleScope.browse).overrideWith(VehicleNotifier.new),
         allProductsProvider.overrideWith(AllProductsNotifier.new),
       ],
       child: _AllProductsContent(
@@ -104,7 +104,7 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
 
     if (brandId != null && modelId != null && yearId != null) {
       await ref
-          .read(vehicleProvider.notifier)
+          .read(vehicleProvider(VehicleScope.browse).notifier)
           .selectVehicleByIds(
             brandId: brandId,
             modelId: modelId,
@@ -147,14 +147,14 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
 
     return Scaffold(
       appBar: CustomAppbar(
-        title: "اقتراحات",
+        title: 'اقتراحات',
         action: IconButton(
           padding: const EdgeInsets.only(left: 4),
           onPressed: () {
-            context.push("/search");
+            context.push('/search');
           },
           icon: SvgPicture.asset(
-            "assets/icons/search-normal.svg",
+            'assets/icons/search-normal.svg',
             width: 24,
             height: 24,
           ),
@@ -178,8 +178,8 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
 
                   if (state.products.isEmpty) {
                     return const EmptyDataWidget(
-                      text: "لا توجد منتجات",
-                      img: "assets/icons/Object.svg",
+                      text: 'لا توجد منتجات',
+                      img: 'assets/icons/Object.svg',
                     );
                   }
 
@@ -204,7 +204,7 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
                       return AllProductCardWidget(
                         product: product,
                         onTap: () {
-                          context.push("/product/${product.id}");
+                          context.push('/product/${product.id}');
                         },
                       );
                     },

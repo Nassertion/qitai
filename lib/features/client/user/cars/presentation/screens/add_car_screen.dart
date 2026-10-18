@@ -9,10 +9,10 @@ import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car_attribute.dart';
-import 'package:qitai/features/client/user/cars/presentation/providers/add_car_vehicle_notifier.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_attribute_bottom_sheet.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_status_dialog.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
@@ -55,7 +55,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
   ];
 
   Future<void> _addCar() async {
-    final vehicleState = ref.read(addCarVehicleProvider);
+    final vehicleState = ref.read(vehicleProvider(VehicleScope.addCar));
 
     if (!_isFormValid(vehicleState) || _isLoading) return;
 
@@ -76,7 +76,6 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // أولًا: إضافة السيارة
       int addedCarId;
 
       try {
@@ -108,10 +107,10 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
       if (!mounted) return;
 
-      // السيارة أُضيفت بنجاح.
-      // نتحقق الآن من العملية الثانية بشكل مستقل.
       bool defaultCarUpdated = true;
 
+      // TODO(backend): Remove this workaround once the add-car
+      // API correctly handles is_default during creation.
       if (_isDefault) {
         try {
           await ref.read(setDefaultUserCarProvider)(addedCarId);
@@ -130,8 +129,9 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
           type: CarDialogType.error,
           title: 'تمت إضافة السيارة',
           message:
-              'تمت إضافة سيارتك بنجاح، لكن تعذر تعيينها كسيارة افتراضية. '
-              'يمكنك تعيينها لاحقًا من صفحة سياراتي.',
+              'تمت إضافة سيارتك بنجاح، لكن تعذر تعيينها '
+              'كسيارة افتراضية. يمكنك تعيينها لاحقًا '
+              'من صفحة سياراتي.',
         );
       } else {
         await CarStatusDialog.show(
@@ -241,9 +241,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       options: _engineOptions,
     );
 
-    if (!mounted || value == null) {
-      return;
-    }
+    if (!mounted || value == null) return;
 
     setState(() {
       _selectedEngine = value;
@@ -257,9 +255,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       options: _gearOptions,
     );
 
-    if (!mounted || value == null) {
-      return;
-    }
+    if (!mounted || value == null) return;
 
     setState(() {
       _selectedGear = value;
@@ -268,8 +264,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // الاستماع لحالة نموذج الإضافة المستقلة لتحديث الحقول والزر.
-    final vehicleState = ref.watch(addCarVehicleProvider);
+    final vehicleState = ref.watch(vehicleProvider(VehicleScope.addCar));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -284,11 +279,8 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       h16,
-
                       Text('بيانات سيارتي', style: AppTextStyles.boldBody),
-
                       h16,
-
                       Row(
                         spacing: 16,
                         children: [
@@ -297,20 +289,14 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           Expanded(child: _buildTitleWithStar('السنة')),
                         ],
                       ),
-
                       h8,
-
                       const VehiclesWidget(
                         inlineSelection: true,
                         useAddCarProvider: true,
                       ),
-
                       h16,
-
                       _buildTitleWithStar('رقم الشاصي (VIN)'),
-
                       h8,
-
                       TextField(
                         controller: _vinController,
                         textDirection: TextDirection.ltr,
@@ -327,9 +313,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                         style: AppTextStyles.mediumCaption,
                         decoration: _buildInputDecoration('رقم الشاصي (VIN)'),
                       ),
-
                       h16,
-
                       Row(
                         spacing: 16,
                         children: [
@@ -363,13 +347,9 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           ),
                         ],
                       ),
-
                       h16,
-
                       _buildOptionalTitle('اسم السيارة'),
-
                       h8,
-
                       TextField(
                         controller: _nicknameController,
                         maxLength: 25,
@@ -379,9 +359,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           'مثلاً: "سيارتي، سيارة الوالد"',
                         ),
                       ),
-
                       h16,
-
                       Align(
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
@@ -415,9 +393,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                                       )
                                     : null,
                               ),
-
                               w8,
-
                               Text(
                                 'تعيين كسيارتي الإفتراضية',
                                 style: AppTextStyles.mediumBody.copyWith(
@@ -428,13 +404,11 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           ),
                         ),
                       ),
-
                       h16,
                     ],
                   ),
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ButtonWidget(

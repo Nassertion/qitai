@@ -34,7 +34,7 @@ class _CategoryFilterSelectorState
     super.initState();
 
     Future.microtask(() {
-      ref.read(vehicleProvider.notifier).loadBrands();
+      ref.read(vehicleProvider(VehicleScope.browse).notifier).loadBrands();
     });
   }
 
@@ -150,8 +150,10 @@ class _CategoryFilterSelectorState
 
   @override
   Widget build(BuildContext context) {
-    final vehicleState = ref.watch(vehicleProvider);
-    final vehicleNotifier = ref.read(vehicleProvider.notifier);
+    final vehicleState = ref.watch(vehicleProvider(VehicleScope.browse));
+    final vehicleNotifier = ref.read(
+      vehicleProvider(VehicleScope.browse).notifier,
+    );
 
     final categoryState = ref.watch(categoryProductProvider(widget.categoryId));
 

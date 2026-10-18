@@ -24,7 +24,7 @@ class CategoryProductsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        vehicleProvider.overrideWith(VehicleNotifier.new),
+        vehicleProvider.overrideWith2((scope) => VehicleNotifier()),
         categoryProductProvider(id).overrideWith(CategoryProductNotifier.new),
       ],
       child: _CategoryProductsContent(id: id, name: name),

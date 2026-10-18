@@ -22,14 +22,8 @@ void main() {
       expect(result.role, 'user');
       expect(result.isActive, true);
       expect(result.name, 'User 8MGJ');
-      expect(
-        result.createdAt,
-        DateTime.parse('2026-09-19T16:34:08.000000Z'),
-      );
-      expect(
-        result.updatedAt,
-        DateTime.parse('2026-09-19T16:34:08.000000Z'),
-      );
+      expect(result.createdAt, DateTime.parse('2026-09-19T16:34:08.000000Z'));
+      expect(result.updatedAt, DateTime.parse('2026-09-19T16:34:08.000000Z'));
       expect(result.email, isNull);
     });
 

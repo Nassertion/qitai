@@ -53,9 +53,7 @@ void main() {
         );
 
         final handler = MockErrorInterceptorHandler();
-        final requestOptions = RequestOptions(
-          path: '/products/1',
-        );
+        final requestOptions = RequestOptions(path: '/products/1');
 
         final error = DioException(
           requestOptions: requestOptions,
@@ -68,9 +66,7 @@ void main() {
 
         interceptor.onError(error, handler);
 
-        await callbackCompleted.future.timeout(
-          const Duration(seconds: 2),
-        );
+        await callbackCompleted.future.timeout(const Duration(seconds: 2));
 
         // ننتظر اكتمال معالجة الخطأ داخل الـ interceptor.
         await Future<void>.delayed(Duration.zero);
@@ -93,9 +89,7 @@ void main() {
         );
 
         final handler = MockErrorInterceptorHandler();
-        final requestOptions = RequestOptions(
-          path: '/auth/verify-otp',
-        );
+        final requestOptions = RequestOptions(path: '/auth/verify-otp');
 
         final error = DioException(
           requestOptions: requestOptions,
@@ -115,30 +109,20 @@ void main() {
       },
     );
 
-    test(
-      'should add authorization header when access token exists',
-      () async {
-        final tokenStorage = FakeTokenStorage(
-          accessToken: 'test_token',
-        );
+    test('should add authorization header when access token exists', () async {
+      final tokenStorage = FakeTokenStorage(accessToken: 'test_token');
 
-        final interceptor = AuthInterceptor(tokenStorage);
-        final handler = MockRequestInterceptorHandler();
+      final interceptor = AuthInterceptor(tokenStorage);
+      final handler = MockRequestInterceptorHandler();
 
-        final options = RequestOptions(
-          path: '/orders',
-        );
+      final options = RequestOptions(path: '/orders');
 
-        await interceptor.onRequest(options, handler);
+      await interceptor.onRequest(options, handler);
 
-        expect(
-          options.headers['Authorization'],
-          'Bearer test_token',
-        );
+      expect(options.headers['Authorization'], 'Bearer test_token');
 
-        verify(() => handler.next(options)).called(1);
-      },
-    );
+      verify(() => handler.next(options)).called(1);
+    });
 
     test(
       'should not add authorization header when access token does not exist',
@@ -147,16 +131,11 @@ void main() {
         final interceptor = AuthInterceptor(tokenStorage);
         final handler = MockRequestInterceptorHandler();
 
-        final options = RequestOptions(
-          path: '/orders',
-        );
+        final options = RequestOptions(path: '/orders');
 
         await interceptor.onRequest(options, handler);
 
-        expect(
-          options.headers.containsKey('Authorization'),
-          isFalse,
-        );
+        expect(options.headers.containsKey('Authorization'), isFalse);
 
         verify(() => handler.next(options)).called(1);
       },
@@ -165,23 +144,16 @@ void main() {
     test(
       'should not add authorization header to public auth endpoints',
       () async {
-        final tokenStorage = FakeTokenStorage(
-          accessToken: 'test_token',
-        );
+        final tokenStorage = FakeTokenStorage(accessToken: 'test_token');
 
         final interceptor = AuthInterceptor(tokenStorage);
         final handler = MockRequestInterceptorHandler();
 
-        final options = RequestOptions(
-          path: '/auth/send-otp',
-        );
+        final options = RequestOptions(path: '/auth/send-otp');
 
         await interceptor.onRequest(options, handler);
 
-        expect(
-          options.headers.containsKey('Authorization'),
-          isFalse,
-        );
+        expect(options.headers.containsKey('Authorization'), isFalse);
 
         verify(() => handler.next(options)).called(1);
       },

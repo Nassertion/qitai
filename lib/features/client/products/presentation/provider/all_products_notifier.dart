@@ -18,7 +18,10 @@ class AllProductsNotifier extends _$AllProductsNotifier {
   AllProductsState build() {
     getProducts = ref.read(getProductsProvider);
 
-    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
+    ref.listen<VehicleState>(vehicleProvider(VehicleScope.browse), (
+      previous,
+      next,
+    ) {
       if (!hasVehicleFiltersChanged(previous, next)) return;
 
       loadProducts();
@@ -32,7 +35,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
   Future<void> loadProducts() async {
     final requestVersion = ++_requestVersion;
 
-    final vehicleState = ref.read(vehicleProvider);
+    final vehicleState = ref.read(vehicleProvider(VehicleScope.browse));
 
     final brandId = vehicleState.selectedCarBrand?.id;
     final modelId = vehicleState.selectedModel?.id;
@@ -84,7 +87,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
 
     final requestVersion = _requestVersion;
 
-    final vehicleState = ref.read(vehicleProvider);
+    final vehicleState = ref.read(vehicleProvider(VehicleScope.browse));
 
     final brandId = vehicleState.selectedCarBrand?.id;
     final modelId = vehicleState.selectedModel?.id;

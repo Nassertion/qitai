@@ -41,9 +41,7 @@ void main() {
       total: 1,
     );
 
-    when(
-      () => repo.getProducts(),
-    ).thenAnswer((_) async => pagination);
+    when(() => repo.getProducts()).thenAnswer((_) async => pagination);
 
     // Act
     final result = await getProducts();
@@ -55,8 +53,6 @@ void main() {
     expect(result.perPage, 20);
     expect(result.total, 1);
 
-    verify(
-      () => repo.getProducts(),
-    ).called(1);
+    verify(() => repo.getProducts()).called(1);
   });
 }

@@ -30,8 +30,6 @@ void main() {
     // Assert
     expect(result, models);
 
-    verify(
-      () => repository.getCarModels(brandId: brandId),
-    ).called(1);
+    verify(() => repository.getCarModels(brandId: brandId)).called(1);
   });
 }

@@ -1,21 +1,27 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
-import 'package:qitai/features/client/auth/presentation/helper/auth_required.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
+
+import 'package:qitai/features/client/auth/presentation/helper/auth_required.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
+
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
+
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_cars_section.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_categories_section.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_products_sliver.dart';
 import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
+
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
@@ -23,12 +29,26 @@ import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_not
 class ClientHomeScreen extends ConsumerWidget {
   const ClientHomeScreen({super.key});
 
-  Future<void> _setDefaultCar(WidgetRef ref, int carId) async {
+  Future<void> _setDefaultCar(
+    BuildContext context,
+    WidgetRef ref,
+    int carId,
+  ) async {
     try {
       await ref.read(setDefaultUserCarProvider)(carId);
 
       ref.invalidate(userCarsProvider);
-    } catch (_) {}
+    } catch (error) {
+      debugPrint('Failed to set default car: $error');
+
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تعذر تغيير السيارة الافتراضية، حاول مرة أخرى'),
+        ),
+      );
+    }
   }
 
   void _openAddCar(BuildContext context, WidgetRef ref) {
@@ -37,6 +57,7 @@ class ClientHomeScreen extends ConsumerWidget {
       ref: ref,
       onAuthenticated: () {
         if (!context.mounted) return;
+
         context.push('/profile/addCar');
       },
     );
@@ -46,23 +67,31 @@ class ClientHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final isAuthenticated = authState is Authenticated;
+
     final userCarsAsync = isAuthenticated ? ref.watch(userCarsProvider) : null;
+
     final cars = userCarsAsync?.asData?.value ?? [];
-    debugPrint('HOME CARS COUNT: ${cars.length}');
-    debugPrint('AUTHENTICATED: $isAuthenticated');
+
     final hasDefaultCar = cars.any((car) => car.isDefault);
+
+    // Clear browse filters when the user logs out.
     ref.listen(authProvider, (previous, next) {
       if (next is Unauthenticated) {
-        ref.read(vehicleProvider.notifier).clearAll();
+        ref.read(vehicleProvider(VehicleScope.browse).notifier).clearAll();
       }
     });
 
+    // Keep browse filters synchronized with the default car.
     if (isAuthenticated) {
       ref.listen(userCarsProvider, (previous, next) {
         next.whenData((cars) {
           final defaultCars = cars.where((car) => car.isDefault);
-          final vehicleNotifier = ref.read(vehicleProvider.notifier);
-          final vehicleState = ref.read(vehicleProvider);
+
+          final vehicleNotifier = ref.read(
+            vehicleProvider(VehicleScope.browse).notifier,
+          );
+
+          final vehicleState = ref.read(vehicleProvider(VehicleScope.browse));
 
           if (defaultCars.isEmpty) {
             final hasSelectedVehicle =
@@ -96,6 +125,7 @@ class ClientHomeScreen extends ConsumerWidget {
         });
       });
     }
+
     return Scaffold(
       appBar: HomeAppBarWidget(),
       body: RefreshIndicator(
@@ -145,6 +175,8 @@ class ClientHomeScreen extends ConsumerWidget {
                         context: context,
                         ref: ref,
                         onAuthenticated: () {
+                          if (!context.mounted) return;
+
                           context.push('/profile/cars');
                         },
                       );
@@ -157,7 +189,7 @@ class ClientHomeScreen extends ConsumerWidget {
                     isAuthenticated: isAuthenticated,
                     userCarsAsync: userCarsAsync,
                     onAddCar: () => _openAddCar(context, ref),
-                    onSelectCar: (car) => _setDefaultCar(ref, car.id),
+                    onSelectCar: (car) => _setDefaultCar(context, ref, car.id),
                   ),
 
                   h16,
@@ -176,7 +208,7 @@ class ClientHomeScreen extends ConsumerWidget {
               ),
             ),
 
-            SliverToBoxAdapter(child: HomeCategoriesSection()),
+            const SliverToBoxAdapter(child: HomeCategoriesSection()),
 
             SliverToBoxAdapter(
               child: Column(

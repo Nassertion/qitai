@@ -32,8 +32,6 @@ void main() {
     // Assert
     expect(result, suggestions);
 
-    verify(
-      () => repository.getSuggestions(query: query),
-    ).called(1);
+    verify(() => repository.getSuggestions(query: query)).called(1);
   });
 }

@@ -99,17 +99,11 @@ void main() {
     expect(notifier.state, isA<Unauthenticated>());
     expect(container.read(currentUserProvider), isNull);
   });
-  test(
-  'initialize should load current user when authenticated',
-  () async {
-    final repository = FakeAuthRepository(
-      session: session,
-    );
+  test('initialize should load current user when authenticated', () async {
+    final repository = FakeAuthRepository(session: session);
 
     final container = ProviderContainer(
-      overrides: [
-        authRepositoryProvider.overrideWithValue(repository),
-      ],
+      overrides: [authRepositoryProvider.overrideWithValue(repository)],
     );
 
     addTearDown(container.dispose);
@@ -126,6 +120,5 @@ void main() {
     expect(currentUser?.id, 2);
     expect(currentUser?.phone, '0552222222');
     expect(currentUser?.name, 'User 8MGJ');
-  },
-);
+  });
 }

@@ -6,10 +6,7 @@ class AuthInterceptor extends Interceptor {
   final TokenStorage tokenStorage;
   final Future<void> Function()? onUnauthorized;
 
-  AuthInterceptor(
-    this.tokenStorage, {
-    this.onUnauthorized,
-  });
+  AuthInterceptor(this.tokenStorage, {this.onUnauthorized});
 
   static const _publicPaths = {
     '/auth/send-otp',
@@ -43,10 +40,7 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
     final isUnauthorized = err.response?.statusCode == 401;
     final isPublicRequest = _isPublicPath(err.requestOptions.path);
 
@@ -55,8 +49,7 @@ class AuthInterceptor extends Interceptor {
       return;
     }
 
-    final handling =
-        _handlingUnauthorized ??= _handleUnauthorized();
+    final handling = _handlingUnauthorized ??= _handleUnauthorized();
 
     try {
       await handling;
@@ -74,9 +67,7 @@ class AuthInterceptor extends Interceptor {
       await onUnauthorized?.call();
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint(
-          'Failed to handle expired authentication session: $error',
-        );
+        debugPrint('Failed to handle expired authentication session: $error');
         debugPrintStack(stackTrace: stackTrace);
       }
     }

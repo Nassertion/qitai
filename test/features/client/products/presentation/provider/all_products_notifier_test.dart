@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +14,9 @@ import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_sta
 
 class FakeVehicleNotifier extends VehicleNotifier {
   @override
-  VehicleState build() => const VehicleState();
+  VehicleState build(VehicleScope scope) {
+    return const VehicleState();
+  }
 }
 
 class FakeProductRepository implements ProductRepository {
@@ -68,93 +69,69 @@ ProductPagination _result(int id) => ProductPagination(
 );
 
 void main() {
-  test(
-    'Old request must not overwrite newer products',
-    () async {
-      final repository = FakeProductRepository();
-
-      final container = ProviderContainer(
-        overrides: [
-          getProductsProvider.overrideWith(
-            (ref) => GetProducts(repository),
-          ),
-          vehicleProvider.overrideWith(
-            FakeVehicleNotifier.new,
-          ),
-        ],
-      );
-
-      addTearDown(container.dispose);
-
-      final notifier =
-          container.read(allProductsProvider.notifier);
-
-      // انتظار التحميل الأولي
-      await Future<void>.delayed(Duration.zero);
-
-      // بدء طلبين متداخلين
-      final oldRequest = notifier.loadProducts();
-      final newRequest = notifier.loadProducts();
-
-      // الطلب الجديد ينتهي أولًا
-      repository.requests[2].complete(_result(200));
-      await newRequest;
-
-      expect(
-        container.read(allProductsProvider).products.first.id,
-        200,
-      );
-
-      // الطلب القديم ينتهي لاحقًا
-      repository.requests[1].complete(_result(100));
-      await oldRequest;
-
-      // لا يُسمح له باستبدال البيانات الجديدة
-      final state = container.read(allProductsProvider);
-
-      expect(state.products.first.id, 200);
-      expect(state.isLoading, false);
-      expect(state.errorMessage, isNull);
-    },
-  );
-  
-test(
-  'Old pagination request must not append to new products',
-  () async {
+  test('Old request must not overwrite newer products', () async {
     final repository = FakeProductRepository();
 
     final container = ProviderContainer(
       overrides: [
-        getProductsProvider.overrideWith(
-          (ref) => GetProducts(repository),
-        ),
-        vehicleProvider.overrideWith(
-          FakeVehicleNotifier.new,
-        ),
+        getProductsProvider.overrideWith((ref) => GetProducts(repository)),
+        vehicleProvider.overrideWith2((scope) => FakeVehicleNotifier()),
       ],
     );
 
     addTearDown(container.dispose);
 
-    final notifier =
-        container.read(allProductsProvider.notifier);
+    final notifier = container.read(allProductsProvider.notifier);
+
+    // انتظار التحميل الأولي
+    await Future<void>.delayed(Duration.zero);
+
+    // بدء طلبين متداخلين
+    final oldRequest = notifier.loadProducts();
+    final newRequest = notifier.loadProducts();
+
+    // الطلب الجديد ينتهي أولًا
+    repository.requests[2].complete(_result(200));
+    await newRequest;
+
+    expect(container.read(allProductsProvider).products.first.id, 200);
+
+    // الطلب القديم ينتهي لاحقًا
+    repository.requests[1].complete(_result(100));
+    await oldRequest;
+
+    // لا يُسمح له باستبدال البيانات الجديدة
+    final state = container.read(allProductsProvider);
+
+    expect(state.products.first.id, 200);
+    expect(state.isLoading, false);
+    expect(state.errorMessage, isNull);
+  });
+
+  test('Old pagination request must not append to new products', () async {
+    final repository = FakeProductRepository();
+
+    final container = ProviderContainer(
+      overrides: [
+        getProductsProvider.overrideWith((ref) => GetProducts(repository)),
+        vehicleProvider.overrideWith2((scope) => FakeVehicleNotifier()),
+      ],
+    );
+
+    addTearDown(container.dispose);
+
+    final notifier = container.read(allProductsProvider.notifier);
 
     // انتظار تنفيذ التحميل الأولي
     await Future<void>.delayed(Duration.zero);
 
     // الطلب الأول اكتمل ويحتوي على صفحة ثانية
-    expect(
-      container.read(allProductsProvider).hasNextPage,
-      true,
-    );
+    expect(container.read(allProductsProvider).hasNextPage, true);
 
     // بدء جلب الصفحة الثانية
     final oldPagination = notifier.loadNextPage();
 
-    expect(
-      container.read(allProductsProvider).isLoadingMore,
-      true,
-    );
+    expect(container.read(allProductsProvider).isLoadingMore, true);
 
     // بدء تحميل منتجات جديدة قبل وصول الصفحة القديمة
     final newRequest = notifier.loadProducts();
@@ -170,38 +147,27 @@ test(
     final state = container.read(allProductsProvider);
 
     // يجب ألا تحتوي القائمة على منتجات الطلب القديم
-    expect(
-      state.products.map((product) => product.id).toList(),
-      [200],
-    );
+    expect(state.products.map((product) => product.id).toList(), [200]);
 
     expect(state.currentPage, 1);
     expect(state.isLoading, false);
     expect(state.isLoadingMore, false);
     expect(state.errorMessage, isNull);
-  },
-);
+  });
 
-test(
-  'Old request error must not affect newer successful request',
-  () async {
+  test('Old request error must not affect newer successful request', () async {
     final repository = FakeProductRepository();
 
     final container = ProviderContainer(
       overrides: [
-        getProductsProvider.overrideWith(
-          (ref) => GetProducts(repository),
-        ),
-        vehicleProvider.overrideWith(
-          FakeVehicleNotifier.new,
-        ),
+        getProductsProvider.overrideWith((ref) => GetProducts(repository)),
+        vehicleProvider.overrideWith2((scope) => FakeVehicleNotifier()),
       ],
     );
 
     addTearDown(container.dispose);
 
-    final notifier =
-        container.read(allProductsProvider.notifier);
+    final notifier = container.read(allProductsProvider.notifier);
 
     // انتظار اكتمال التحميل الأولي
     await Future<void>.delayed(Duration.zero);
@@ -215,9 +181,7 @@ test(
     await newRequest;
 
     // الطلب القديم يفشل بعد نجاح الطلب الجديد
-    repository.requests[1].completeError(
-      Exception('Old request failed'),
-    );
+    repository.requests[1].completeError(Exception('Old request failed'));
 
     await oldRequest;
 
@@ -227,7 +191,5 @@ test(
     expect(state.errorMessage, isNull);
     expect(state.isLoading, false);
     expect(state.isLoadingMore, false);
-  },
-);
-
+  });
 }

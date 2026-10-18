@@ -30,8 +30,6 @@ void main() {
     // Assert
     expect(result, categoryTree);
 
-    verify(
-      () => repository.getCategoryTree(),
-    ).called(1);
+    verify(() => repository.getCategoryTree()).called(1);
   });
 }

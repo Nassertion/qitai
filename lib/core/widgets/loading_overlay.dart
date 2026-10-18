@@ -24,9 +24,7 @@ class LoadingOverlay extends StatelessWidget {
         Positioned.fill(
           child: ColoredBox(
             color: Colors.black.withValues(alpha: 0.15),
-            child: const Center(
-              child: CustomLoading(),
-            ),
+            child: const Center(child: CustomLoading()),
           ),
         ),
       ],

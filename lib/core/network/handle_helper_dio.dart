@@ -2,9 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:qitai/core/errors/app_exception.dart';
 
-Future<T> handleDioRequest<T>(
-  Future<T> Function() request,
-) async {
+Future<T> handleDioRequest<T>(Future<T> Function() request) async {
   try {
     return await request();
   } on DioException catch (e) {
@@ -16,23 +14,20 @@ Future<T> handleDioRequest<T>(
 
     throw AppException(
       _getDioErrorMessage(e),
-        statusCode: e.response?.statusCode,
-
+      statusCode: e.response?.statusCode,
     );
   } catch (e, stackTrace) {
-  if (e is AppException) {
-    rethrow;
-  }
+    if (e is AppException) {
+      rethrow;
+    }
 
-  if (kDebugMode) {
-    debugPrint('Unexpected error: $e');
-    debugPrintStack(stackTrace: stackTrace);
-  }
+    if (kDebugMode) {
+      debugPrint('Unexpected error: $e');
+      debugPrintStack(stackTrace: stackTrace);
+    }
 
-  throw const AppException(
-    'حدث خطأ غير متوقع',
-  );
-}
+    throw const AppException('حدث خطأ غير متوقع');
+  }
 }
 
 String _getDioErrorMessage(DioException e) {

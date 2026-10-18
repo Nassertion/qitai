@@ -84,10 +84,7 @@ void main() {
     remoteDataSource = FakeAuthRemoteDataSource();
     tokenStorage = FakeTokenStorage();
 
-    repository = AuthRepositoryImpl(
-      remoteDataSource,
-      tokenStorage,
-    );
+    repository = AuthRepositoryImpl(remoteDataSource, tokenStorage);
   });
 
   group('sendOtp', () {
@@ -100,112 +97,87 @@ void main() {
   });
 
   group('verifyOtp', () {
-    test(
-      'should return session and save access token',
-      () async {
-        final session = AuthSessionModel(
-          accessToken: 'test_token',
-          user: UserModel(
-            id: 2,
-            phone: '0552222222',
-            role: 'user',
-            isActive: true,
-            name: 'User 8MGJ',
-            email: null,
-            createdAt: DateTime.parse(
-              '2026-09-19T16:34:08.000000Z',
-            ),
-            updatedAt: DateTime.parse(
-              '2026-09-19T16:34:08.000000Z',
-            ),
-          ),
-        );
-
-        remoteDataSource.session = session;
-
-        final result = await repository.verifyOtp(
+    test('should return session and save access token', () async {
+      final session = AuthSessionModel(
+        accessToken: 'test_token',
+        user: UserModel(
+          id: 2,
           phone: '0552222222',
-          code: '532275',
-        );
+          role: 'user',
+          isActive: true,
+          name: 'User 8MGJ',
+          email: null,
+          createdAt: DateTime.parse('2026-09-19T16:34:08.000000Z'),
+          updatedAt: DateTime.parse('2026-09-19T16:34:08.000000Z'),
+        ),
+      );
 
-        expect(remoteDataSource.verifyOtpCalled, isTrue);
-        expect(remoteDataSource.receivedPhone, '0552222222');
-        expect(remoteDataSource.receivedCode, '532275');
+      remoteDataSource.session = session;
 
-        expect(tokenStorage.saveCalled, isTrue);
-        expect(tokenStorage.accessToken, 'test_token');
+      final result = await repository.verifyOtp(
+        phone: '0552222222',
+        code: '532275',
+      );
 
-        expect(result.accessToken, 'test_token');
-        expect(result.user.id, 2);
-        expect(result.user.phone, '0552222222');
-      },
-    );
+      expect(remoteDataSource.verifyOtpCalled, isTrue);
+      expect(remoteDataSource.receivedPhone, '0552222222');
+      expect(remoteDataSource.receivedCode, '532275');
+
+      expect(tokenStorage.saveCalled, isTrue);
+      expect(tokenStorage.accessToken, 'test_token');
+
+      expect(result.accessToken, 'test_token');
+      expect(result.user.id, 2);
+      expect(result.user.phone, '0552222222');
+    });
   });
 
   group('logout', () {
-test(
-  'should call remote logout and delete local token',
-  () async {
-    tokenStorage.accessToken = 'test_token';
+    test('should call remote logout and delete local token', () async {
+      tokenStorage.accessToken = 'test_token';
 
-    await repository.logout();
+      await repository.logout();
 
-    expect(tokenStorage.getCalled, isTrue);
-    expect(remoteDataSource.logoutCalled, isTrue);
-    expect(tokenStorage.deleteCalled, isTrue);
-    expect(tokenStorage.accessToken, isNull);
-  },
-);
+      expect(tokenStorage.getCalled, isTrue);
+      expect(remoteDataSource.logoutCalled, isTrue);
+      expect(tokenStorage.deleteCalled, isTrue);
+      expect(tokenStorage.accessToken, isNull);
+    });
 
- test(
-  'should delete local token even when remote logout fails',
-  () async {
-    tokenStorage.accessToken = 'test_token';
-    remoteDataSource.logoutException = Exception('Network error');
+    test('should delete local token even when remote logout fails', () async {
+      tokenStorage.accessToken = 'test_token';
+      remoteDataSource.logoutException = Exception('Network error');
 
-    await expectLater(
-      repository.logout(),
-      throwsA(isA<Exception>()),
-    );
+      await expectLater(repository.logout(), throwsA(isA<Exception>()));
 
-    expect(remoteDataSource.logoutCalled, isTrue);
-    expect(tokenStorage.deleteCalled, isTrue);
-    expect(tokenStorage.accessToken, isNull);
-  },
-);
+      expect(remoteDataSource.logoutCalled, isTrue);
+      expect(tokenStorage.deleteCalled, isTrue);
+      expect(tokenStorage.accessToken, isNull);
+    });
 
-    test(
-      'should do nothing when there is no access token',
-      () async {
-        await repository.logout();
+    test('should do nothing when there is no access token', () async {
+      await repository.logout();
 
-        expect(tokenStorage.getCalled, isTrue);
-        expect(remoteDataSource.logoutCalled, isFalse);
-        expect(tokenStorage.deleteCalled, isFalse);
-      },
-    );
+      expect(tokenStorage.getCalled, isTrue);
+      expect(remoteDataSource.logoutCalled, isFalse);
+      expect(tokenStorage.deleteCalled, isFalse);
+    });
   });
   group('isAuthenticated', () {
-  test(
-    'should return true when access token exists',
-    () async {
+    test('should return true when access token exists', () async {
       tokenStorage.accessToken = 'test_token';
 
       final result = await repository.isAuthenticated();
 
       expect(result, isTrue);
       expect(tokenStorage.getCalled, isTrue);
-    },
-  );
+    });
 
-  test(
-    'should return false when access token does not exist',
-    () async {
+    test('should return false when access token does not exist', () async {
       final result = await repository.isAuthenticated();
 
       expect(result, isFalse);
       expect(tokenStorage.getCalled, isTrue);
-    },
-  );
-});
+    });
+  });
 }

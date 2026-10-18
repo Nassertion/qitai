@@ -21,7 +21,7 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        vehicleProvider.overrideWith(VehicleNotifier.new),
+        vehicleProvider.overrideWith2((scope) => VehicleNotifier()),
         searchProvider.overrideWith(SearchNotifier.new),
       ],
       child: const _SearchContent(),
