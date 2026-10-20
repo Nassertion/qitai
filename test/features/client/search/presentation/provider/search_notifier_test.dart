@@ -24,13 +24,24 @@ class FakeVehicleNotifier extends VehicleNotifier {
   VehicleState build() => const VehicleState();
 }
 
+class SuggestionRequest {
+  SuggestionRequest(this.query);
+
+  final String query;
+  final completer = Completer<List<SearchSuggestion>>();
+}
+
 class FakeSearchSuggestionsRepository
     implements SearchSuggestionRepository {
+  final requests = <SuggestionRequest>[];
+
   @override
   Future<List<SearchSuggestion>> getSuggestions({
     required String query,
-  }) async {
-    return [];
+  }) {
+    final request = SuggestionRequest(query);
+    requests.add(request);
+    return request.completer.future;
   }
 }
 
@@ -42,7 +53,6 @@ class ProductRequest {
 
   final String? query;
   final int page;
-
   final completer = Completer<ProductPagination>();
 }
 
@@ -65,7 +75,6 @@ class FakeProductRepository implements ProductRepository {
     );
 
     requests.add(request);
-
     return request.completer.future;
   }
 }
@@ -96,124 +105,201 @@ ProductPagination _result(
       total: 20,
     );
 
+ProviderContainer _createContainer(
+  FakeProductRepository products,
+  FakeSearchSuggestionsRepository suggestions,
+) {
+  return ProviderContainer(
+    overrides: [
+      getProductsProvider.overrideWith(
+        (ref) => GetProducts(products),
+      ),
+      getSearchSuggestionsProvider.overrideWith(
+        (ref) => GetSearchSuggestions(suggestions),
+      ),
+      vehicleProvider.overrideWith(
+        FakeVehicleNotifier.new,
+      ),
+    ],
+  );
+}
+
 void main() {
   test(
     'Old search pagination must not append to new search results',
     () async {
-      final repository = FakeProductRepository();
+      final products = FakeProductRepository();
+      final suggestions = FakeSearchSuggestionsRepository();
 
-      final container = ProviderContainer(
-        overrides: [
-          getProductsProvider.overrideWith(
-            (ref) => GetProducts(repository),
-          ),
-          getSearchSuggestionsProvider.overrideWith(
-            (ref) => GetSearchSuggestions(
-              FakeSearchSuggestionsRepository(),
-            ),
-          ),
-          vehicleProvider.overrideWith(
-            FakeVehicleNotifier.new,
-          ),
-        ],
-      );
-
+      final container = _createContainer(products, suggestions);
       addTearDown(container.dispose);
 
-      // Keep the autoDispose provider active.
-      final subscription = container.listen(
-        searchProvider,
-        (_, _) {},
-      );
-
+      final subscription = container.listen(searchProvider, (_, _) {});
       addTearDown(subscription.close);
 
-      final notifier = container.read(
-        searchProvider.notifier,
-      );
+      final notifier = container.read(searchProvider.notifier);
 
-      // First search: TOYOTA.
       final firstSearch = notifier.submitSearch(
         customQuery: 'TOYOTA',
       );
 
-      expect(repository.requests.length, 1);
-      expect(repository.requests[0].query, 'TOYOTA');
-      expect(repository.requests[0].page, 1);
+      expect(products.requests.length, 1);
+      expect(products.requests[0].query, 'TOYOTA');
+      expect(products.requests[0].page, 1);
 
-      repository.requests[0].completer.complete(
-        _result(10),
-      );
-
+      products.requests[0].completer.complete(_result(10));
       await firstSearch;
 
-      expect(
-        container.read(searchProvider).products.first.id,
-        10,
-      );
+      expect(container.read(searchProvider).products.first.id, 10);
+      expect(container.read(searchProvider).hasNextPage, true);
 
-      expect(
-        container.read(searchProvider).hasNextPage,
-        true,
-      );
-
-      // Start loading page 2 of TOYOTA.
       final oldPagination = notifier.loadNextPage();
 
-      expect(repository.requests.length, 2);
-      expect(repository.requests[1].query, 'TOYOTA');
-      expect(repository.requests[1].page, 2);
+      expect(products.requests.length, 2);
+      expect(products.requests[1].query, 'TOYOTA');
+      expect(products.requests[1].page, 2);
 
-      expect(
-        container.read(searchProvider).isLoadingMore,
-        true,
-      );
-
-      // Start a new search before old pagination returns.
       final newSearch = notifier.submitSearch(
         customQuery: 'HONDA',
       );
 
-      expect(repository.requests.length, 3);
-      expect(repository.requests[2].query, 'HONDA');
-      expect(repository.requests[2].page, 1);
+      expect(products.requests.length, 3);
+      expect(products.requests[2].query, 'HONDA');
+      expect(products.requests[2].page, 1);
 
-      // HONDA responds first.
-      repository.requests[2].completer.complete(
-        _result(200),
-      );
-
+      products.requests[2].completer.complete(_result(200));
       await newSearch;
 
-      expect(
-        container
-            .read(searchProvider)
-            .products
-            .map((product) => product.id)
-            .toList(),
-        [200],
-      );
-
-      // Old TOYOTA pagination responds late.
-      repository.requests[1].completer.complete(
+      products.requests[1].completer.complete(
         _result(100, page: 2),
       );
-
       await oldPagination;
 
       final state = container.read(searchProvider);
 
-      // Old results must not be appended.
       expect(
         state.products.map((product) => product.id).toList(),
         [200],
       );
-
       expect(state.query, 'HONDA');
       expect(state.currentPage, 1);
       expect(state.isProductsLoading, false);
       expect(state.isLoadingMore, false);
       expect(state.errorMessage, isNull);
+    },
+  );
+
+  test(
+    'Editing query must invalidate an in-flight product search',
+    () async {
+      final products = FakeProductRepository();
+      final suggestions = FakeSearchSuggestionsRepository();
+
+      final container = _createContainer(products, suggestions);
+      addTearDown(container.dispose);
+
+      final subscription = container.listen(searchProvider, (_, _) {});
+      addTearDown(subscription.close);
+
+      final notifier = container.read(searchProvider.notifier);
+
+      final oldSearch = notifier.submitSearch(
+        customQuery: 'TOYOTA',
+      );
+
+      expect(products.requests.length, 1);
+      expect(container.read(searchProvider).isProductsLoading, true);
+
+      notifier.onQueryChanged('HONDA');
+
+      final editingState = container.read(searchProvider);
+
+      expect(editingState.query, 'HONDA');
+      expect(editingState.products, isEmpty);
+      expect(editingState.hasSearched, false);
+
+      products.requests[0].completer.complete(_result(100));
+      await oldSearch;
+
+      final state = container.read(searchProvider);
+
+      expect(state.query, 'HONDA');
+      expect(state.products, isEmpty);
+      expect(state.hasSearched, false);
+      expect(state.isProductsLoading, false);
+      expect(state.isLoadingMore, false);
+      expect(state.errorMessage, isNull);
+    },
+  );
+
+  test(
+    'Old suggestion error must not affect newer query',
+    () async {
+      final products = FakeProductRepository();
+      final suggestions = FakeSearchSuggestionsRepository();
+
+      final container = _createContainer(products, suggestions);
+      addTearDown(container.dispose);
+
+      final subscription = container.listen(searchProvider, (_, _) {});
+      addTearDown(subscription.close);
+
+      final notifier = container.read(searchProvider.notifier);
+
+      // Start the old TOYOTA suggestions request.
+      notifier.onQueryChanged('TOYOTA');
+
+      final oldSuggestions = notifier.loadSuggestions('TOYOTA');
+
+      expect(suggestions.requests.length, 1);
+      expect(suggestions.requests[0].query, 'TOYOTA');
+
+      // User changes the text to HONDA.
+      notifier.onQueryChanged('HONDA');
+
+      expect(container.read(searchProvider).query, 'HONDA');
+      expect(container.read(searchProvider).errorMessage, isNull);
+
+      // Let HONDA debounce fire and start its own request.
+      await Future<void>.delayed(
+        const Duration(milliseconds: 400),
+      );
+
+      expect(suggestions.requests.length, 2);
+      expect(suggestions.requests[1].query, 'HONDA');
+
+      // The new request is legitimately loading.
+      expect(
+        container.read(searchProvider).isSuggestionsLoading,
+        true,
+      );
+
+      // The old TOYOTA request fails.
+      suggestions.requests[0].completer.completeError(
+        Exception('Old suggestions request failed'),
+      );
+      await oldSuggestions;
+
+      final stateAfterOldError = container.read(searchProvider);
+
+      expect(stateAfterOldError.query, 'HONDA');
+      expect(stateAfterOldError.errorMessage, isNull);
+
+      // HONDA may continue loading despite the old failure.
+      expect(stateAfterOldError.isSuggestionsLoading, true);
+
+      // The new HONDA request succeeds.
+      suggestions.requests[1].completer.complete([]);
+
+      await Future<void>.delayed(Duration.zero);
+
+      final finalState = container.read(searchProvider);
+
+      expect(finalState.query, 'HONDA');
+      expect(finalState.errorMessage, isNull);
+      expect(finalState.isSuggestionsLoading, false);
+      expect(finalState.hasSearched, false);
+      expect(finalState.products, isEmpty);
     },
   );
 }

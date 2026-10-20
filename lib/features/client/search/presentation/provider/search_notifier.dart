@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
 import 'package:qitai/features/client/search/domain/usecases/get_search_suggestions.dart';
@@ -41,12 +42,16 @@ class SearchNotifier extends _$SearchNotifier {
   void onQueryChanged(String value) {
     final query = value.trim();
 
+    // Invalidate any product request started before this edit.
+    _searchRequestId++;
+
     state = state.copyWith(
       query: value,
       products: [],
       hasSearched: false,
       currentPage: 1,
       lastPage: 1,
+      isProductsLoading: false,
       isLoadingMore: false,
       clearErrorMessage: true,
     );
@@ -84,7 +89,10 @@ class SearchNotifier extends _$SearchNotifier {
         isSuggestionsLoading: false,
       );
     } catch (e) {
+      debugPrint('SUGGESTIONS ERROR: current=${state.query}, request=$query');
       if (!ref.mounted) return;
+
+      if (state.query.trim() != query) return;
 
       state = state.copyWith(
         isSuggestionsLoading: false,
@@ -185,7 +193,7 @@ class SearchNotifier extends _$SearchNotifier {
     if (state.isLoadingMore) return;
     if (!state.hasNextPage) return;
 
-    // Capture the active search before starting pagination.
+    // Keep pagination tied to the current search.
     final requestId = _searchRequestId;
 
     final value = state.query.trim().toUpperCase();
@@ -215,7 +223,6 @@ class SearchNotifier extends _$SearchNotifier {
         page: nextPage,
       );
 
-      // Ignore pagination belonging to an older search.
       if (!ref.mounted || requestId != _searchRequestId) {
         return;
       }
@@ -227,7 +234,6 @@ class SearchNotifier extends _$SearchNotifier {
         isLoadingMore: false,
       );
     } catch (e) {
-      // An old pagination error must not affect a new search.
       if (!ref.mounted || requestId != _searchRequestId) {
         return;
       }
