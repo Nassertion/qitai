@@ -29,11 +29,11 @@ class SearchNotifier extends _$SearchNotifier {
       _debounce?.cancel();
     });
 
-ref.listen<VehicleState>(vehicleProvider, (previous, next) {
-  if (!hasVehicleFiltersChanged(previous, next)) return;
+    ref.listen<VehicleState>(vehicleProvider, (previous, next) {
+      if (!hasVehicleFiltersChanged(previous, next)) return;
 
-  submitSearch();
-});
+      submitSearch();
+    });
 
     return const SearchState();
   }
@@ -75,7 +75,8 @@ ref.listen<VehicleState>(vehicleProvider, (previous, next) {
 
     try {
       final suggestions = await getSuggestions(query: query);
-if (!ref.mounted) return;
+
+      if (!ref.mounted) return;
       if (state.query.trim() != query) return;
 
       state = state.copyWith(
@@ -84,6 +85,7 @@ if (!ref.mounted) return;
       );
     } catch (e) {
       if (!ref.mounted) return;
+
       state = state.copyWith(
         isSuggestionsLoading: false,
         errorMessage: e.toString(),
@@ -100,30 +102,33 @@ if (!ref.mounted) return;
     final brandId = classificationState.selectedCarBrand?.id;
     final modelId = classificationState.selectedModel?.id;
     final year = classificationState.selectedCarYear?.year;
+
     // final finalCategoryId = categoryId ?? state.categoryId;
 
     _debounce?.cancel();
 
     final hasText = value.isNotEmpty;
     final hasVehicleFilter = brandId != null || modelId != null || year != null;
+
     // final hasCategoryFilter = finalCategoryId != null;
-if (!hasText && !hasVehicleFilter) {
-  _searchRequestId++;
 
-  state = state.copyWith(
-    suggestions: [],
-    products: [],
-    hasSearched: false,
-    isSuggestionsLoading: false,
-    isProductsLoading: false,
-    isLoadingMore: false,
-    currentPage: 1,
-    lastPage: 1,
-    clearErrorMessage: true,
-  );
+    if (!hasText && !hasVehicleFilter) {
+      _searchRequestId++;
 
-  return;
-}
+      state = state.copyWith(
+        suggestions: [],
+        products: [],
+        hasSearched: false,
+        isSuggestionsLoading: false,
+        isProductsLoading: false,
+        isLoadingMore: false,
+        currentPage: 1,
+        lastPage: 1,
+        clearErrorMessage: true,
+      );
+
+      return;
+    }
 
     final requestId = ++_searchRequestId;
 
@@ -180,6 +185,9 @@ if (!hasText && !hasVehicleFilter) {
     if (state.isLoadingMore) return;
     if (!state.hasNextPage) return;
 
+    // Capture the active search before starting pagination.
+    final requestId = _searchRequestId;
+
     final value = state.query.trim().toUpperCase();
 
     final classificationState = ref.read(vehicleProvider);
@@ -187,6 +195,7 @@ if (!hasText && !hasVehicleFilter) {
     final brandId = classificationState.selectedCarBrand?.id;
     final modelId = classificationState.selectedModel?.id;
     final year = classificationState.selectedCarYear?.year;
+
     // final finalCategoryId = state.categoryId;
 
     final nextPage = state.currentPage + 1;
@@ -206,7 +215,10 @@ if (!hasText && !hasVehicleFilter) {
         page: nextPage,
       );
 
-      if (!ref.mounted) return;
+      // Ignore pagination belonging to an older search.
+      if (!ref.mounted || requestId != _searchRequestId) {
+        return;
+      }
 
       state = state.copyWith(
         products: [...state.products, ...result.products],
@@ -215,7 +227,10 @@ if (!hasText && !hasVehicleFilter) {
         isLoadingMore: false,
       );
     } catch (e) {
-      if (!ref.mounted) return;
+      // An old pagination error must not affect a new search.
+      if (!ref.mounted || requestId != _searchRequestId) {
+        return;
+      }
 
       state = state.copyWith(isLoadingMore: false, errorMessage: e.toString());
     }
