@@ -1,3 +1,4 @@
+
 import 'package:qitai/features/client/categories/presentation/provider/category_product_state.dart';
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
@@ -12,19 +13,20 @@ part 'category_product_notifier.g.dart';
 class CategoryProductNotifier extends _$CategoryProductNotifier {
   late final GetProducts getProducts;
 
-  // late final int _parentCategoryId;
+  int _requestVersion = 0;
 
   @override
   CategoryProductState build(int categoryId) {
     getProducts = ref.read(getProductsProvider);
 
-    // _parentCategoryId = categoryId;
+    ref.listen<VehicleState>(
+      vehicleProvider,
+      (previous, next) {
+        if (!hasVehicleFiltersChanged(previous, next)) return;
 
-   ref.listen<VehicleState>(vehicleProvider, (previous, next) {
-  if (!hasVehicleFiltersChanged(previous, next)) return;
-
-  loadProducts();
-});
+        loadProducts();
+      },
+    );
 
     Future.microtask(loadProducts);
 
@@ -35,6 +37,8 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
   }
 
   Future<void> loadProducts() async {
+    final requestVersion = ++_requestVersion;
+
     final vehicleState = ref.read(vehicleProvider);
 
     final brandId = vehicleState.selectedCarBrand?.id;
@@ -48,39 +52,46 @@ class CategoryProductNotifier extends _$CategoryProductNotifier {
       lastPage: 1,
       clearErrorMessage: true,
     );
-try {
-  final result = await getProducts(
-    brandId: brandId,
-    modelId: modelId,
-    year: year,
-    categoryId: state.selectedCategoryId,
-    page: 1,
-  );
 
-  if (!ref.mounted) return;
+    try {
+      final result = await getProducts(
+        brandId: brandId,
+        modelId: modelId,
+        year: year,
+        categoryId: state.selectedCategoryId,
+        page: 1,
+      );
 
-  state = state.copyWith(
-    products: result.products,
-    currentPage: result.currentPage,
-    lastPage: result.lastPage,
-    isLoading: false,
-    isLoadingMore: false,
-  );
-} catch (e) {
-  if (!ref.mounted) return;
+      if (!ref.mounted || requestVersion != _requestVersion) {
+        return;
+      }
 
-  state = state.copyWith(
-    isLoading: false,
-    isLoadingMore: false,
-    errorMessage: e.toString(),
-  );
-}
+      state = state.copyWith(
+        products: result.products,
+        currentPage: result.currentPage,
+        lastPage: result.lastPage,
+        isLoading: false,
+        isLoadingMore: false,
+      );
+    } catch (e) {
+      if (!ref.mounted || requestVersion != _requestVersion) {
+        return;
+      }
+
+      state = state.copyWith(
+        isLoading: false,
+        isLoadingMore: false,
+        errorMessage: e.toString(),
+      );
+    }
   }
 
   Future<void> loadNextPage() async {
     if (state.isLoading) return;
     if (state.isLoadingMore) return;
     if (!state.hasNextPage) return;
+
+    final requestVersion = _requestVersion;
 
     final vehicleState = ref.read(vehicleProvider);
 
@@ -95,34 +106,35 @@ try {
       clearErrorMessage: true,
     );
 
-try {
-  final result = await getProducts(
-    brandId: brandId,
-    modelId: modelId,
-    year: year,
-    categoryId: state.selectedCategoryId,
-    page: nextPage,
-  );
+    try {
+      final result = await getProducts(
+        brandId: brandId,
+        modelId: modelId,
+        year: year,
+        categoryId: state.selectedCategoryId,
+        page: nextPage,
+      );
 
-  if (!ref.mounted) return;
+      if (!ref.mounted || requestVersion != _requestVersion) {
+        return;
+      }
 
-  state = state.copyWith(
-    products: [
-      ...state.products,
-      ...result.products,
-    ],
-    currentPage: result.currentPage,
-    lastPage: result.lastPage,
-    isLoadingMore: false,
-  );
-} catch (e) {
-  if (!ref.mounted) return;
+      state = state.copyWith(
+        products: [...state.products, ...result.products],
+        currentPage: result.currentPage,
+        lastPage: result.lastPage,
+        isLoadingMore: false,
+      );
+    } catch (e) {
+      if (!ref.mounted || requestVersion != _requestVersion) {
+        return;
+      }
 
-  state = state.copyWith(
-    isLoadingMore: false,
-    errorMessage: e.toString(),
-  );
-}
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: e.toString(),
+      );
+    }
   }
 
   Future<void> selectSection(int categoryId) async {

@@ -114,20 +114,6 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
 
     if (!mounted) return;
 
-    final vehicleState = ref.read(vehicleProvider);
-
-    debugPrint(
-      'ALL PRODUCTS DEFAULT: '
-      'brand=$brandId, model=$modelId, year=$yearId',
-    );
-
-    debugPrint(
-      'ALL PRODUCTS FILTER: '
-      'brand=${vehicleState.selectedCarBrand?.id}, '
-      'model=${vehicleState.selectedModel?.id}, '
-      'year=${vehicleState.selectedCarYear?.id}, '
-      'error=${vehicleState.errorMessage}',
-    );
     setState(() {
       _isInitializing = false;
     });
