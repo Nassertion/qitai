@@ -59,7 +59,7 @@ final class CategoryProductsCountProvider
 }
 
 String _$categoryProductsCountHash() =>
-    r'e43a6d6748f0e0f61d8ce778eb802414038b39ba';
+    r'994ace60b01f93ffd91987da87ffaaf4a7ba7a79';
 
 final class CategoryProductsCountFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<int>, int> {

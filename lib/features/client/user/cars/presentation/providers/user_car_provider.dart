@@ -38,7 +38,8 @@ GetUserCars getUserCars(Ref ref) {
   return GetUserCars(repository);
 }
 
-@riverpod
+// # User Cars - Keep Alive
+@Riverpod(keepAlive: true)
 Future<List<UserCar>> userCars(Ref ref) {
   final getUserCars = ref.watch(getUserCarsProvider);
   return getUserCars();

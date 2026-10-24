@@ -203,7 +203,7 @@ final class UserCarsProvider
         argument: null,
         retry: null,
         name: r'userCarsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -223,7 +223,7 @@ final class UserCarsProvider
   }
 }
 
-String _$userCarsHash() => r'ff25d9bb340532f3cf7238574d6d9ef4b95aba75';
+String _$userCarsHash() => r'04a27517d6135216e3d0f3aea4ee17321ec74698';
 
 @ProviderFor(deleteUserCar)
 final deleteUserCarProvider = DeleteUserCarProvider._();
