@@ -12,7 +12,6 @@ import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
-
 import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
 import 'package:qitai/features/client/home/presentation/widgets/add_car_widget.dart';
@@ -27,6 +26,7 @@ import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_not
 class ClientHomeScreen extends ConsumerWidget {
   const ClientHomeScreen({super.key});
 
+  // # Set Default Car
   Future<void> _setDefaultCar(WidgetRef ref, int carId) async {
     try {
       await ref.read(setDefaultUserCarProvider)(carId);
@@ -35,6 +35,7 @@ class ClientHomeScreen extends ConsumerWidget {
     } catch (_) {}
   }
 
+  // # Add Car Widget
   Widget _buildAddCarItem({
     required BuildContext context,
     required WidgetRef ref,
@@ -59,51 +60,61 @@ class ClientHomeScreen extends ConsumerWidget {
     );
   }
 
+  // # Cars Section
   Widget _buildCarsSection({
     required BuildContext context,
     required WidgetRef ref,
     required AsyncValue<List<dynamic>> userCarsAsync,
   }) {
     return userCarsAsync.when(
-      loading: () =>
-          const SizedBox(height: 92, child: Center(child: CustomLoading())),
+      // # Show Loading During Refresh
+      skipLoadingOnRefresh: false,
+
+      loading: () => const SizedBox(height: 92, child: CustomLoading()),
+
       error: (error, stack) => Row(
         textDirection: TextDirection.rtl,
         children: [_buildAddCarItem(context: context, ref: ref)],
       ),
+
       data: (cars) {
         final sortedCars = [
           ...cars,
         ]..sort((a, b) => (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0));
 
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            textDirection: TextDirection.rtl,
-            children: [
-              const SizedBox(width: 14),
+        return Align(
+          alignment: AlignmentGeometry.centerStart,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
 
-              ...sortedCars.map(
-                (car) => Padding(
-                  padding: const EdgeInsetsDirectional.only(end: 12),
-                  child: HomeCarItem(
-                    car: car,
-                    onTap: () => _setDefaultCar(ref, car.id),
+            child: Row(
+              textDirection: TextDirection.rtl,
+              children: [
+                const SizedBox(width: 14),
+
+                ...sortedCars.map(
+                  (car) => Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 12),
+                    child: HomeCarItem(
+                      car: car,
+                      onTap: () => _setDefaultCar(ref, car.id),
+                    ),
                   ),
                 ),
-              ),
 
-              Padding(
-                padding: const EdgeInsetsDirectional.only(end: 12),
-                child: _buildAddCarItem(context: context, ref: ref),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 12),
+                  child: _buildAddCarItem(context: context, ref: ref),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
+  // # Build Home Screen
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
@@ -113,16 +124,19 @@ class ClientHomeScreen extends ConsumerWidget {
     final productsState = ref.watch(allProductsProvider);
 
     final userCarsAsync = isAuthenticated ? ref.watch(userCarsProvider) : null;
+
     final cars = userCarsAsync?.asData?.value ?? [];
     final hasDefaultCar = cars.any((car) => car.isDefault);
     final homeProducts = productsState.products.take(8).toList();
 
+    // # Authentication Listener
     ref.listen(authProvider, (previous, next) {
       if (next is Unauthenticated) {
         ref.read(vehicleProvider.notifier).clearAll();
       }
     });
 
+    // # Default Car Synchronization
     if (isAuthenticated) {
       ref.listen(userCarsProvider, (previous, next) {
         next.whenData((cars) {
@@ -164,20 +178,26 @@ class ClientHomeScreen extends ConsumerWidget {
         });
       });
     }
+
     return Scaffold(
       appBar: HomeAppBarWidget(),
+
+      // # Pull To Refresh
       body: RefreshIndicator(
         backgroundColor: AppColors.inputFieldAndCards,
         color: AppColors.actionText,
         onRefresh: () async {
+          // # Refresh Categories
           ref.invalidate(categoriesProvider);
 
           final categoriesFuture = ref.read(categoriesProvider.future);
 
+          // # Refresh Products
           final productsFuture = ref
               .read(allProductsProvider.notifier)
               .loadProducts();
 
+          // # Refresh Cars
           if (isAuthenticated) {
             ref.invalidate(userCarsProvider);
           }
@@ -190,8 +210,10 @@ class ClientHomeScreen extends ConsumerWidget {
 
           await Future.wait(futures);
         },
+
         child: CustomScrollView(
           slivers: [
+            // # Search And Cars
             SliverToBoxAdapter(
               child: Column(
                 children: [
@@ -254,12 +276,17 @@ class ClientHomeScreen extends ConsumerWidget {
               ),
             ),
 
+            // # Categories Section
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 95,
                 width: 80,
                 child: categoriesAsync.when(
+                  // # Show Loading During Refresh
+                  skipLoadingOnRefresh: false,
+
                   loading: () => const CustomLoading(),
+
                   error: (error, stack) => Center(
                     child: Text(
                       error.toString(),
@@ -268,6 +295,7 @@ class ClientHomeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
+
                   data: (categories) => ListView.separated(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     scrollDirection: Axis.horizontal,
@@ -304,6 +332,7 @@ class ClientHomeScreen extends ConsumerWidget {
               ),
             ),
 
+            // # Products Section Header
             SliverToBoxAdapter(
               child: Column(
                 children: [
@@ -319,6 +348,7 @@ class ClientHomeScreen extends ConsumerWidget {
               ),
             ),
 
+            // # Products Loading
             if (productsState.isLoading)
               const SliverToBoxAdapter(
                 child: Center(
@@ -328,10 +358,12 @@ class ClientHomeScreen extends ConsumerWidget {
                   ),
                 ),
               )
+            // # Products Error
             else if (productsState.errorMessage != null)
               SliverToBoxAdapter(
                 child: Center(child: Text(productsState.errorMessage!)),
               )
+            // # Empty Products
             else if (homeProducts.isEmpty)
               const SliverToBoxAdapter(
                 child: Center(
@@ -341,6 +373,7 @@ class ClientHomeScreen extends ConsumerWidget {
                   ),
                 ),
               )
+            // # Products Grid
             else
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
@@ -370,6 +403,7 @@ class ClientHomeScreen extends ConsumerWidget {
   }
 }
 
+// # Category Icons
 // temp only
 String getCategoryIcon(String name) {
   switch (name) {

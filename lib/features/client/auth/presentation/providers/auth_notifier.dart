@@ -1,7 +1,10 @@
+
 import 'package:qitai/core/errors/app_exception.dart';
 import 'package:qitai/core/network/auth_session_events.dart';
 import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
+import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'auth_provider.dart';
 import 'auth_state.dart';
 
@@ -9,21 +12,28 @@ part 'auth_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
-@override
-AuthState build() {
-  final sessionEvents = ref.read(authSessionEventsProvider);
+  // # Initialize Auth
+  @override
+  AuthState build() {
+    final sessionEvents = ref.read(authSessionEventsProvider);
 
-  sessionEvents.registerSessionExpiredHandler(
-    _handleUnauthorized,
-  );
+    sessionEvents.registerSessionExpiredHandler(
+      _handleUnauthorized,
+    );
 
-  ref.onDispose(
-    sessionEvents.unregisterSessionExpiredHandler,
-  );
+    ref.onDispose(
+      sessionEvents.unregisterSessionExpiredHandler,
+    );
 
-  return const AuthInitial();
-}
+    return const AuthInitial();
+  }
 
+  // # Clear Account Cars Cache
+  void _clearUserCarsCache() {
+    ref.invalidate(userCarsProvider);
+  }
+
+  // # Initialize Session
   Future<void> initialize() async {
     final repository = ref.read(authRepositoryProvider);
 
@@ -32,6 +42,7 @@ AuthState build() {
     if (!isAuthenticated) {
       ref.read(currentUserProvider.notifier).clearUser();
       state = const Unauthenticated();
+      _clearUserCarsCache();
       return;
     }
 
@@ -40,45 +51,65 @@ AuthState build() {
 
       ref.read(currentUserProvider.notifier).setUser(user);
 
+      _clearUserCarsCache();
       state = const Authenticated();
     } on AppException catch (e) {
       if (e.statusCode == 401) {
         await repository.clearSession();
 
         ref.read(currentUserProvider.notifier).clearUser();
-
         state = const Unauthenticated();
+        _clearUserCarsCache();
         return;
       }
+
+      _clearUserCarsCache();
       state = const Authenticated();
     } catch (_) {
+      _clearUserCarsCache();
       state = const Authenticated();
     }
   }
-Future<void> _handleUnauthorized() async {
-  try {
-    await ref.read(authRepositoryProvider).clearSession();
-  } finally {
-    ref.read(currentUserProvider.notifier).clearUser();
-    state = const Unauthenticated();
+
+  // # Handle Session Expiration
+  Future<void> _handleUnauthorized() async {
+    try {
+      await ref.read(authRepositoryProvider).clearSession();
+    } finally {
+      ref.read(currentUserProvider.notifier).clearUser();
+      state = const Unauthenticated();
+      _clearUserCarsCache();
+    }
   }
-}
+
+  // # Send OTP
   Future<void> sendOtp(String phone) {
     final sendOtp = ref.read(sendOtpProvider);
 
     return sendOtp(phone);
   }
 
-  Future<void> verifyOtp({required String phone, required String code}) async {
+  // # Verify OTP
+  Future<void> verifyOtp({
+    required String phone,
+    required String code,
+  }) async {
     final verifyOtp = ref.read(verifyOtpProvider);
 
-    final session = await verifyOtp(phone: phone, code: code);
+    final session = await verifyOtp(
+      phone: phone,
+      code: code,
+    );
 
     ref.read(currentUserProvider.notifier).setUser(session.user);
+
+    // # Fetch Cars For New Session
+    _clearUserCarsCache();
 
     state = const Authenticated();
   }
 
+  // # Logout
   Future<void> logout() async {
     try {
       final logout = ref.read(logoutProvider);
@@ -88,6 +119,9 @@ Future<void> _handleUnauthorized() async {
       ref.read(currentUserProvider.notifier).clearUser();
 
       state = const Unauthenticated();
+
+      // # Prevent Previous Account Cars From Being Reused
+      _clearUserCarsCache();
     }
   }
 }
