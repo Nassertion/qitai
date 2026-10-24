@@ -8,7 +8,7 @@ import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_pro
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'vehicles_notifier.g.dart';
+part 'vehicle_notifier.g.dart';
 
 @riverpod
 class VehicleNotifier extends _$VehicleNotifier {
@@ -16,10 +16,13 @@ class VehicleNotifier extends _$VehicleNotifier {
   late final GetCarModels getCarModels;
   late final GetCarYears getCarYears;
 
+  // # Request IDs
+  int _brandsRequestId = 0;
   int _modelsRequestId = 0;
   int _yearsRequestId = 0;
   int _vehicleByIdsRequestId = 0;
 
+  // # Build
   @override
   VehicleState build() {
     getCarBrands = ref.read(getCarBrandsProvider);
@@ -27,6 +30,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     getCarYears = ref.read(getCarYearsProvider);
 
     ref.onDispose(() {
+      _brandsRequestId++;
       _modelsRequestId++;
       _yearsRequestId++;
       _vehicleByIdsRequestId++;
@@ -35,20 +39,23 @@ class VehicleNotifier extends _$VehicleNotifier {
     return const VehicleState();
   }
 
+  // # Load Brands
   Future<void> loadBrands() async {
-    state = state.copyWith(
-      isBrandsLoading: true,
-      clearErrorMessage: true,
-    );
+    final requestId = ++_brandsRequestId;
+
+    state = state.copyWith(isBrandsLoading: true, clearErrorMessage: true);
 
     try {
       final brands = await getCarBrands();
 
-      state = state.copyWith(
-        carBrands: brands,
-        isBrandsLoading: false,
-      );
+      // # Ignore Stale Response
+      if (requestId != _brandsRequestId) return;
+
+      state = state.copyWith(carBrands: brands, isBrandsLoading: false);
     } catch (e) {
+      // # Ignore Stale Error
+      if (requestId != _brandsRequestId) return;
+
       state = state.copyWith(
         isBrandsLoading: false,
         errorMessage: e.toString(),
@@ -56,6 +63,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     }
   }
 
+  // # Select Brand
   Future<void> selectBrand(CarBrand carBrand) async {
     _vehicleByIdsRequestId++;
 
@@ -83,10 +91,7 @@ class VehicleNotifier extends _$VehicleNotifier {
         return;
       }
 
-      state = state.copyWith(
-        models: models,
-        isModelsLoading: false,
-      );
+      state = state.copyWith(models: models, isModelsLoading: false);
     } catch (e) {
       if (requestId != _modelsRequestId ||
           state.selectedCarBrand?.id != carBrand.id) {
@@ -100,6 +105,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     }
   }
 
+  // # Select Model
   Future<void> selectModel(CarModel model) async {
     _vehicleByIdsRequestId++;
 
@@ -118,28 +124,21 @@ class VehicleNotifier extends _$VehicleNotifier {
     try {
       final years = await getCarYears(model.id);
 
-      if (requestId != _yearsRequestId ||
-          state.selectedModel?.id != model.id) {
+      if (requestId != _yearsRequestId || state.selectedModel?.id != model.id) {
         return;
       }
 
-      state = state.copyWith(
-        carYears: years,
-        isYearsLoading: false,
-      );
+      state = state.copyWith(carYears: years, isYearsLoading: false);
     } catch (e) {
-      if (requestId != _yearsRequestId ||
-          state.selectedModel?.id != model.id) {
+      if (requestId != _yearsRequestId || state.selectedModel?.id != model.id) {
         return;
       }
 
-      state = state.copyWith(
-        isYearsLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isYearsLoading: false, errorMessage: e.toString());
     }
   }
 
+  // # Select Car Year
   void selectCarYear(CarYear carYear) {
     _vehicleByIdsRequestId++;
     _yearsRequestId++;
@@ -153,6 +152,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     );
   }
 
+  // # Clear Brand
   void clearBrand() {
     _vehicleByIdsRequestId++;
     _modelsRequestId++;
@@ -171,6 +171,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     );
   }
 
+  // # Clear Model
   void clearModel() {
     _vehicleByIdsRequestId++;
     _yearsRequestId++;
@@ -186,6 +187,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     );
   }
 
+  // # Clear Year
   void clearYear() {
     _vehicleByIdsRequestId++;
     _yearsRequestId++;
@@ -199,6 +201,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     );
   }
 
+  // # Clear All
   void clearAll() {
     _vehicleByIdsRequestId++;
     _modelsRequestId++;
@@ -217,6 +220,7 @@ class VehicleNotifier extends _$VehicleNotifier {
     );
   }
 
+  // # Select Vehicle By IDs
   Future<void> selectVehicleByIds({
     required int brandId,
     required int modelId,
