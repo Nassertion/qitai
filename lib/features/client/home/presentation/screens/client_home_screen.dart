@@ -1,3 +1,4 @@
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -7,10 +8,10 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/features/client/auth/presentation/helper/auth_required.dart';
 import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
+import 'package:qitai/features/client/auth/presentation/helper/auth_required.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_state.dart';
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
@@ -23,23 +24,39 @@ import 'package:qitai/features/client/products/presentation/widgets/all_product_
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 
-class ClientHomeScreen extends ConsumerWidget {
+class ClientHomeScreen extends ConsumerStatefulWidget {
   const ClientHomeScreen({super.key});
 
+  @override
+  ConsumerState<ClientHomeScreen> createState() => _ClientHomeScreenState();
+}
+
+class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
+  // # Default Car Request Guard
+  bool _isChangingDefaultCar = false;
+
   // # Set Default Car
-  Future<void> _setDefaultCar(WidgetRef ref, int carId) async {
+  Future<void> _setDefaultCar(int carId) async {
+    // # Prevent Double Tap
+    if (_isChangingDefaultCar) return;
+
+    _isChangingDefaultCar = true;
+
     try {
       await ref.read(setDefaultUserCarProvider)(carId);
 
+      if (!mounted) return;
+
       ref.invalidate(userCarsProvider);
-    } catch (_) {}
+    } catch (_) {
+      // المحافظة على سلوك معالجة الخطأ الموجود سابقًا.
+    } finally {
+      _isChangingDefaultCar = false;
+    }
   }
 
   // # Add Car Widget
-  Widget _buildAddCarItem({
-    required BuildContext context,
-    required WidgetRef ref,
-  }) {
+  Widget _buildAddCarItem() {
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
@@ -62,49 +79,46 @@ class ClientHomeScreen extends ConsumerWidget {
 
   // # Cars Section
   Widget _buildCarsSection({
-    required BuildContext context,
-    required WidgetRef ref,
     required AsyncValue<List<dynamic>> userCarsAsync,
   }) {
     return userCarsAsync.when(
-      // # Show Loading During Refresh
       skipLoadingOnRefresh: false,
-
-      loading: () => const SizedBox(height: 92, child: CustomLoading()),
-
+      loading: () => const SizedBox(
+        height: 92,
+        child: CustomLoading(),
+      ),
       error: (error, stack) => Row(
         textDirection: TextDirection.rtl,
-        children: [_buildAddCarItem(context: context, ref: ref)],
+        children: [_buildAddCarItem()],
       ),
-
       data: (cars) {
-        final sortedCars = [
-          ...cars,
-        ]..sort((a, b) => (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0));
+        final sortedCars = [...cars]
+          ..sort(
+            (a, b) =>
+                (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0),
+          );
 
         return Align(
-          alignment: AlignmentGeometry.centerStart,
+          alignment: AlignmentDirectional.centerStart,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               textDirection: TextDirection.rtl,
               children: [
                 const SizedBox(width: 14),
-
                 ...sortedCars.map(
                   (car) => Padding(
                     padding: const EdgeInsetsDirectional.only(end: 12),
                     child: HomeCarItem(
                       car: car,
-                      onTap: () => _setDefaultCar(ref, car.id),
+                      onTap: () => _setDefaultCar(car.id),
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsetsDirectional.only(end: 12),
-                  child: _buildAddCarItem(context: context, ref: ref),
+                  child: _buildAddCarItem(),
                 ),
               ],
             ),
@@ -116,14 +130,15 @@ class ClientHomeScreen extends ConsumerWidget {
 
   // # Build Home Screen
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final isAuthenticated = authState is Authenticated;
 
     final categoriesAsync = ref.watch(categoriesProvider);
     final productsState = ref.watch(allProductsProvider);
 
-    final userCarsAsync = isAuthenticated ? ref.watch(userCarsProvider) : null;
+    final userCarsAsync =
+        isAuthenticated ? ref.watch(userCarsProvider) : null;
 
     final cars = userCarsAsync?.asData?.value ?? [];
     final hasDefaultCar = cars.any((car) => car.isDefault);
@@ -144,7 +159,7 @@ class ClientHomeScreen extends ConsumerWidget {
           final vehicleNotifier = ref.read(vehicleProvider.notifier);
           final vehicleState = ref.read(vehicleProvider);
 
-          // إذا ما فيه سيارة افتراضية، نرجع للمنتجات العامة.
+          // # No Default Car
           if (defaultCars.isEmpty) {
             final hasSelectedVehicle =
                 vehicleState.selectedCarBrand != null ||
@@ -160,11 +175,14 @@ class ClientHomeScreen extends ConsumerWidget {
 
           final defaultCar = defaultCars.first;
 
-          // تجنب إعادة تحميل المنتجات إذا كانت السيارة نفسها محددة بالفعل.
+          // # Skip Same Vehicle
           final isSameVehicle =
-              vehicleState.selectedCarBrand?.id == defaultCar.vehicle.brandId &&
-              vehicleState.selectedModel?.id == defaultCar.vehicle.modelId &&
-              vehicleState.selectedCarYear?.id == defaultCar.vehicle.yearId;
+              vehicleState.selectedCarBrand?.id ==
+                  defaultCar.vehicle.brandId &&
+              vehicleState.selectedModel?.id ==
+                  defaultCar.vehicle.modelId &&
+              vehicleState.selectedCarYear?.id ==
+                  defaultCar.vehicle.yearId;
 
           if (isSameVehicle) return;
 
@@ -189,8 +207,9 @@ class ClientHomeScreen extends ConsumerWidget {
         onRefresh: () async {
           // # Refresh Categories
           ref.invalidate(categoriesProvider);
-
-          final categoriesFuture = ref.read(categoriesProvider.future);
+          final categoriesFuture = ref.read(
+            categoriesProvider.future,
+          );
 
           // # Refresh Products
           final productsFuture = ref
@@ -202,7 +221,10 @@ class ClientHomeScreen extends ConsumerWidget {
             ref.invalidate(userCarsProvider);
           }
 
-          final futures = <Future<dynamic>>[categoriesFuture, productsFuture];
+          final futures = <Future<dynamic>>[
+            categoriesFuture,
+            productsFuture,
+          ];
 
           if (isAuthenticated) {
             futures.add(ref.read(userCarsProvider.future));
@@ -218,16 +240,13 @@ class ClientHomeScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   h8,
-
                   AppPagePadding(
                     child: SearchWidget(
                       readOnly: true,
                       onTap: () => context.push('/search'),
                     ),
                   ),
-
                   h16,
-
                   SectionHeader(
                     title: 'سياراتي',
                     onTap: () {
@@ -240,7 +259,6 @@ class ClientHomeScreen extends ConsumerWidget {
                       );
                     },
                   ),
-
                   h12,
 
                   if (!isAuthenticated)
@@ -248,29 +266,21 @@ class ClientHomeScreen extends ConsumerWidget {
                       child: Row(
                         textDirection: TextDirection.rtl,
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          _buildAddCarItem(context: context, ref: ref),
-                        ],
+                        children: [_buildAddCarItem()],
                       ),
                     )
                   else
                     _buildCarsSection(
-                      context: context,
-                      ref: ref,
                       userCarsAsync: userCarsAsync!,
                     ),
 
                   h16,
-
                   ClientBannerSlider(),
-
                   const SizedBox(height: 24),
-
                   SectionHeader(
                     title: 'الفئات',
                     onTap: () => context.push('/categories'),
                   ),
-
                   h12,
                 ],
               ),
@@ -282,11 +292,8 @@ class ClientHomeScreen extends ConsumerWidget {
                 height: 95,
                 width: 80,
                 child: categoriesAsync.when(
-                  // # Show Loading During Refresh
                   skipLoadingOnRefresh: false,
-
                   loading: () => const CustomLoading(),
-
                   error: (error, stack) => Center(
                     child: Text(
                       error.toString(),
@@ -295,7 +302,6 @@ class ClientHomeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-
                   data: (categories) => ListView.separated(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     scrollDirection: Axis.horizontal,
@@ -337,12 +343,12 @@ class ClientHomeScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   h16,
-
                   SectionHeader(
-                    title: hasDefaultCar ? 'مناسب لسيارتي' : 'اقتراحات',
+                    title: hasDefaultCar
+                        ? 'مناسب لسيارتي'
+                        : 'اقتراحات',
                     onTap: () => context.push('/products'),
                   ),
-
                   h12,
                 ],
               ),
@@ -358,11 +364,15 @@ class ClientHomeScreen extends ConsumerWidget {
                   ),
                 ),
               )
+
             // # Products Error
             else if (productsState.errorMessage != null)
               SliverToBoxAdapter(
-                child: Center(child: Text(productsState.errorMessage!)),
+                child: Center(
+                  child: Text(productsState.errorMessage!),
+                ),
               )
+
             // # Empty Products
             else if (homeProducts.isEmpty)
               const SliverToBoxAdapter(
@@ -373,22 +383,27 @@ class ClientHomeScreen extends ConsumerWidget {
                   ),
                 ),
               )
+
             // # Products Grid
             else
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
                 sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final product = homeProducts[index];
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final product = homeProducts[index];
 
-                    return AllProductCardWidget(
-                      product: product,
-                      onTap: () {
-                        context.push('/product/${product.id}');
-                      },
-                    );
-                  }, childCount: 4),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      return AllProductCardWidget(
+                        product: product,
+                        onTap: () {
+                          context.push('/product/${product.id}');
+                        },
+                      );
+                    },
+                    childCount: 4,
+                  ),
+                  gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
