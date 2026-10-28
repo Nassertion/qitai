@@ -1,6 +1,5 @@
-import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'dart:async';
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
 import 'package:qitai/features/client/search/domain/usecases/get_search_suggestions.dart';
@@ -19,8 +18,12 @@ class SearchNotifier extends _$SearchNotifier {
   late final GetProducts getProducts;
 
   Timer? _debounce;
-  int _searchRequestId = 0;
 
+  // # Request IDs
+  int _searchRequestId = 0;
+  int _suggestionsRequestId = 0;
+
+  // # Build
   @override
   SearchState build() {
     getProducts = ref.read(getProductsProvider);
@@ -28,6 +31,8 @@ class SearchNotifier extends _$SearchNotifier {
 
     ref.onDispose(() {
       _debounce?.cancel();
+      _searchRequestId++;
+      _suggestionsRequestId++;
     });
 
     ref.listen<VehicleState>(vehicleProvider, (previous, next) {
@@ -39,11 +44,13 @@ class SearchNotifier extends _$SearchNotifier {
     return const SearchState();
   }
 
+  // # Query Changed
   void onQueryChanged(String value) {
     final query = value.trim();
 
-    // Invalidate any product request started before this edit.
+    // Invalidate requests started before this edit.
     _searchRequestId++;
+    _suggestionsRequestId++;
 
     state = state.copyWith(
       query: value,
@@ -75,13 +82,21 @@ class SearchNotifier extends _$SearchNotifier {
     });
   }
 
+  // # Load Suggestions
   Future<void> loadSuggestions(String query) async {
-    state = state.copyWith(isSuggestionsLoading: true, clearErrorMessage: true);
+    final requestId = ++_suggestionsRequestId;
+
+    state = state.copyWith(
+      isSuggestionsLoading: true,
+      clearErrorMessage: true,
+    );
 
     try {
       final suggestions = await getSuggestions(query: query);
 
+      // # Ignore Stale Response
       if (!ref.mounted) return;
+      if (requestId != _suggestionsRequestId) return;
       if (state.query.trim() != query) return;
 
       state = state.copyWith(
@@ -89,9 +104,9 @@ class SearchNotifier extends _$SearchNotifier {
         isSuggestionsLoading: false,
       );
     } catch (e) {
-      debugPrint('SUGGESTIONS ERROR: current=${state.query}, request=$query');
+      // # Ignore Stale Error
       if (!ref.mounted) return;
-
+      if (requestId != _suggestionsRequestId) return;
       if (state.query.trim() != query) return;
 
       state = state.copyWith(
@@ -101,7 +116,11 @@ class SearchNotifier extends _$SearchNotifier {
     }
   }
 
-  Future<void> submitSearch({String? customQuery, int? categoryId}) async {
+  // # Submit Search
+  Future<void> submitSearch({
+    String? customQuery,
+    int? categoryId,
+  }) async {
     final rawValue = customQuery ?? state.query;
     final value = rawValue.trim().toUpperCase();
 
@@ -115,8 +134,12 @@ class SearchNotifier extends _$SearchNotifier {
 
     _debounce?.cancel();
 
+    // # Invalidate Pending Suggestions
+    _suggestionsRequestId++;
+
     final hasText = value.isNotEmpty;
-    final hasVehicleFilter = brandId != null || modelId != null || year != null;
+    final hasVehicleFilter =
+        brandId != null || modelId != null || year != null;
 
     // final hasCategoryFilter = finalCategoryId != null;
 
@@ -145,6 +168,7 @@ class SearchNotifier extends _$SearchNotifier {
       suggestions: [],
       products: [],
       hasSearched: true,
+      isSuggestionsLoading: false,
       isProductsLoading: true,
       isLoadingMore: false,
       currentPage: 1,
@@ -188,6 +212,7 @@ class SearchNotifier extends _$SearchNotifier {
     }
   }
 
+  // # Load Next Page
   Future<void> loadNextPage() async {
     if (state.isProductsLoading) return;
     if (state.isLoadingMore) return;
@@ -208,7 +233,10 @@ class SearchNotifier extends _$SearchNotifier {
 
     final nextPage = state.currentPage + 1;
 
-    state = state.copyWith(isLoadingMore: true, clearErrorMessage: true);
+    state = state.copyWith(
+      isLoadingMore: true,
+      clearErrorMessage: true,
+    );
 
     try {
       final isVin = value.isNotEmpty && _isVin(value);
@@ -238,18 +266,28 @@ class SearchNotifier extends _$SearchNotifier {
         return;
       }
 
-      state = state.copyWith(isLoadingMore: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: e.toString(),
+      );
     }
   }
 
+  // # Clear Search
   void clearSearch() {
     _debounce?.cancel();
     _searchRequestId++;
+    _suggestionsRequestId++;
+
     state = const SearchState();
   }
 
+  // # VIN Detection
   bool _isVin(String value) {
-    final vinRegex = RegExp(r'^[A-Z0-9]{17}$', caseSensitive: false);
+    final vinRegex = RegExp(
+      r'^[A-Z0-9]{17}$',
+      caseSensitive: false,
+    );
 
     return vinRegex.hasMatch(value);
   }
