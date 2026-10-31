@@ -12,7 +12,8 @@ part 'auth_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
-  // # Initialize Auth
+  int _sessionVersion = 0;
+
   @override
   AuthState build() {
     final sessionEvents = ref.read(authSessionEventsProvider);
@@ -28,72 +29,93 @@ class Auth extends _$Auth {
     return const AuthInitial();
   }
 
-  // # Clear Account Cars Cache
+  int _newSessionOperation() {
+    return ++_sessionVersion;
+  }
+
+  bool _isCurrentSessionOperation(int version) {
+    return ref.mounted && version == _sessionVersion;
+  }
+
   void _clearUserCarsCache() {
     ref.invalidate(userCarsProvider);
   }
 
-  // # Initialize Session
   Future<void> initialize() async {
+    final version = _newSessionOperation();
     final repository = ref.read(authRepositoryProvider);
 
     final isAuthenticated = await repository.isAuthenticated();
 
+    if (!_isCurrentSessionOperation(version)) return;
+
     if (!isAuthenticated) {
       ref.read(currentUserProvider.notifier).clearUser();
-      state = const Unauthenticated();
       _clearUserCarsCache();
+      state = const Unauthenticated();
       return;
     }
 
     try {
       final user = await ref.read(getCurrentUserProvider)();
 
-      ref.read(currentUserProvider.notifier).setUser(user);
+      if (!_isCurrentSessionOperation(version)) return;
 
+      ref.read(currentUserProvider.notifier).setUser(user);
       _clearUserCarsCache();
+
       state = const Authenticated();
     } on AppException catch (e) {
+      if (!_isCurrentSessionOperation(version)) return;
+
       if (e.statusCode == 401) {
         await repository.clearSession();
 
+        if (!_isCurrentSessionOperation(version)) return;
+
         ref.read(currentUserProvider.notifier).clearUser();
-        state = const Unauthenticated();
         _clearUserCarsCache();
+
+        state = const Unauthenticated();
         return;
       }
 
       _clearUserCarsCache();
       state = const Authenticated();
     } catch (_) {
+      if (!_isCurrentSessionOperation(version)) return;
+
       _clearUserCarsCache();
       state = const Authenticated();
     }
   }
 
-  // # Handle Session Expiration
   Future<void> _handleUnauthorized() async {
+    final version = _newSessionOperation();
+
     try {
       await ref.read(authRepositoryProvider).clearSession();
     } finally {
-      ref.read(currentUserProvider.notifier).clearUser();
-      state = const Unauthenticated();
-      _clearUserCarsCache();
+      if (_isCurrentSessionOperation(version)) {
+        ref.read(currentUserProvider.notifier).clearUser();
+        _clearUserCarsCache();
+
+        state = const Unauthenticated();
+      }
     }
   }
 
-  // # Send OTP
   Future<void> sendOtp(String phone) {
     final sendOtp = ref.read(sendOtpProvider);
 
     return sendOtp(phone);
   }
 
-  // # Verify OTP
   Future<void> verifyOtp({
     required String phone,
     required String code,
   }) async {
+    final version = _newSessionOperation();
     final verifyOtp = ref.read(verifyOtpProvider);
 
     final session = await verifyOtp(
@@ -101,27 +123,30 @@ class Auth extends _$Auth {
       code: code,
     );
 
+    if (!_isCurrentSessionOperation(version)) return;
+
     ref.read(currentUserProvider.notifier).setUser(session.user);
 
-    // # Fetch Cars For New Session
     _clearUserCarsCache();
 
     state = const Authenticated();
   }
 
-  // # Logout
   Future<void> logout() async {
+    final version = _newSessionOperation();
+
     try {
       final logout = ref.read(logoutProvider);
 
       await logout();
     } finally {
-      ref.read(currentUserProvider.notifier).clearUser();
+      if (_isCurrentSessionOperation(version)) {
+        ref.read(currentUserProvider.notifier).clearUser();
 
-      state = const Unauthenticated();
+        _clearUserCarsCache();
 
-      // # Prevent Previous Account Cars From Being Reused
-      _clearUserCarsCache();
+        state = const Unauthenticated();
+      }
     }
   }
 }
