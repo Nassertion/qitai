@@ -14,10 +14,33 @@ import 'package:qitai/features/client/auth/presentation/providers/auth_state.dar
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
+import 'package:qitai/features/client/products/presentation/widgets/all_product_card_skeleton.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
 
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
+
+// # Products Skeleton Grid
+class _ProductsSkeletonGrid extends StatelessWidget {
+  const _ProductsSkeletonGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 6,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        mainAxisExtent: 265,
+      ),
+      itemBuilder: (context, index) {
+        return const AllProductCardSkeleton();
+      },
+    );
+  }
+}
 
 class AllProductsScreen extends ConsumerWidget {
   const AllProductsScreen({super.key});
@@ -33,8 +56,16 @@ class AllProductsScreen extends ConsumerWidget {
     if (isAuthenticated) {
       final carsAsync = ref.watch(userCarsProvider);
 
+      // # Loading Default Car
       if (carsAsync.isLoading && !carsAsync.hasValue) {
-        return const Scaffold(body: Center(child: CustomLoading()));
+        return const Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: _ProductsSkeletonGrid(),
+            ),
+          ),
+        );
       }
 
       final cars = carsAsync.asData?.value ?? [];
@@ -87,6 +118,7 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
 
   bool _isInitializing = true;
 
+  // # Initialize
   @override
   void initState() {
     super.initState();
@@ -97,6 +129,7 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
     Future.microtask(_initializeFilter);
   }
 
+  // # Initialize Default Vehicle Filter
   Future<void> _initializeFilter() async {
     final brandId = widget.brandId;
     final modelId = widget.modelId;
@@ -119,6 +152,7 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
     });
   }
 
+  // # Pagination
   void _onScroll() {
     if (!_scrollController.hasClients || _isInitializing) return;
 
@@ -129,6 +163,7 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
     }
   }
 
+  // # Dispose
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
@@ -137,12 +172,21 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
     super.dispose();
   }
 
+  // # Build
   @override
   Widget build(BuildContext context) {
-      ref.watch(vehicleProvider);
+    ref.watch(vehicleProvider);
 
+    // # Initializing Vehicle Filter
     if (_isInitializing) {
-      return const Scaffold(body: Center(child: CustomLoading()));
+      return const Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: _ProductsSkeletonGrid(),
+          ),
+        ),
+      );
     }
 
     final state = ref.watch(allProductsProvider);
@@ -166,18 +210,25 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
         child: Column(
           children: [
             h12,
+
+            // # Vehicle Filter
             const VehiclesWidget(),
+
+            // # Products Content
             Expanded(
               child: Builder(
                 builder: (context) {
+                  // # Loading Products
                   if (state.isLoading) {
-                    return const Center(child: CustomLoading());
+                    return const _ProductsSkeletonGrid();
                   }
 
+                  // # Error State
                   if (state.errorMessage != null) {
                     return Center(child: Text(state.errorMessage!));
                   }
 
+                  // # Empty State
                   if (state.products.isEmpty) {
                     return const EmptyDataWidget(
                       text: "لا توجد منتجات",
@@ -185,6 +236,7 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
                     );
                   }
 
+                  // # Products Grid
                   return GridView.builder(
                     controller: _scrollController,
                     itemCount:
@@ -197,8 +249,9 @@ class _AllProductsContentState extends ConsumerState<_AllProductsContent> {
                           mainAxisExtent: 265,
                         ),
                     itemBuilder: (context, index) {
+                      // # Pagination Loading
                       if (index >= state.products.length) {
-                        return const Center(child: CustomLoading());
+                        return const Center( child: CustomLoading());
                       }
 
                       final product = state.products[index];

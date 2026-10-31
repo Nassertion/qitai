@@ -3,21 +3,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/widgets/app_bar_widget.dart';
-import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_detail_provider.dart';
 import 'package:qitai/features/client/products/presentation/widgets/product_info_widget.dart';
 import 'package:qitai/features/client/products/presentation/widgets/product_slide_widget.dart';
 import 'package:qitai/features/client/products/presentation/widgets/add_to_cart_section.dart';
 import 'package:qitai/features/client/products/presentation/widgets/similar_products_widget.dart';
+import 'package:qitai/features/client/products/presentation/widgets/product_details_skeleton.dart';
 
 class ProductDetailsScreen extends ConsumerWidget {
   const ProductDetailsScreen({super.key, required this.id});
+
   final int id;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productDetailAsync = ref.watch(productDetailProvider(id));
+
     return Scaffold(
+      // # Bottom Cart Section
       bottomNavigationBar: const SafeArea(child: AddToCartSection()),
+
+      // # App Bar
       appBar: CustomAppbar(
         title: "تفاصيل المنتج",
         action: Container(
@@ -25,16 +31,20 @@ class ProductDetailsScreen extends ConsumerWidget {
           child: SvgPicture.asset("assets/icons/shopping-cart.svg"),
         ),
       ),
+
+      // # Product Details
       body: productDetailAsync.when(
-        loading: () => Center(child: CustomLoading()),
+        loading: () => const ProductDetailsSkeleton(),
+
         error: (error, stackTrace) => Center(child: Text(error.toString())),
+
         data: (data) => ListView(
           children: [
             ProductSlideWidget(),
             h16,
             ProductInfoWidget(product: data),
             h16,
-            SimilarProductsWidget(productId: data.id,),
+            SimilarProductsWidget(productId: data.id),
             h12,
           ],
         ),

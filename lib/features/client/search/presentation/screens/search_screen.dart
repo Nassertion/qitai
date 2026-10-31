@@ -9,8 +9,10 @@ import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/search/presentation/provider/search_notifier.dart';
+import 'package:qitai/features/client/search/presentation/widgets/search_card_product_skeleton.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_card_product_widget.dart';
 import 'package:qitai/features/client/search/presentation/widgets/search_suggestion_widget.dart';
+import 'package:qitai/features/client/search/presentation/widgets/search_suggestions_skeleton.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
@@ -40,6 +42,7 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
   late final TextEditingController _controller;
   late final ScrollController _scrollController;
 
+  // # Initialize
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,7 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
     _scrollController.addListener(_onScroll);
   }
 
+  // # Pagination
   void _onScroll() {
     if (!_scrollController.hasClients) return;
 
@@ -60,15 +64,18 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
     }
   }
 
+  // # Dispose
   @override
   void dispose() {
     _controller.dispose();
 
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+
     super.dispose();
   }
 
+  // # Build
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(searchProvider);
@@ -86,6 +93,8 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
         child: Column(
           children: [
             h12,
+
+            // # Search Field
             SearchWidget(
               controller: _controller,
               onChanged: (value) {
@@ -107,19 +116,24 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
               },
             ),
 
+            // # Vehicle Filter
             const VehiclesWidget(),
 
+            // # Search Content
             Expanded(
               child: Builder(
                 builder: (context) {
+                  // # Products Loading
                   if (state.isProductsLoading) {
-                    return const Center(child: CustomLoading());
+                    return const SearchProductsSkeleton();
                   }
 
+                  // # Suggestions Loading
                   if (state.isSuggestionsLoading) {
-                    return const Center(child: CustomLoading());
+                    return const SearchSuggestionsSkeleton();
                   }
 
+                  // # Search Results
                   if (state.products.isNotEmpty) {
                     return ListView.separated(
                       controller: _scrollController,
@@ -134,6 +148,7 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
                         return h8;
                       },
                       itemBuilder: (context, index) {
+                        // # Pagination Loading
                         if (index >= state.products.length) {
                           return const Padding(
                             padding: EdgeInsets.symmetric(vertical: 16),
@@ -153,6 +168,7 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
                     );
                   }
 
+                  // # Empty Results
                   if (state.hasSearched && state.products.isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.only(bottom: 100),
@@ -163,6 +179,7 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
                     );
                   }
 
+                  // # Suggestions
                   if (state.suggestions.isNotEmpty) {
                     return SingleChildScrollView(
                       child: SearchSuggestionWidget(

@@ -4,15 +4,31 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/products/presentation/provider/similar_products_provider.dart';
+import 'package:qitai/features/client/products/presentation/widgets/all_product_card_skeleton.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
 
 class SimilarProductsWidget extends ConsumerWidget {
+  const SimilarProductsWidget({super.key, required this.productId});
+
   final int productId;
 
-  const SimilarProductsWidget({super.key, required this.productId});
+  // # Similar Products Skeleton
+  Widget _buildSkeleton() {
+    return SizedBox(
+      height: 260,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemCount: 4,
+        separatorBuilder: (_, _) => w16,
+        itemBuilder: (context, index) {
+          return const SizedBox(width: 160, child: AllProductCardSkeleton());
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,6 +37,7 @@ class SimilarProductsWidget extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // # Section Title
         AppPagePadding(
           child: Text(
             'منتجات مشابهة',
@@ -29,16 +46,20 @@ class SimilarProductsWidget extends ConsumerWidget {
             ),
           ),
         ),
+
         h12,
+
+        // # Loading
         similarProductsAsync.when(
-          loading: () => const SizedBox(
-            height: 260,
-            child: Center(child: CustomLoading()),
-          ),
+          loading: _buildSkeleton,
+
+          // # Error
           error: (error, stackTrace) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(error.toString()),
           ),
+
+          // # Products
           data: (products) {
             if (products.isEmpty) {
               return const SizedBox.shrink();
