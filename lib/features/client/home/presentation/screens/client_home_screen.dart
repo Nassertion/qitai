@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -17,9 +16,11 @@ import 'package:qitai/features/client/auth/presentation/providers/auth_state.dar
 import 'package:qitai/features/client/categories/presentation/provider/category_provider.dart';
 import 'package:qitai/features/client/home/presentation/widgets/add_car_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
+import 'package:qitai/features/client/home/presentation/widgets/home_car_skeleton.dart';
 import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
+import 'package:qitai/features/client/products/presentation/widgets/all_product_card_skeleton.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
@@ -37,7 +38,6 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
   // # Set Default Car
   Future<void> _setDefaultCar(int carId) async {
-    // # Prevent Double Tap
     if (_isChangingDefaultCar) return;
 
     _isChangingDefaultCar = true;
@@ -49,7 +49,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
       ref.invalidate(userCarsProvider);
     } catch (_) {
-      // المحافظة على سلوك معالجة الخطأ الموجود سابقًا.
+      // Preserve existing error-handling behavior.
     } finally {
       _isChangingDefaultCar = false;
     }
@@ -78,25 +78,18 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
   }
 
   // # Cars Section
-  Widget _buildCarsSection({
-    required AsyncValue<List<dynamic>> userCarsAsync,
-  }) {
+  Widget _buildCarsSection({required AsyncValue<List<dynamic>> userCarsAsync}) {
     return userCarsAsync.when(
       skipLoadingOnRefresh: false,
-      loading: () => const SizedBox(
-        height: 92,
-        child: CustomLoading(),
-      ),
-      error: (error, stack) => Row(
-        textDirection: TextDirection.rtl,
-        children: [_buildAddCarItem()],
-      ),
+
+      loading: () => HomeCarsSkeleton(count: userCarsAsync.value?.length ?? 3),
+      error: (error, stack) =>
+          Row(textDirection: TextDirection.rtl, children: [_buildAddCarItem()]),
+
       data: (cars) {
-        final sortedCars = [...cars]
-          ..sort(
-            (a, b) =>
-                (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0),
-          );
+        final sortedCars = [
+          ...cars,
+        ]..sort((a, b) => (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0));
 
         return Align(
           alignment: AlignmentDirectional.centerStart,
@@ -107,6 +100,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               textDirection: TextDirection.rtl,
               children: [
                 const SizedBox(width: 14),
+
                 ...sortedCars.map(
                   (car) => Padding(
                     padding: const EdgeInsetsDirectional.only(end: 12),
@@ -116,6 +110,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsetsDirectional.only(end: 12),
                   child: _buildAddCarItem(),
@@ -128,6 +123,27 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     );
   }
 
+  // # Product Grid Layout
+  static const _productGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+    crossAxisSpacing: 16,
+    mainAxisSpacing: 16,
+    mainAxisExtent: 260,
+  );
+
+  // # Products Skeleton
+  Widget _buildProductsSkeleton() {
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
+      sliver: SliverGrid(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return const AllProductCardSkeleton();
+        }, childCount: 4),
+        gridDelegate: _productGridDelegate,
+      ),
+    );
+  }
+
   // # Build Home Screen
   @override
   Widget build(BuildContext context) {
@@ -137,8 +153,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     final categoriesAsync = ref.watch(categoriesProvider);
     final productsState = ref.watch(allProductsProvider);
 
-    final userCarsAsync =
-        isAuthenticated ? ref.watch(userCarsProvider) : null;
+    final userCarsAsync = isAuthenticated ? ref.watch(userCarsProvider) : null;
 
     final cars = userCarsAsync?.asData?.value ?? [];
     final hasDefaultCar = cars.any((car) => car.isDefault);
@@ -156,7 +171,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
       ref.listen(userCarsProvider, (previous, next) {
         next.whenData((cars) {
           final defaultCars = cars.where((car) => car.isDefault);
+
           final vehicleNotifier = ref.read(vehicleProvider.notifier);
+
           final vehicleState = ref.read(vehicleProvider);
 
           // # No Default Car
@@ -177,12 +194,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
           // # Skip Same Vehicle
           final isSameVehicle =
-              vehicleState.selectedCarBrand?.id ==
-                  defaultCar.vehicle.brandId &&
-              vehicleState.selectedModel?.id ==
-                  defaultCar.vehicle.modelId &&
-              vehicleState.selectedCarYear?.id ==
-                  defaultCar.vehicle.yearId;
+              vehicleState.selectedCarBrand?.id == defaultCar.vehicle.brandId &&
+              vehicleState.selectedModel?.id == defaultCar.vehicle.modelId &&
+              vehicleState.selectedCarYear?.id == defaultCar.vehicle.yearId;
 
           if (isSameVehicle) return;
 
@@ -207,9 +221,8 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
         onRefresh: () async {
           // # Refresh Categories
           ref.invalidate(categoriesProvider);
-          final categoriesFuture = ref.read(
-            categoriesProvider.future,
-          );
+
+          final categoriesFuture = ref.read(categoriesProvider.future);
 
           // # Refresh Products
           final productsFuture = ref
@@ -221,10 +234,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             ref.invalidate(userCarsProvider);
           }
 
-          final futures = <Future<dynamic>>[
-            categoriesFuture,
-            productsFuture,
-          ];
+          final futures = <Future<dynamic>>[categoriesFuture, productsFuture];
 
           if (isAuthenticated) {
             futures.add(ref.read(userCarsProvider.future));
@@ -240,13 +250,16 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               child: Column(
                 children: [
                   h8,
+
                   AppPagePadding(
                     child: SearchWidget(
                       readOnly: true,
                       onTap: () => context.push('/search'),
                     ),
                   ),
+
                   h16,
+
                   SectionHeader(
                     title: 'سياراتي',
                     onTap: () {
@@ -259,6 +272,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                       );
                     },
                   ),
+
                   h12,
 
                   if (!isAuthenticated)
@@ -270,17 +284,19 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                       ),
                     )
                   else
-                    _buildCarsSection(
-                      userCarsAsync: userCarsAsync!,
-                    ),
+                    _buildCarsSection(userCarsAsync: userCarsAsync!),
 
                   h16,
+
                   ClientBannerSlider(),
+
                   const SizedBox(height: 24),
+
                   SectionHeader(
                     title: 'الفئات',
                     onTap: () => context.push('/categories'),
                   ),
+
                   h12,
                 ],
               ),
@@ -293,7 +309,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                 width: 80,
                 child: categoriesAsync.when(
                   skipLoadingOnRefresh: false,
+
                   loading: () => const CustomLoading(),
+
                   error: (error, stack) => Center(
                     child: Text(
                       error.toString(),
@@ -302,6 +320,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                       ),
                     ),
                   ),
+
                   data: (categories) => ListView.separated(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     scrollDirection: Axis.horizontal,
@@ -322,7 +341,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                               width: 74,
                               height: 56,
                             ),
+
                             h8,
+
                             Text(
                               category.name,
                               style: AppTextStyles.mediumOverline.copyWith(
@@ -343,36 +364,25 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               child: Column(
                 children: [
                   h16,
+
                   SectionHeader(
-                    title: hasDefaultCar
-                        ? 'مناسب لسيارتي'
-                        : 'اقتراحات',
+                    title: hasDefaultCar ? 'مناسب لسيارتي' : 'اقتراحات',
                     onTap: () => context.push('/products'),
                   ),
+
                   h12,
                 ],
               ),
             ),
 
-            // # Products Loading
+            // # Products Skeleton Loading
             if (productsState.isLoading)
-              const SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
-                    child: CustomLoading(),
-                  ),
-                ),
-              )
-
+              _buildProductsSkeleton()
             // # Products Error
             else if (productsState.errorMessage != null)
               SliverToBoxAdapter(
-                child: Center(
-                  child: Text(productsState.errorMessage!),
-                ),
+                child: Center(child: Text(productsState.errorMessage!)),
               )
-
             // # Empty Products
             else if (homeProducts.isEmpty)
               const SliverToBoxAdapter(
@@ -383,32 +393,22 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                   ),
                 ),
               )
-
             // # Products Grid
             else
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
                 sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final product = homeProducts[index];
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final product = homeProducts[index];
 
-                      return AllProductCardWidget(
-                        product: product,
-                        onTap: () {
-                          context.push('/product/${product.id}');
-                        },
-                      );
-                    },
-                    childCount: 4,
-                  ),
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    mainAxisExtent: 260,
-                  ),
+                    return AllProductCardWidget(
+                      product: product,
+                      onTap: () {
+                        context.push('/product/${product.id}');
+                      },
+                    );
+                  }, childCount: 4),
+                  gridDelegate: _productGridDelegate,
                 ),
               ),
           ],

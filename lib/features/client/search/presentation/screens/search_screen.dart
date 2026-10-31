@@ -48,7 +48,6 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
 
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-
   }
 
   void _onScroll() {
@@ -75,6 +74,7 @@ class _SearchContentState extends ConsumerState<_SearchContent> {
     final state = ref.watch(searchProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: CustomAppbar(
         title: "البحث",
         action: Container(
