@@ -14,6 +14,7 @@ import 'package:qitai/features/client/auth/presentation/providers/auth_state.dar
 import 'package:qitai/features/client/user/account/presentation/providers/current_user_notifier.dart';
 import 'package:qitai/features/client/user/account/presentation/widgets/logout_dialog.dart';
 import 'package:qitai/features/client/user/account/presentation/widgets/profile_card_widget.dart';
+import 'package:qitai/features/client/user/account/presentation/widgets/profile_card_skeleton.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -24,6 +25,7 @@ class ProfileScreen extends ConsumerWidget {
     final currentUser = ref.watch(currentUserProvider);
 
     final isAuthenticated = authState is Authenticated;
+
     return Scaffold(
       appBar: CustomAppbar(title: "حسابي"),
       body: AppPagePadding(
@@ -32,12 +34,16 @@ class ProfileScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               h8,
+
+              // # Authentication Loading
               if (authState is AuthInitial) ...[
                 const SizedBox(
                   height: 100,
                   child: Center(child: CircularProgressIndicator()),
                 ),
-              ] else if (!isAuthenticated) ...[
+              ]
+              // # Guest
+              else if (!isAuthenticated) ...[
                 Text(
                   'قم بتسجيل الدخول\nاو انشاء حساب جديد',
                   style: AppTextStyles.semiBoldCaption.copyWith(
@@ -55,12 +61,14 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-              ] else if (currentUser == null) ...[
-                const SizedBox(
-                  height: 100,
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-              ] else ...[
+              ]
+              // # User Information Loading
+              else if (currentUser == null) ...[
+                const ProfileCardSkeleton(),
+                h16,
+              ]
+              // # User Information
+              else ...[
                 InkWell(
                   onTap: () => context.push("/profile/edit"),
                   child: Container(
@@ -79,7 +87,8 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 h16,
               ],
-              // SizedBox(height: 24),
+
+              // # Profile Menu
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.inputFieldAndCards,
@@ -145,6 +154,8 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+
+              // # Logout
               if (isAuthenticated && currentUser != null) ...[
                 h16,
                 InkWell(
