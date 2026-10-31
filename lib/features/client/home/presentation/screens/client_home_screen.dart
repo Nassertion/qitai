@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
-import 'package:qitai/core/widgets/loading_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/core/widgets/search_widget.dart';
 import 'package:qitai/features/client/auth/presentation/helper/auth_required.dart';
@@ -17,6 +16,7 @@ import 'package:qitai/features/client/categories/presentation/provider/category_
 import 'package:qitai/features/client/home/presentation/widgets/add_car_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_app_bar_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/home_car_skeleton.dart';
+import 'package:qitai/features/client/home/presentation/widgets/home_categories_skeleton.dart';
 import 'package:qitai/features/client/home/presentation/widgets/section_header_widget.dart';
 import 'package:qitai/features/client/home/presentation/widgets/slider_widget.dart';
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
@@ -82,7 +82,8 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     return userCarsAsync.when(
       skipLoadingOnRefresh: false,
 
-      loading: () => HomeCarsSkeleton(count: userCarsAsync.value?.length ?? 3),
+      loading: () =>
+          HomeCarsSkeleton(carCount: userCarsAsync.value?.length ?? 3),
       error: (error, stack) =>
           Row(textDirection: TextDirection.rtl, children: [_buildAddCarItem()]),
 
@@ -310,8 +311,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                 child: categoriesAsync.when(
                   skipLoadingOnRefresh: false,
 
-                  loading: () => const CustomLoading(),
-
+                  loading: () => HomeCategoriesSkeleton(
+                    categoryCount: categoriesAsync.asData?.value.length ?? 5,
+                  ),
                   error: (error, stack) => Center(
                     child: Text(
                       error.toString(),

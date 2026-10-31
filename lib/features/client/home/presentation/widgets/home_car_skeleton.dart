@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:qitai/core/constants/spaces.dart';
+import 'package:qitai/core/widgets/app_skeleton.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class HomeCarSkeleton extends StatelessWidget {
@@ -8,13 +9,7 @@ class HomeCarSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Skeletonizer(
-      enabled: true,
-      effect: const ShimmerEffect(
-        baseColor: Color(0xFFE8EAED),
-        highlightColor: Color(0xFFF8F9FA),
-        duration: Duration(milliseconds: 1200),
-      ),
+    return AppSkeleton(
       child: SizedBox(
         width: 70,
         child: Column(
@@ -39,10 +34,10 @@ class HomeCarSkeleton extends StatelessWidget {
 class HomeCarsSkeleton extends StatelessWidget {
   const HomeCarsSkeleton({
     super.key,
-    this.count = 3,
+    this.carCount = 3,
   });
 
-  final int count;
+  final int carCount;
 
   @override
   Widget build(BuildContext context) {
@@ -52,23 +47,20 @@ class HomeCarsSkeleton extends StatelessWidget {
         alignment: AlignmentDirectional.centerStart,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Padding(
-            // # Match Real Cars Spacing
-            padding: const EdgeInsetsDirectional.only(
-              start: 16,
-              end: 12,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              textDirection: TextDirection.rtl,
-              children: List.generate(
-                count,
-                (index) => Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    end: index == count - 1 ? 0 : 12,
-                  ),
-                  child: const HomeCarSkeleton(),
+          padding: const EdgeInsetsDirectional.only(
+            start: 16,
+            end: 16,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            textDirection: TextDirection.rtl,
+            children: List.generate(
+              carCount,
+              (index) => Padding(
+                padding: EdgeInsetsDirectional.only(
+                  end: index == carCount - 1 ? 0 : 12,
                 ),
+                child: const HomeCarSkeleton(),
               ),
             ),
           ),
