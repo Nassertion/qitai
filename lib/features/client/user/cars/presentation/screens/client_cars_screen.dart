@@ -1,4 +1,6 @@
+
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +19,7 @@ import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_status_dialog.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/user_car_card.dart';
+import 'package:qitai/features/client/user/cars/presentation/widgets/user_cars_skeleton.dart';
 
 class ClientCarsScreen extends ConsumerStatefulWidget {
   const ClientCarsScreen({super.key});
@@ -31,6 +34,7 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
 
   bool _hasAccess = false;
 
+  // # Initialize
   @override
   void initState() {
     super.initState();
@@ -40,6 +44,7 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
     });
   }
 
+  // # Authentication
   Future<void> _ensureAuthenticated() async {
     await requireAuth(
       context: context,
@@ -59,8 +64,6 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
       return;
     }
 
-    // إذا أغلق المستخدم نافذة المصادقة دون تسجيل الدخول،
-    // نمنعه من البقاء في صفحة السيارات.
     if (context.canPop()) {
       context.pop();
     } else {
@@ -68,6 +71,7 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
     }
   }
 
+  // # Add Car
   void _openAddCar(BuildContext context) {
     requireAuth(
       context: context,
@@ -84,6 +88,7 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
     );
   }
 
+  // # Set Default Car
   Future<void> _setDefaultCar(UserCar car) async {
     if (car.isDefault ||
         _settingDefaultCarIds.contains(car.id) ||
@@ -119,6 +124,7 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
     }
   }
 
+  // # Delete Car
   Future<void> _deleteCar(UserCar car) async {
     if (_deletingCarIds.contains(car.id)) {
       return;
@@ -170,9 +176,10 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
     }
   }
 
+  // # Build
   @override
   Widget build(BuildContext context) {
-    // لا نحمّل سيارات المستخدم قبل التأكد من تسجيل دخوله.
+    // # Wait For Authentication
     if (!_hasAccess) {
       return Scaffold(
         backgroundColor: AppColors.backgroundColor,
@@ -189,12 +196,20 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
         title: 'سياراتي',
         action: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _AddCarButton(onTap: () => _openAddCar(context)),
+          child: _AddCarButton(
+            onTap: () => _openAddCar(context),
+          ),
         ),
       ),
       body: AppPagePadding(
         child: userCarsAsync.when(
-          loading: () => const Center(child: CustomLoading()),
+          // # Cars Skeleton Loading
+          skipLoadingOnRefresh: false,
+          loading: () => UserCarsSkeleton(
+            itemCount: userCarsAsync.asData?.value.length ?? 3,
+          ),
+
+          // # Error State
           error: (error, stack) => Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -215,6 +230,8 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
               ],
             ),
           ),
+
+          // # Cars
           data: (cars) {
             if (cars.isEmpty) {
               return EmptyDataWidget(
@@ -232,7 +249,10 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
               });
 
             return ListView.separated(
-              padding: const EdgeInsets.only(top: 16, bottom: 24),
+              padding: const EdgeInsets.only(
+                top: 16,
+                bottom: 24,
+              ),
               itemCount: sortedCars.length,
               separatorBuilder: (_, _) => h16,
               itemBuilder: (context, index) {
@@ -254,6 +274,7 @@ class _ClientCarsScreenState extends ConsumerState<ClientCarsScreen> {
   }
 }
 
+// # Add Car Button
 class _AddCarButton extends StatelessWidget {
   const _AddCarButton({required this.onTap});
 
@@ -271,7 +292,11 @@ class _AddCarButton extends StatelessWidget {
           shape: BoxShape.circle,
           color: AppColors.actionText.withValues(alpha: 0.12),
         ),
-        child: const Icon(Icons.add, size: 18, color: AppColors.actionText),
+        child: const Icon(
+          Icons.add,
+          size: 18,
+          color: AppColors.actionText,
+        ),
       ),
     );
   }
