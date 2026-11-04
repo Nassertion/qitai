@@ -18,7 +18,11 @@ class SecureTokenStorage implements TokenStorage {
   @override
   Future<String?> getAccessToken() async {
     final token = await storage.read(key: _accessTokenKey);
-    developer.log('🔑 Token Saved/Refreshed: $token', name: 'AUTH_TOKEN');
+
+    assert(() {
+      developer.log('🔑 Access Token: $token', name: 'AUTH_TOKEN');
+      return true;
+    }());
 
     return token;
   }

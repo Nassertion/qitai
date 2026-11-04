@@ -1,3 +1,4 @@
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -29,7 +30,8 @@ class ClientHomeScreen extends ConsumerStatefulWidget {
   const ClientHomeScreen({super.key});
 
   @override
-  ConsumerState<ClientHomeScreen> createState() => _ClientHomeScreenState();
+  ConsumerState<ClientHomeScreen> createState() =>
+      _ClientHomeScreenState();
 }
 
 class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
@@ -49,7 +51,16 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
       ref.invalidate(userCarsProvider);
     } catch (_) {
-      // Preserve existing error-handling behavior.
+      if (!mounted) return;
+
+      // # Show Error Instead Of Silently Ignoring It
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'تعذر تغيير السيارة الافتراضية، حاول مرة أخرى.',
+          ),
+        ),
+      );
     } finally {
       _isChangingDefaultCar = false;
     }
@@ -78,19 +89,28 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
   }
 
   // # Cars Section
-  Widget _buildCarsSection({required AsyncValue<List<dynamic>> userCarsAsync}) {
+  Widget _buildCarsSection({
+    required AsyncValue<List<dynamic>> userCarsAsync,
+  }) {
     return userCarsAsync.when(
       skipLoadingOnRefresh: false,
 
-      loading: () =>
-          HomeCarsSkeleton(carCount: userCarsAsync.value?.length ?? 3),
-      error: (error, stack) =>
-          Row(textDirection: TextDirection.rtl, children: [_buildAddCarItem()]),
+      loading: () => HomeCarsSkeleton(
+        carCount: userCarsAsync.value?.length ?? 3,
+      ),
+
+      error: (error, stack) => Row(
+        textDirection: TextDirection.rtl,
+        children: [_buildAddCarItem()],
+      ),
 
       data: (cars) {
-        final sortedCars = [
-          ...cars,
-        ]..sort((a, b) => (b.isDefault ? 1 : 0).compareTo(a.isDefault ? 1 : 0));
+        final sortedCars = [...cars]
+          ..sort(
+            (a, b) => (b.isDefault ? 1 : 0).compareTo(
+              a.isDefault ? 1 : 0,
+            ),
+          );
 
         return Align(
           alignment: AlignmentDirectional.centerStart,
@@ -125,21 +145,25 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
   }
 
   // # Product Grid Layout
-  static const _productGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    crossAxisSpacing: 16,
-    mainAxisSpacing: 16,
-    mainAxisExtent: 260,
-  );
+  static const _productGridDelegate =
+      SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        mainAxisExtent: 260,
+      );
 
   // # Products Skeleton
   Widget _buildProductsSkeleton() {
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
       sliver: SliverGrid(
-        delegate: SliverChildBuilderDelegate((context, index) {
-          return const AllProductCardSkeleton();
-        }, childCount: 4),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return const AllProductCardSkeleton();
+          },
+          childCount: 4,
+        ),
         gridDelegate: _productGridDelegate,
       ),
     );
@@ -154,11 +178,15 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     final categoriesAsync = ref.watch(categoriesProvider);
     final productsState = ref.watch(allProductsProvider);
 
-    final userCarsAsync = isAuthenticated ? ref.watch(userCarsProvider) : null;
+    final userCarsAsync = isAuthenticated
+        ? ref.watch(userCarsProvider)
+        : null;
 
     final cars = userCarsAsync?.asData?.value ?? [];
     final hasDefaultCar = cars.any((car) => car.isDefault);
-    final homeProducts = productsState.products.take(8).toList();
+
+    // # Show Up To Four Products On Home
+    final homeProducts = productsState.products.take(4).toList();
 
     // # Authentication Listener
     ref.listen(authProvider, (previous, next) {
@@ -173,7 +201,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
         next.whenData((cars) {
           final defaultCars = cars.where((car) => car.isDefault);
 
-          final vehicleNotifier = ref.read(vehicleProvider.notifier);
+          final vehicleNotifier = ref.read(
+            vehicleProvider.notifier,
+          );
 
           final vehicleState = ref.read(vehicleProvider);
 
@@ -195,9 +225,12 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
           // # Skip Same Vehicle
           final isSameVehicle =
-              vehicleState.selectedCarBrand?.id == defaultCar.vehicle.brandId &&
-              vehicleState.selectedModel?.id == defaultCar.vehicle.modelId &&
-              vehicleState.selectedCarYear?.id == defaultCar.vehicle.yearId;
+              vehicleState.selectedCarBrand?.id ==
+                  defaultCar.vehicle.brandId &&
+              vehicleState.selectedModel?.id ==
+                  defaultCar.vehicle.modelId &&
+              vehicleState.selectedCarYear?.id ==
+                  defaultCar.vehicle.yearId;
 
           if (isSameVehicle) return;
 
@@ -223,7 +256,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
           // # Refresh Categories
           ref.invalidate(categoriesProvider);
 
-          final categoriesFuture = ref.read(categoriesProvider.future);
+          final categoriesFuture = ref.read(
+            categoriesProvider.future,
+          );
 
           // # Refresh Products
           final productsFuture = ref
@@ -235,10 +270,15 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             ref.invalidate(userCarsProvider);
           }
 
-          final futures = <Future<dynamic>>[categoriesFuture, productsFuture];
+          final futures = <Future<dynamic>>[
+            categoriesFuture,
+            productsFuture,
+          ];
 
           if (isAuthenticated) {
-            futures.add(ref.read(userCarsProvider.future));
+            futures.add(
+              ref.read(userCarsProvider.future),
+            );
           }
 
           await Future.wait(futures);
@@ -285,7 +325,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                       ),
                     )
                   else
-                    _buildCarsSection(userCarsAsync: userCarsAsync!),
+                    _buildCarsSection(
+                      userCarsAsync: userCarsAsync!,
+                    ),
 
                   h16,
 
@@ -312,8 +354,10 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                   skipLoadingOnRefresh: false,
 
                   loading: () => HomeCategoriesSkeleton(
-                    categoryCount: categoriesAsync.asData?.value.length ?? 5,
+                    categoryCount:
+                        categoriesAsync.asData?.value.length ?? 5,
                   ),
+
                   error: (error, stack) => Center(
                     child: Text(
                       error.toString(),
@@ -324,7 +368,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                   ),
 
                   data: (categories) => ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                    ),
                     scrollDirection: Axis.horizontal,
                     itemCount: categories.length,
                     separatorBuilder: (_, _) => w12,
@@ -368,7 +414,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                   h16,
 
                   SectionHeader(
-                    title: hasDefaultCar ? 'مناسب لسيارتي' : 'اقتراحات',
+                    title: hasDefaultCar
+                        ? 'مناسب لسيارتي'
+                        : 'اقتراحات',
                     onTap: () => context.push('/products'),
                   ),
 
@@ -380,11 +428,17 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             // # Products Skeleton Loading
             if (productsState.isLoading)
               _buildProductsSkeleton()
+
             // # Products Error
             else if (productsState.errorMessage != null)
               SliverToBoxAdapter(
-                child: Center(child: Text(productsState.errorMessage!)),
+                child: Center(
+                  child: Text(
+                    productsState.errorMessage!,
+                  ),
+                ),
               )
+
             // # Empty Products
             else if (homeProducts.isEmpty)
               const SliverToBoxAdapter(
@@ -395,21 +449,25 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                   ),
                 ),
               )
+
             // # Products Grid
             else
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 90),
                 sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final product = homeProducts[index];
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final product = homeProducts[index];
 
-                    return AllProductCardWidget(
-                      product: product,
-                      onTap: () {
-                        context.push('/product/${product.id}');
-                      },
-                    );
-                  }, childCount: 4),
+                      return AllProductCardWidget(
+                        product: product,
+                        onTap: () {
+                          context.push('/product/${product.id}');
+                        },
+                      );
+                    },
+                    childCount: homeProducts.length,
+                  ),
                   gridDelegate: _productGridDelegate,
                 ),
               ),
@@ -421,7 +479,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 }
 
 // # Category Icons
-// temp only
+// Temporary Mapping Until Backend Provides Icons
 String getCategoryIcon(String name) {
   switch (name) {
     case 'الفرامل':
