@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,22 +10,39 @@ import 'package:qitai/core/widgets/app_bar_widget.dart';
 import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/user/cars/domain/entities/user_car_attribute.dart';
-import 'package:qitai/features/client/user/cars/presentation/providers/add_car_vehicle_notifier.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_attribute_bottom_sheet.dart';
 import 'package:qitai/features/client/user/cars/presentation/widgets/car_status_dialog.dart';
+import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_state.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicle_filter_field.dart';
 import 'package:qitai/features/client/vehicles/presentation/widgets/vehicles_widget.dart';
 
-class AddCarScreen extends ConsumerStatefulWidget {
+// # Add Car Screen
+class AddCarScreen extends StatelessWidget {
   const AddCarScreen({super.key});
 
   @override
-  ConsumerState<AddCarScreen> createState() => _AddCarScreenState();
+  Widget build(BuildContext context) {
+    return ProviderScope(
+      overrides: [
+        vehicleProvider.overrideWith(VehicleNotifier.new),
+      ],
+      child: const _AddCarContent(),
+    );
+  }
 }
 
-class _AddCarScreenState extends ConsumerState<AddCarScreen> {
+// # Add Car Content
+class _AddCarContent extends ConsumerStatefulWidget {
+  const _AddCarContent();
+
+  @override
+  ConsumerState<_AddCarContent> createState() =>
+      _AddCarContentState();
+}
+
+class _AddCarContentState extends ConsumerState<_AddCarContent> {
   bool _isLoading = false;
 
   final _vinController = TextEditingController();
@@ -36,7 +54,10 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
   String? _selectedGear;
 
   static const List<CarAttributeOption> _engineOptions = [
-    CarAttributeOption(title: '1.5L', iconAsset: 'assets/icons/Vector.svg'),
+    CarAttributeOption(
+      title: '1.5L',
+      iconAsset: 'assets/icons/Vector.svg',
+    ),
     CarAttributeOption(
       title: '2.0L Turbo',
       iconAsset: 'assets/icons/Vector.svg',
@@ -54,8 +75,9 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
     ),
   ];
 
+  // # Add Car
   Future<void> _addCar() async {
-    final vehicleState = ref.read(addCarVehicleProvider);
+    final vehicleState = ref.read(vehicleProvider);
 
     if (!_isFormValid(vehicleState) || _isLoading) return;
 
@@ -70,13 +92,16 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
           value: _selectedEngine!.split('L').first,
         ),
       if (_selectedGear != null)
-        UserCarAttributeInput(key: 'transmission', value: _selectedGear!),
+        UserCarAttributeInput(
+          key: 'transmission',
+          value: _selectedGear!,
+        ),
     ];
 
     setState(() => _isLoading = true);
 
     try {
-      // أولًا: إضافة السيارة
+      // # Create Car
       int addedCarId;
 
       try {
@@ -108,8 +133,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
       if (!mounted) return;
 
-      // السيارة أُضيفت بنجاح.
-      // نتحقق الآن من العملية الثانية بشكل مستقل.
+      // # Set Default Car
       bool defaultCarUpdated = true;
 
       if (_isDefault) {
@@ -122,8 +146,10 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
       if (!mounted) return;
 
+      // # Refresh User Cars
       ref.invalidate(userCarsProvider);
 
+      // # Result Dialog
       if (!defaultCarUpdated) {
         await CarStatusDialog.show(
           context: context,
@@ -154,6 +180,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
     }
   }
 
+  // # Form Validation
   bool _isFormValid(VehicleState vehicleState) {
     final hasVehicleSelection =
         vehicleState.selectedCarBrand != null &&
@@ -165,6 +192,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
     return hasVehicleSelection && hasValidVin;
   }
 
+  // # Dispose
   @override
   void dispose() {
     _vinController.dispose();
@@ -172,6 +200,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
     super.dispose();
   }
 
+  // # Input Decoration
   InputDecoration _buildInputDecoration(String hintText) {
     return InputDecoration(
       isDense: true,
@@ -181,18 +210,25 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       ),
       filled: true,
       fillColor: AppColors.inputFieldAndCards,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 12,
+      ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: Colors.grey.shade300),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.actionText, width: 1.2),
+        borderSide: const BorderSide(
+          color: AppColors.actionText,
+          width: 1.2,
+        ),
       ),
     );
   }
 
+  // # Required Field Title
   Widget _buildTitleWithStar(String title) {
     return RichText(
       text: TextSpan(
@@ -215,6 +251,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
     );
   }
 
+  // # Optional Field Title
   Widget _buildOptionalTitle(String title) {
     return RichText(
       text: TextSpan(
@@ -227,13 +264,17 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
           ),
           const TextSpan(
             text: ' (اختياري)',
-            style: TextStyle(color: AppColors.actionText, fontSize: 13),
+            style: TextStyle(
+              color: AppColors.actionText,
+              fontSize: 13,
+            ),
           ),
         ],
       ),
     );
   }
 
+  // # Engine Picker
   Future<void> _showEnginePicker() async {
     final value = await CarAttributeBottomSheet.show(
       context: context,
@@ -241,15 +282,14 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       options: _engineOptions,
     );
 
-    if (!mounted || value == null) {
-      return;
-    }
+    if (!mounted || value == null) return;
 
     setState(() {
       _selectedEngine = value;
     });
   }
 
+  // # Gear Picker
   Future<void> _showGearPicker() async {
     final value = await CarAttributeBottomSheet.show(
       context: context,
@@ -257,19 +297,18 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
       options: _gearOptions,
     );
 
-    if (!mounted || value == null) {
-      return;
-    }
+    if (!mounted || value == null) return;
 
     setState(() {
       _selectedGear = value;
     });
   }
 
+  // # Build
   @override
   Widget build(BuildContext context) {
-    // الاستماع لحالة نموذج الإضافة المستقلة لتحديث الحقول والزر.
-    final vehicleState = ref.watch(addCarVehicleProvider);
+    // # Independent Vehicle State
+    final vehicleState = ref.watch(vehicleProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -285,28 +324,39 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                     children: [
                       h16,
 
-                      Text('بيانات سيارتي', style: AppTextStyles.boldBody),
+                      Text(
+                        'بيانات سيارتي',
+                        style: AppTextStyles.boldBody,
+                      ),
 
                       h16,
 
+                      // # Vehicle Labels
                       Row(
                         spacing: 16,
                         children: [
-                          Expanded(child: _buildTitleWithStar('البراند')),
-                          Expanded(child: _buildTitleWithStar('الموديل')),
-                          Expanded(child: _buildTitleWithStar('السنة')),
+                          Expanded(
+                            child: _buildTitleWithStar('البراند'),
+                          ),
+                          Expanded(
+                            child: _buildTitleWithStar('الموديل'),
+                          ),
+                          Expanded(
+                            child: _buildTitleWithStar('السنة'),
+                          ),
                         ],
                       ),
 
                       h8,
 
+                      // # Vehicle Selector
                       const VehiclesWidget(
                         inlineSelection: true,
-                        useAddCarProvider: true,
                       ),
 
                       h16,
 
+                      // # VIN
                       _buildTitleWithStar('رقم الشاصي (VIN)'),
 
                       h8,
@@ -314,7 +364,8 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                       TextField(
                         controller: _vinController,
                         textDirection: TextDirection.ltr,
-                        textCapitalization: TextCapitalization.characters,
+                        textCapitalization:
+                            TextCapitalization.characters,
                         autocorrect: false,
                         enableSuggestions: false,
                         onChanged: (_) => setState(() {}),
@@ -325,23 +376,28 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           LengthLimitingTextInputFormatter(17),
                         ],
                         style: AppTextStyles.mediumCaption,
-                        decoration: _buildInputDecoration('رقم الشاصي (VIN)'),
+                        decoration: _buildInputDecoration(
+                          'رقم الشاصي (VIN)',
+                        ),
                       ),
 
                       h16,
 
+                      // # Vehicle Attributes
                       Row(
                         spacing: 16,
                         children: [
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                               children: [
                                 _buildOptionalTitle('المكينة'),
                                 h8,
                                 VehicleFilterField(
                                   title: _selectedEngine ?? 'المكينة',
-                                  isValueSelected: _selectedEngine != null,
+                                  isValueSelected:
+                                      _selectedEngine != null,
                                   onTap: _showEnginePicker,
                                 ),
                               ],
@@ -349,13 +405,15 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                           ),
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                               children: [
                                 _buildOptionalTitle('القير'),
                                 h8,
                                 VehicleFilterField(
                                   title: _selectedGear ?? 'القير',
-                                  isValueSelected: _selectedGear != null,
+                                  isValueSelected:
+                                      _selectedGear != null,
                                   onTap: _showGearPicker,
                                 ),
                               ],
@@ -366,6 +424,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
                       h16,
 
+                      // # Nickname
                       _buildOptionalTitle('اسم السيارة'),
 
                       h8,
@@ -373,7 +432,8 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                       TextField(
                         controller: _nicknameController,
                         maxLength: 25,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        maxLengthEnforcement:
+                            MaxLengthEnforcement.enforced,
                         style: AppTextStyles.mediumCaption,
                         decoration: _buildInputDecoration(
                           'مثلاً: "سيارتي، سيارة الوالد"',
@@ -382,6 +442,7 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
 
                       h16,
 
+                      // # Default Car
                       Align(
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
@@ -394,7 +455,9 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               AnimatedContainer(
-                                duration: const Duration(milliseconds: 150),
+                                duration: const Duration(
+                                  milliseconds: 150,
+                                ),
                                 width: 26,
                                 height: 26,
                                 decoration: BoxDecoration(
@@ -405,7 +468,8 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                                   color: _isDefault
                                       ? AppColors.actionText
                                       : const Color(0xFFF4F5F6),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius:
+                                      BorderRadius.circular(8),
                                 ),
                                 child: _isDefault
                                     ? const Icon(
@@ -435,13 +499,17 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
                 ),
               ),
 
+              // # Add Car Button
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ButtonWidget(
-                  text: _isLoading ? 'جاري الإضافة...' : 'إضافة السيارة',
+                  text: _isLoading
+                      ? 'جاري الإضافة...'
+                      : 'إضافة السيارة',
                   width: double.infinity,
                   height: 52,
-                  enabled: _isFormValid(vehicleState) && !_isLoading,
+                  enabled:
+                      _isFormValid(vehicleState) && !_isLoading,
                   onPressed: _addCar,
                 ),
               ),
