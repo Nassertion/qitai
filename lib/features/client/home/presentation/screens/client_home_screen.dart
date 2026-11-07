@@ -36,7 +36,6 @@ class ClientHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
-  // # Default Car Request Guard
   bool _isChangingDefaultCar = false;
 
   // # Set Default Car
@@ -90,7 +89,8 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
   // # Cars Section
   Widget _buildCarsSection({
-required AsyncValue<List<UserCar>> userCarsAsync,  }) {
+    required AsyncValue<List<UserCar>> userCarsAsync,
+  }) {
     return userCarsAsync.when(
       skipLoadingOnRefresh: false,
 
@@ -98,7 +98,6 @@ required AsyncValue<List<UserCar>> userCarsAsync,  }) {
         carCount: userCarsAsync.value?.length ?? 3,
       ),
 
-      // # Show Loading Error Instead Of Add-Car Empty State
       error: (error, stack) => Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 16,
@@ -106,7 +105,7 @@ required AsyncValue<List<UserCar>> userCarsAsync,  }) {
         ),
         child: Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Text(
                 'تعذر تحميل سياراتك',
                 style: AppTextStyles.regularOverline,
@@ -186,6 +185,49 @@ required AsyncValue<List<UserCar>> userCarsAsync,  }) {
         gridDelegate: _productGridDelegate,
       ),
     );
+  }
+
+  // # Refresh Home
+  Future<void> _refreshHome(bool isAuthenticated) async {
+    try {
+      // # Refresh Categories
+      ref.invalidate(categoriesProvider);
+      final categoriesFuture = ref.read(
+        categoriesProvider.future,
+      );
+
+      // # Refresh Products
+      final productsFuture = ref
+          .read(allProductsProvider.notifier)
+          .loadProducts();
+
+      final futures = <Future<dynamic>>[
+        categoriesFuture,
+        productsFuture,
+      ];
+
+      // # Refresh User Cars
+      if (isAuthenticated) {
+        ref.invalidate(userCarsProvider);
+
+        futures.add(
+          ref.read(userCarsProvider.future),
+        );
+      }
+
+      // # Run Requests In Parallel
+      await Future.wait(futures);
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'تعذر تحديث بعض البيانات، حاول مرة أخرى.',
+          ),
+        ),
+      );
+    }
   }
 
   // # Build Home Screen
@@ -270,37 +312,7 @@ required AsyncValue<List<UserCar>> userCarsAsync,  }) {
       body: RefreshIndicator(
         backgroundColor: AppColors.inputFieldAndCards,
         color: AppColors.actionText,
-        onRefresh: () async {
-          // # Refresh Categories
-          ref.invalidate(categoriesProvider);
-
-          final categoriesFuture = ref.read(
-            categoriesProvider.future,
-          );
-
-          // # Refresh Products
-          final productsFuture = ref
-              .read(allProductsProvider.notifier)
-              .loadProducts();
-
-          // # Refresh Cars
-          if (isAuthenticated) {
-            ref.invalidate(userCarsProvider);
-          }
-
-          final futures = <Future<dynamic>>[
-            categoriesFuture,
-            productsFuture,
-          ];
-
-          if (isAuthenticated) {
-            futures.add(
-              ref.read(userCarsProvider.future),
-            );
-          }
-
-          await Future.wait(futures);
-        },
+        onRefresh: () => _refreshHome(isAuthenticated),
 
         child: CustomScrollView(
           slivers: [
