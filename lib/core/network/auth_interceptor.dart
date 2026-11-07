@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:qitai/core/storage/token_storage.dart';
@@ -21,6 +22,28 @@ class AuthInterceptor extends Interceptor {
 
   bool _isPublicPath(String path) {
     return _publicPaths.contains(path);
+  }
+
+  // Check the credentials sent with this specific request.
+  bool _hasBearerToken(RequestOptions options) {
+    for (final entry in options.headers.entries) {
+      if (entry.key.toLowerCase() != 'authorization') {
+        continue;
+      }
+
+      final value = entry.value;
+
+      if (value is! String) {
+        return false;
+      }
+
+      return RegExp(
+        r'^Bearer\s+\S+$',
+        caseSensitive: false,
+      ).hasMatch(value.trim());
+    }
+
+    return false;
   }
 
   @override
@@ -49,12 +72,15 @@ class AuthInterceptor extends Interceptor {
   ) async {
     final isUnauthorized = err.response?.statusCode == 401;
     final isPublicRequest = _isPublicPath(err.requestOptions.path);
+    final hasBearerToken = _hasBearerToken(err.requestOptions);
 
-    if (!isUnauthorized || isPublicRequest) {
+    // A guest's 401 must not expire an authenticated session.
+    if (!isUnauthorized || isPublicRequest || !hasBearerToken) {
       handler.next(err);
       return;
     }
 
+    // Preserve single-flight handling for concurrent 401 responses.
     final handling =
         _handlingUnauthorized ??= _handleUnauthorized();
 
