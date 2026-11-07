@@ -23,6 +23,7 @@ import 'package:qitai/features/client/home/presentation/widgets/slider_widget.da
 import 'package:qitai/features/client/products/presentation/provider/all_products_notifier.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_skeleton.dart';
 import 'package:qitai/features/client/products/presentation/widgets/all_product_card_widget.dart';
+import 'package:qitai/features/client/user/cars/domain/entities/user_car.dart';
 import 'package:qitai/features/client/user/cars/presentation/providers/user_car_provider.dart';
 import 'package:qitai/features/client/vehicles/presentation/provider/vehicle_notifier.dart';
 
@@ -89,8 +90,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
 
   // # Cars Section
   Widget _buildCarsSection({
-    required AsyncValue<List<dynamic>> userCarsAsync,
-  }) {
+required AsyncValue<List<UserCar>> userCarsAsync,  }) {
     return userCarsAsync.when(
       skipLoadingOnRefresh: false,
 

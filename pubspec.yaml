@@ -44,7 +44,6 @@ dependencies:
   loading_animation_widget: ^1.3.0
   go_router: ^17.1.0
   riverpod_annotation: ^4.0.6
-  mocktail: ^1.0.5
   internet_connection_checker_plus: ^3.1.1
   flutter_secure_storage: ^11.2.0
   skeletonizer: ^3.0.0
@@ -61,6 +60,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.16.0
   riverpod_generator: ^4.0.8
+  mocktail: 1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

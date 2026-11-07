@@ -41,7 +41,7 @@ final class VehicleNotifierProvider
   }
 }
 
-String _$vehicleNotifierHash() => r'b8541862f487965116443c1d1e737b1b1f8bf0c2';
+String _$vehicleNotifierHash() => r'867455031d45d6207b383de21c7ee5e891ee5376';
 
 abstract class _$VehicleNotifier extends $Notifier<VehicleState> {
   VehicleState build();
