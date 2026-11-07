@@ -1,5 +1,6 @@
 
 import 'dart:async';
+
 import 'package:qitai/features/client/products/domain/usecases/get_products.dart';
 import 'package:qitai/features/client/products/presentation/provider/product_provider.dart';
 import 'package:qitai/features/client/search/domain/usecases/get_search_suggestions.dart';
@@ -14,8 +15,10 @@ part 'search_notifier.g.dart';
 
 @riverpod
 class SearchNotifier extends _$SearchNotifier {
-  late final GetSearchSuggestions getSuggestions;
-  late final GetProducts getProducts;
+  GetSearchSuggestions get getSuggestions =>
+      ref.read(getSearchSuggestionsProvider);
+
+  GetProducts get getProducts => ref.read(getProductsProvider);
 
   Timer? _debounce;
 
@@ -26,9 +29,6 @@ class SearchNotifier extends _$SearchNotifier {
   // # Build
   @override
   SearchState build() {
-    getProducts = ref.read(getProductsProvider);
-    getSuggestions = ref.read(getSearchSuggestionsProvider);
-
     ref.onDispose(() {
       _debounce?.cancel();
       _searchRequestId++;
@@ -48,7 +48,6 @@ class SearchNotifier extends _$SearchNotifier {
   void onQueryChanged(String value) {
     final query = value.trim();
 
-    // Invalidate requests started before this edit.
     _searchRequestId++;
     _suggestionsRequestId++;
 
@@ -77,9 +76,12 @@ class SearchNotifier extends _$SearchNotifier {
       return;
     }
 
-    _debounce = Timer(const Duration(milliseconds: 300), () {
-      loadSuggestions(query);
-    });
+    _debounce = Timer(
+      const Duration(milliseconds: 300),
+      () {
+        loadSuggestions(query);
+      },
+    );
   }
 
   // # Load Suggestions
@@ -94,7 +96,6 @@ class SearchNotifier extends _$SearchNotifier {
     try {
       final suggestions = await getSuggestions(query: query);
 
-      // # Ignore Stale Response
       if (!ref.mounted) return;
       if (requestId != _suggestionsRequestId) return;
       if (state.query.trim() != query) return;
@@ -104,7 +105,6 @@ class SearchNotifier extends _$SearchNotifier {
         isSuggestionsLoading: false,
       );
     } catch (e) {
-      // # Ignore Stale Error
       if (!ref.mounted) return;
       if (requestId != _suggestionsRequestId) return;
       if (state.query.trim() != query) return;
@@ -134,7 +134,6 @@ class SearchNotifier extends _$SearchNotifier {
 
     _debounce?.cancel();
 
-    // # Invalidate Pending Suggestions
     _suggestionsRequestId++;
 
     final hasText = value.isNotEmpty;
@@ -218,7 +217,6 @@ class SearchNotifier extends _$SearchNotifier {
     if (state.isLoadingMore) return;
     if (!state.hasNextPage) return;
 
-    // Keep pagination tied to the current search.
     final requestId = _searchRequestId;
 
     final value = state.query.trim().toUpperCase();

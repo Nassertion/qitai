@@ -1,3 +1,4 @@
+
 import 'package:qitai/features/client/vehicles/domain/entities/car_brand.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_model.dart';
 import 'package:qitai/features/client/vehicles/domain/entities/car_year.dart';
@@ -12,9 +13,9 @@ part 'vehicle_notifier.g.dart';
 
 @riverpod
 class VehicleNotifier extends _$VehicleNotifier {
-  late final GetCarBrands getCarBrands;
-  late final GetCarModels getCarModels;
-  late final GetCarYears getCarYears;
+  GetCarBrands get getCarBrands => ref.read(getCarBrandsProvider);
+  GetCarModels get getCarModels => ref.read(getCarModelsProvider);
+  GetCarYears get getCarYears => ref.read(getCarYearsProvider);
 
   // # Request IDs
   int _brandsRequestId = 0;
@@ -25,10 +26,6 @@ class VehicleNotifier extends _$VehicleNotifier {
   // # Build
   @override
   VehicleState build() {
-    getCarBrands = ref.read(getCarBrandsProvider);
-    getCarModels = ref.read(getCarModelsProvider);
-    getCarYears = ref.read(getCarYearsProvider);
-
     ref.onDispose(() {
       _brandsRequestId++;
       _modelsRequestId++;
@@ -43,17 +40,21 @@ class VehicleNotifier extends _$VehicleNotifier {
   Future<void> loadBrands() async {
     final requestId = ++_brandsRequestId;
 
-    state = state.copyWith(isBrandsLoading: true, clearErrorMessage: true);
+    state = state.copyWith(
+      isBrandsLoading: true,
+      clearErrorMessage: true,
+    );
 
     try {
       final brands = await getCarBrands();
 
-      // # Ignore Stale Response
       if (requestId != _brandsRequestId) return;
 
-      state = state.copyWith(carBrands: brands, isBrandsLoading: false);
+      state = state.copyWith(
+        carBrands: brands,
+        isBrandsLoading: false,
+      );
     } catch (e) {
-      // # Ignore Stale Error
       if (requestId != _brandsRequestId) return;
 
       state = state.copyWith(
@@ -68,7 +69,6 @@ class VehicleNotifier extends _$VehicleNotifier {
     _vehicleByIdsRequestId++;
 
     final requestId = ++_modelsRequestId;
-
     _yearsRequestId++;
 
     state = state.copyWith(
@@ -91,7 +91,10 @@ class VehicleNotifier extends _$VehicleNotifier {
         return;
       }
 
-      state = state.copyWith(models: models, isModelsLoading: false);
+      state = state.copyWith(
+        models: models,
+        isModelsLoading: false,
+      );
     } catch (e) {
       if (requestId != _modelsRequestId ||
           state.selectedCarBrand?.id != carBrand.id) {
@@ -124,17 +127,25 @@ class VehicleNotifier extends _$VehicleNotifier {
     try {
       final years = await getCarYears(model.id);
 
-      if (requestId != _yearsRequestId || state.selectedModel?.id != model.id) {
+      if (requestId != _yearsRequestId ||
+          state.selectedModel?.id != model.id) {
         return;
       }
 
-      state = state.copyWith(carYears: years, isYearsLoading: false);
+      state = state.copyWith(
+        carYears: years,
+        isYearsLoading: false,
+      );
     } catch (e) {
-      if (requestId != _yearsRequestId || state.selectedModel?.id != model.id) {
+      if (requestId != _yearsRequestId ||
+          state.selectedModel?.id != model.id) {
         return;
       }
 
-      state = state.copyWith(isYearsLoading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isYearsLoading: false,
+        errorMessage: e.toString(),
+      );
     }
   }
 
