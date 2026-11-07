@@ -53,7 +53,6 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     } catch (_) {
       if (!mounted) return;
 
-      // # Show Error Instead Of Silently Ignoring It
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -99,9 +98,29 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
         carCount: userCarsAsync.value?.length ?? 3,
       ),
 
-      error: (error, stack) => Row(
-        textDirection: TextDirection.rtl,
-        children: [_buildAddCarItem()],
+      // # Show Loading Error Instead Of Add-Car Empty State
+      error: (error, stack) => Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 8,
+        ),
+        child: Row(
+          children: [
+            const Expanded(
+              child: Text(
+                'تعذر تحميل سياراتك',
+                style: AppTextStyles.regularOverline,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                ref.invalidate(userCarsProvider);
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text('إعادة المحاولة'),
+            ),
+          ],
+        ),
       ),
 
       data: (cars) {
@@ -185,7 +204,6 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     final cars = userCarsAsync?.asData?.value ?? [];
     final hasDefaultCar = cars.any((car) => car.isDefault);
 
-    // # Show Up To Four Products On Home
     final homeProducts = productsState.products.take(4).toList();
 
     // # Authentication Listener
