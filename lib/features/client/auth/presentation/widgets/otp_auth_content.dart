@@ -1,3 +1,4 @@
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -6,18 +7,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
+import 'package:qitai/core/errors/app_exception.dart';
 import 'package:qitai/features/client/auth/presentation/providers/auth_notifier.dart';
 
 class OtpAuthContent extends ConsumerStatefulWidget {
   final String phone;
 
-  const OtpAuthContent({super.key, required this.phone});
+  const OtpAuthContent({
+    super.key,
+    required this.phone,
+  });
 
   @override
-  ConsumerState<OtpAuthContent> createState() => _OtpAuthContentState();
+  ConsumerState<OtpAuthContent> createState() =>
+      _OtpAuthContentState();
 }
 
 class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
+  static const int _otpLength = 6;
+
   late final List<TextEditingController> _controllers;
   late final List<FocusNode> _focusNodes;
 
@@ -45,9 +53,15 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
   void initState() {
     super.initState();
 
-    _controllers = List.generate(6, (_) => TextEditingController());
+    _controllers = List.generate(
+      _otpLength,
+      (_) => TextEditingController(),
+    );
 
-    _focusNodes = List.generate(6, (_) => FocusNode());
+    _focusNodes = List.generate(
+      _otpLength,
+      (_) => FocusNode(),
+    );
 
     _startTimer();
 
@@ -61,18 +75,21 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
   void _startTimer() {
     _timer?.cancel();
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingSeconds == 0) {
-        timer.cancel();
-        return;
-      }
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) {
+        if (_remainingSeconds == 0) {
+          timer.cancel();
+          return;
+        }
 
-      if (mounted) {
-        setState(() {
-          _remainingSeconds--;
-        });
-      }
-    });
+        if (mounted) {
+          setState(() {
+            _remainingSeconds--;
+          });
+        }
+      },
+    );
   }
 
   Future<void> _verifyOtp() async {
@@ -82,26 +99,35 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
 
     setState(() {
       _isLoading = true;
+      _hasOtpError = false;
     });
 
     try {
-      await ref
-          .read(authProvider.notifier)
-          .verifyOtp(phone: widget.phone, code: _otpCode);
+      await ref.read(authProvider.notifier).verifyOtp(
+        phone: widget.phone,
+        code: _otpCode,
+      );
 
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       Navigator.of(context).pop();
-    } catch (error) {
-      if (!mounted) {
-        return;
-      }
+    } on AppException catch (error) {
+      if (!mounted) return;
 
-      setState(() {
-        _hasOtpError = true;
-      });
+      // Only treat validation responses as an invalid OTP.
+      if (error.statusCode == 400 || error.statusCode == 422) {
+        setState(() {
+          _hasOtpError = true;
+        });
+      } else {
+        _showErrorMessage(error.message);
+      }
+    } catch (_) {
+      if (!mounted) return;
+
+      _showErrorMessage(
+        'تعذر التحقق من الرمز، حاول مرة أخرى.',
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -123,9 +149,7 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
     try {
       await ref.read(authProvider.notifier).sendOtp(widget.phone);
 
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       setState(() {
         _remainingSeconds = 54;
@@ -133,14 +157,16 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
       });
 
       _startTimer();
-    } catch (error) {
-      if (!mounted) {
-        return;
-      }
+    } on AppException catch (error) {
+      if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error.toString())));
+      _showErrorMessage(error.message);
+    } catch (_) {
+      if (!mounted) return;
+
+      _showErrorMessage(
+        'تعذر إعادة إرسال الرمز، حاول مرة أخرى.',
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -150,25 +176,67 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
     }
   }
 
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  // # Handle OTP Input And Paste
   void _onCodeChanged(String value, int index) {
     if (value.length > 1) {
-      _controllers[index].text = value.substring(value.length - 1);
-
-      _controllers[index].selection = TextSelection.collapsed(
-        offset: _controllers[index].text.length,
-      );
+      _fillPastedCode(value, index);
+      return;
     }
 
     setState(() {
       _hasOtpError = false;
     });
 
-    if (value.isNotEmpty && index < _focusNodes.length - 1) {
+    if (value.isNotEmpty && index < _otpLength - 1) {
       _focusNodes[index + 1].requestFocus();
     }
   }
 
-  KeyEventResult _handleKeyEvent(KeyEvent event, int index) {
+  // # Distribute Pasted Digits Across OTP Fields
+  void _fillPastedCode(String value, int index) {
+    final digits = value.replaceAll(RegExp(r'\D'), '');
+
+    if (digits.isEmpty) return;
+
+    // A complete OTP should start at the first field,
+    // regardless of which field received the paste.
+    final startIndex = digits.length == _otpLength ? 0 : index;
+
+    // Clear the pasted text before distributing it.
+    for (var i = startIndex; i < _otpLength; i++) {
+      _controllers[i].clear();
+    }
+
+    var lastIndex = startIndex;
+
+    for (var i = 0; i < digits.length; i++) {
+      final targetIndex = startIndex + i;
+
+      if (targetIndex >= _otpLength) break;
+
+      _controllers[targetIndex].text = digits[i];
+      lastIndex = targetIndex;
+    }
+
+    _focusNodes[lastIndex].requestFocus();
+
+    setState(() {
+      _hasOtpError = false;
+    });
+  }
+
+  KeyEventResult _handleKeyEvent(
+    KeyEvent event,
+    int index,
+  ) {
     if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.backspace &&
         _controllers[index].text.isEmpty &&
@@ -187,9 +255,13 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
   }
 
   String _formattedTime() {
-    final minutes = (_remainingSeconds ~/ 60).toString().padLeft(2, '0');
+    final minutes = (_remainingSeconds ~/ 60)
+        .toString()
+        .padLeft(2, '0');
 
-    final seconds = (_remainingSeconds % 60).toString().padLeft(2, '0');
+    final seconds = (_remainingSeconds % 60)
+        .toString()
+        .padLeft(2, '0');
 
     return '$minutes:$seconds';
   }
@@ -222,10 +294,11 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
 
         h16,
 
+        // # OTP Fields
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           textDirection: TextDirection.ltr,
-          children: List.generate(6, (index) {
+          children: List.generate(_otpLength, (index) {
             return SizedBox(
               width: 44,
               height: 44,
@@ -239,10 +312,18 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
                   keyboardType: TextInputType.number,
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.center,
-                  maxLength: 1,
+
+                  // Allow a complete code to be pasted.
+                  // Distribution happens in _onCodeChanged.
+                  maxLength: _otpLength,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+
                   onChanged: (value) {
                     _onCodeChanged(value, index);
                   },
+
                   decoration: InputDecoration(
                     counterText: '',
                     contentPadding: EdgeInsets.zero,
@@ -251,11 +332,15 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: AppColors.onPrimary),
+                      borderSide: const BorderSide(
+                        color: AppColors.onPrimary,
+                      ),
                     ),
                   ),
                 ),
@@ -264,6 +349,7 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
           }),
         ),
 
+        // # Invalid OTP Message
         if (_hasOtpError) ...[
           h8,
           Text(
@@ -277,10 +363,13 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
 
         h16,
 
+        // # Verify Button
         SizedBox(
           height: 55,
           child: ElevatedButton(
-            onPressed: _isValidOtp && !_isLoading ? _verifyOtp : null,
+            onPressed: _isValidOtp && !_isLoading
+                ? _verifyOtp
+                : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: _isValidOtp && !_isLoading
                   ? AppColors.primaryButton
@@ -293,7 +382,9 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
                   )
                 : Text(
                     'التحقق',
@@ -307,15 +398,18 @@ class _OtpAuthContentState extends ConsumerState<OtpAuthContent> {
         ),
 
         h16,
+
         Text(
-          "لم يصلك الرمز؟",
+          'لم يصلك الرمز؟',
           textAlign: TextAlign.center,
           style: AppTextStyles.mediumCaption.copyWith(
             color: AppColors.secondaryText,
           ),
         ),
+
         h8,
 
+        // # Resend OTP
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           textDirection: TextDirection.rtl,
