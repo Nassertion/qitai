@@ -9,11 +9,27 @@ import 'package:qitai/features/client/cart/data/datasources/cart_local_data_sour
 import 'package:qitai/features/client/cart/domain/entities/local_cart_item.dart';
 import 'package:qitai/features/client/cart/presentation/providers/cart_notifier.dart';
 
+class FailingCartLocalDataSource extends CartLocalDataSource {
+  FailingCartLocalDataSource(super.preferences);
+
+  bool failNextSave = false;
+
+  @override
+  Future<void> saveCart(List<LocalCartItem> items) {
+    if (failNextSave) {
+      failNextSave = false;
+      return Future.error(StateError('Simulated storage failure'));
+    }
+
+    return super.saveCart(items);
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late SharedPreferencesAsync preferences;
-  late CartLocalDataSource dataSource;
+  late FailingCartLocalDataSource dataSource;
   late ProviderContainer container;
 
   const battery = LocalCartItem(
@@ -41,7 +57,7 @@ void main() {
         InMemorySharedPreferencesAsync.empty();
 
     preferences = SharedPreferencesAsync();
-    dataSource = CartLocalDataSource(preferences);
+    dataSource = FailingCartLocalDataSource(preferences);
 
     container = ProviderContainer(
       overrides: [
@@ -155,6 +171,72 @@ void main() {
 
       expect(stored, hasLength(1));
       expect(stored.first.quantity, 5);
+    });
+
+    test('keeps cart unchanged when storage fails', () async {
+      await container.read(cartProvider.future);
+
+      final notifier = container.read(cartProvider.notifier);
+
+      dataSource.failNextSave = true;
+
+      await expectLater(
+        notifier.addItem(battery),
+        throwsStateError,
+      );
+
+      final items = container.read(cartProvider).requireValue;
+      final stored = await dataSource.getCart();
+
+      expect(items, isEmpty);
+      expect(stored, isEmpty);
+    });
+
+    test('can retry after a failed save', () async {
+      await container.read(cartProvider.future);
+
+      final notifier = container.read(cartProvider.notifier);
+
+      dataSource.failNextSave = true;
+
+      await expectLater(
+        notifier.addItem(battery),
+        throwsStateError,
+      );
+
+      await notifier.addItem(battery);
+
+      final items = await container.read(cartProvider.future);
+      final stored = await dataSource.getCart();
+
+      expect(items, hasLength(1));
+      expect(items.first.quantity, 1);
+
+      expect(stored, hasLength(1));
+      expect(stored.first.productId, battery.productId);
+    });
+
+    test('continues queued mutations after a failed save', () async {
+      await container.read(cartProvider.future);
+
+      final notifier = container.read(cartProvider.notifier);
+
+      dataSource.failNextSave = true;
+
+      final first = notifier.addItem(battery);
+      final second = notifier.addItem(filter);
+
+      await expectLater(first, throwsStateError);
+      await second;
+
+      final items = await container.read(cartProvider.future);
+      final stored = await dataSource.getCart();
+
+      expect(items, hasLength(1));
+      expect(items.first.productId, filter.productId);
+
+      expect(stored, hasLength(1));
+      expect(stored.first.productId, filter.productId);
     });
   });
 }
