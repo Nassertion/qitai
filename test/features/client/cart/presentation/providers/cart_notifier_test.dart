@@ -163,13 +163,10 @@ void main() {
       ]);
 
       final items = await container.read(cartProvider.future);
+      final stored = await dataSource.getCart();
 
       expect(items, hasLength(1));
       expect(items.first.quantity, 5);
-
-      final stored = await dataSource.getCart();
-
-      expect(stored, hasLength(1));
       expect(stored.first.quantity, 5);
     });
 
@@ -211,8 +208,6 @@ void main() {
 
       expect(items, hasLength(1));
       expect(items.first.quantity, 1);
-
-      expect(stored, hasLength(1));
       expect(stored.first.productId, battery.productId);
     });
 
@@ -234,9 +229,79 @@ void main() {
 
       expect(items, hasLength(1));
       expect(items.first.productId, filter.productId);
-
       expect(stored, hasLength(1));
       expect(stored.first.productId, filter.productId);
+    });
+
+    test('increments product quantity', () async {
+      await container.read(cartProvider.future);
+
+      final notifier = container.read(cartProvider.notifier);
+
+      await notifier.addItem(battery);
+      await notifier.incrementQuantity(5);
+
+      final items = await container.read(cartProvider.future);
+      final stored = await dataSource.getCart();
+
+      expect(items.first.quantity, 2);
+      expect(stored.first.quantity, 2);
+    });
+
+    test('decrements product quantity', () async {
+      await container.read(cartProvider.future);
+
+      final notifier = container.read(cartProvider.notifier);
+
+      await notifier.addItem(battery);
+      await notifier.updateQuantity(5, 3);
+      await notifier.decrementQuantity(5);
+
+      final items = await container.read(cartProvider.future);
+      final stored = await dataSource.getCart();
+
+      expect(items.first.quantity, 2);
+      expect(stored.first.quantity, 2);
+    });
+
+    test('does not decrement quantity below one', () async {
+      await container.read(cartProvider.future);
+
+      final notifier = container.read(cartProvider.notifier);
+
+      await notifier.addItem(battery);
+      await notifier.decrementQuantity(5);
+
+      final items = await container.read(cartProvider.future);
+      final stored = await dataSource.getCart();
+
+      expect(items, hasLength(1));
+      expect(items.first.quantity, 1);
+      expect(stored.first.quantity, 1);
+    });
+
+    test('preserves concurrent quantity adjustments', () async {
+      await container.read(cartProvider.future);
+
+      final notifier = container.read(cartProvider.notifier);
+
+      await notifier.addItem(battery);
+
+      await Future.wait([
+        notifier.incrementQuantity(5),
+        notifier.incrementQuantity(5),
+        notifier.incrementQuantity(5),
+        notifier.decrementQuantity(5),
+        notifier.incrementQuantity(5),
+      ]);
+
+      final items = await container.read(cartProvider.future);
+      final stored = await dataSource.getCart();
+
+      // Initial: 1
+      // +1 +1 +1 -1 +1 = 4
+      expect(items.first.quantity, 4);
+      expect(stored.first.quantity, 4);
     });
   });
 }

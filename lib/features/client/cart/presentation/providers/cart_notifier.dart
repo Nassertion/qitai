@@ -81,6 +81,30 @@ class CartNotifier extends _$CartNotifier {
     });
   }
 
+  Future<void> incrementQuantity(int productId) {
+    return _mutate((items) {
+      return [
+        for (final item in items)
+          if (item.productId == productId)
+            _withQuantity(item, item.quantity + 1)
+          else
+            item,
+      ];
+    });
+  }
+
+  Future<void> decrementQuantity(int productId) {
+    return _mutate((items) {
+      return [
+        for (final item in items)
+          if (item.productId == productId && item.quantity > 1)
+            _withQuantity(item, item.quantity - 1)
+          else
+            item,
+      ];
+    });
+  }
+
   Future<void> updateQuantity(int productId, int quantity) {
     if (quantity <= 0) {
       throw ArgumentError.value(
