@@ -20,8 +20,13 @@ class ProductDetailsScreen extends ConsumerWidget {
     final productDetailAsync = ref.watch(productDetailProvider(id));
 
     return Scaffold(
-      // # Bottom Cart Section
-      bottomNavigationBar: const SafeArea(child: AddToCartSection()),
+      bottomNavigationBar: productDetailAsync.when(
+        data: (product) => SafeArea(
+          child: AddToCartSection(key: ValueKey(product.id), product: product),
+        ),
+        loading: () => const SizedBox.shrink(),
+        error: (_, _) => const SizedBox.shrink(),
+      ),
 
       // # App Bar
       appBar: CustomAppbar(
