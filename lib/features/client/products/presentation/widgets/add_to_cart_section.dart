@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:qitai/core/constants/colors.dart';
 import 'package:qitai/core/constants/spaces.dart';
 import 'package:qitai/core/constants/text_styles.dart';
@@ -8,6 +9,7 @@ import 'package:qitai/core/widgets/button_widget.dart';
 import 'package:qitai/core/widgets/page_padding.dart';
 import 'package:qitai/features/client/cart/domain/entities/local_cart_item.dart';
 import 'package:qitai/features/client/cart/presentation/providers/cart_notifier.dart';
+import 'package:qitai/features/client/cart/presentation/widgets/cart_success_notice.dart';
 import 'package:qitai/features/client/products/domain/entities/product_detail.dart';
 import 'package:qitai/features/client/products/presentation/widgets/quantity_widget.dart';
 
@@ -49,8 +51,12 @@ class _AddToCartSectionState
       barrierDismissible: false,
       builder: (_) => Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-        child: QuantityWidget(initialQuantity: quantity),
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 24,
+        ),
+        child: QuantityWidget(
+          initialQuantity: quantity,
+        ),
       ),
     );
 
@@ -102,17 +108,30 @@ class _AddToCartSectionState
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('تمت إضافة المنتج إلى السلة'),
-        ),
+      final items = await ref.read(cartProvider.future);
+
+      if (!mounted) return;
+
+      final subtotal = items.fold<int>(
+        0,
+        (total, current) =>
+            total +
+            current.unitPrice * current.quantity,
       );
-    } catch (error) {
+
+      CartSuccessNotice.show(
+        context,
+        message: 'تمت الإضافة إلى السلة! الإجمالي:',
+        subtotal: subtotal,
+      );
+    } catch (_) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('تعذرت إضافة المنتج للسلة، حاول مرة أخرى'),
+          content: Text(
+            'تعذرت إضافة المنتج للسلة، حاول مرة أخرى',
+          ),
         ),
       );
     } finally {
@@ -127,20 +146,26 @@ class _AddToCartSectionState
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border.symmetric(
-          horizontal: BorderSide(color: AppColors.border),
+          horizontal: BorderSide(
+            color: AppColors.border,
+          ),
         ),
         color: AppColors.backgroundColor,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        vertical: 8,
+      ),
       child: AppPagePadding(
         child: Row(
           children: [
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(
+                  color: AppColors.border,
+                ),
                 color: AppColors.inputFieldAndCards,
               ),
               padding: const EdgeInsets.symmetric(
@@ -152,26 +177,34 @@ class _AddToCartSectionState
                 children: [
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: isAdding ? null : decreaseQuantity,
+                    onTap: isAdding
+                        ? null
+                        : decreaseQuantity,
                     child: const SizedBox(
                       width: 32,
                       height: 32,
                       child: Center(
-                        child: Icon(Icons.remove, size: 18),
+                        child: Icon(
+                          Icons.remove,
+                          size: 18,
+                        ),
                       ),
                     ),
                   ),
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: isAdding ? null : openQuantityDialog,
+                    onTap: isAdding
+                        ? null
+                        : openQuantityDialog,
                     child: SizedBox(
                       width: 36,
                       height: 32,
                       child: Center(
                         child: Text(
-                          quantity.toString(),
+                          '$quantity',
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.mediumOverline.copyWith(
+                          style: AppTextStyles.mediumOverline
+                              .copyWith(
                             color: AppColors.primaryText,
                           ),
                         ),
@@ -180,12 +213,17 @@ class _AddToCartSectionState
                   ),
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: isAdding ? null : increaseQuantity,
+                    onTap: isAdding
+                        ? null
+                        : increaseQuantity,
                     child: const SizedBox(
                       width: 32,
                       height: 32,
                       child: Center(
-                        child: Icon(Icons.add, size: 18),
+                        child: Icon(
+                          Icons.add,
+                          size: 18,
+                        ),
                       ),
                     ),
                   ),
@@ -195,11 +233,11 @@ class _AddToCartSectionState
             w12,
             Expanded(
               child: ButtonWidget(
-                text: isAdding ? 'جارٍ الإضافة...' : 'أضف للسلة',
+                text: isAdding
+                    ? 'جارٍ الإضافة...'
+                    : 'أضف للسلة',
                 enabled: !isAdding,
-                onPressed: () {
-                  addToCart();
-                },
+                onPressed: addToCart,
               ),
             ),
           ],

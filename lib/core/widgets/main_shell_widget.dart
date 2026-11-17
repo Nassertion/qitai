@@ -9,10 +9,12 @@ class MainShellScreen extends StatelessWidget {
 
   int _getCurrentIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
+
     if (location == '/') return 0;
     if (location.startsWith('/orders')) return 1;
     if (location.startsWith('/cart')) return 2;
     if (location.startsWith('/profile')) return 3;
+
     return 0;
   }
 
@@ -38,8 +40,7 @@ class MainShellScreen extends StatelessWidget {
     final int currentIndex = _getCurrentIndex(context);
 
     return Scaffold(
-      extendBody: true,
-
+      extendBody: currentIndex != 2,
       body: child,
       bottomNavigationBar: BottomFloatingNavBar(
         selected: currentIndex,
